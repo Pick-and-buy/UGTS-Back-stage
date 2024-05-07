@@ -1,4 +1,4 @@
-package com.ugts.exception;
+package com.ugts.authentication.exception;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,9 @@ import org.springframework.http.HttpStatusCode;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_MESSAGE_KEY(1002, "Invalid message key", HttpStatus.BAD_REQUEST),
+public enum AuthenticationErrorCode {
+    UNAUTHENTICATED(1006, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1007, "Unauthorized!", HttpStatus.FORBIDDEN),
     ;
     int code;
     String message;

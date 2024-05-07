@@ -5,8 +5,8 @@ import java.util.Objects;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.nimbusds.jose.JOSEException;
-import com.ugts.dto.request.IntrospectRequest;
-import com.ugts.service.AuthenticationService;
+import com.ugts.authentication.dto.request.IntrospectRequest;
+import com.ugts.authentication.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;

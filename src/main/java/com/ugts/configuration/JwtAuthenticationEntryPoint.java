@@ -3,8 +3,8 @@ package com.ugts.configuration;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ugts.dto.response.ApiResponse;
-import com.ugts.exception.ErrorCode;
+import com.ugts.authentication.exception.AuthenticationErrorCode;
+import com.ugts.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -16,7 +16,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
-        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+        AuthenticationErrorCode errorCode = AuthenticationErrorCode.UNAUTHENTICATED;
 
         response.setStatus(errorCode.getHttpStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
