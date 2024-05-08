@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.ugts.authentication.dto.request.IntrospectRequest;
 import com.ugts.authentication.dto.request.LoginRequest;
 import com.ugts.authentication.dto.request.RefreshTokenRequest;
+import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.entity.InvalidToken;
@@ -22,10 +24,15 @@ import com.ugts.authentication.exception.AuthenticationErrorCode;
 import com.ugts.authentication.exception.AuthenticationException;
 import com.ugts.authentication.repository.InvalidTokenRepository;
 import com.ugts.authentication.service.AuthenticationService;
+import com.ugts.constant.PredefinedRole;
 import com.ugts.exception.AppException;
+import com.ugts.user.dto.response.UserResponse;
+import com.ugts.user.entity.Role;
 import com.ugts.user.entity.User;
 import com.ugts.user.exception.UserErrorCode;
 import com.ugts.user.exception.UserException;
+import com.ugts.user.mapper.UserMapper;
+import com.ugts.user.repository.RoleRepository;
 import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +53,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     UserRepository userRepository;
 
+    RoleRepository roleRepository;
+
     InvalidTokenRepository invalidTokenRepository;
+
+    UserMapper userMapper;
+
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -61,12 +74,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     protected long REFRESH_DURATION;
 
     @Override
+    public UserResponse register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserException(UserErrorCode.USER_EXISTED);
+        }
+        if (Boolean.TRUE.equals(userRepository.existsByPhoneNumber(request.getPhoneNumber()))) {
+            throw new UserException(UserErrorCode.PHONE_NUMBER_EXISTED);
+        }
+        if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
+            throw new UserException(UserErrorCode.EMAIL_EXISTED);
+        }
+
+        User user = userMapper.register(request);
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+
+        user.setRoles(roles);
+
+        return userMapper.userToUserResponse(userRepository.save(user));
+    }
+
+    @Override
     public LoginResponse login(LoginRequest request) {
         var user = userRepository
                 .findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
-
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
