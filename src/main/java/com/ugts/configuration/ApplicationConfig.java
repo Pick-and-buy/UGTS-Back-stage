@@ -3,10 +3,10 @@ package com.ugts.configuration;
 import java.util.HashSet;
 
 import com.ugts.constant.PredefinedRole;
-import com.ugts.entity.Role;
-import com.ugts.entity.User;
-import com.ugts.repository.RoleRepository;
-import com.ugts.repository.UserRepository;
+import com.ugts.user.entity.Role;
+import com.ugts.user.entity.User;
+import com.ugts.user.repository.RoleRepository;
+import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
