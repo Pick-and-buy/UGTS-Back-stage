@@ -6,10 +6,13 @@ import com.nimbusds.jose.JOSEException;
 import com.ugts.authentication.dto.request.IntrospectRequest;
 import com.ugts.authentication.dto.request.LoginRequest;
 import com.ugts.authentication.dto.request.RefreshTokenRequest;
+import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.dto.ApiResponse;
+import com.ugts.user.dto.response.UserResponse;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     AuthenticationService authenticationService;
+
+    @PostMapping("/register")
+    public ApiResponse<UserResponse> register(@RequestBody @Valid RegisterRequest request) {
+
+        return ApiResponse.<UserResponse>builder()
+                .message("Create Success")
+                .result(authenticationService.register(request))
+                .build();
+    }
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {

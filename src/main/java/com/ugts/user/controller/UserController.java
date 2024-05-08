@@ -2,11 +2,9 @@ package com.ugts.user.controller;
 
 import java.util.List;
 
-import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.dto.ApiResponse;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,15 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     UserService userService;
-
-    @PostMapping("/register")
-    public ApiResponse<UserResponse> register(@RequestBody @Valid RegisterRequest request) {
-
-        return ApiResponse.<UserResponse>builder()
-                .message("Create Success")
-                .result(userService.register(request))
-                .build();
-    }
 
     @GetMapping
     public ApiResponse<List<UserResponse>> getAllUsers() {
