@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AuthenticationExceptionHandler {
 
     @ExceptionHandler(value = AuthenticationException.class)
-    ResponseEntity<ApiResponse> handleAppException(AuthenticationException e) {
+    ResponseEntity<ApiResponse> handleAuthenticationException(AuthenticationException e) {
         AuthenticationErrorCode errorCode = e.getAuthenticationErrorCode();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode())
