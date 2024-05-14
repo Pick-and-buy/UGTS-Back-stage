@@ -28,4 +28,6 @@ public interface AuthenticationService {
     void logout(LogoutRequest request) throws ParseException, JOSEException;
 
     void forgotPassword(ForgotPasswordRequest request);
+
+    void changePassword(String userId, ChangePasswordRequest request);
 }

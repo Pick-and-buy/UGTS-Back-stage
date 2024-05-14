@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_MESSAGE_KEY(1002, "Invalid message key", HttpStatus.BAD_REQUEST),
+    INVALID_MESSAGE_KEY(8888, "Invalid message key", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
