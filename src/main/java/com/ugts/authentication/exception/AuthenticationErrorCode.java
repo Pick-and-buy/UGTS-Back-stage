@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatusCode;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum AuthenticationErrorCode {
-    UNAUTHENTICATED(1006, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(1007, "Unauthorized!", HttpStatus.FORBIDDEN),
+    UNAUTHENTICATED(1001, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1002, "Unauthorized!", HttpStatus.FORBIDDEN),
     ;
     int code;
     String message;
