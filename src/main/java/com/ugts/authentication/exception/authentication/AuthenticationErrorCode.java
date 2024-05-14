@@ -1,4 +1,4 @@
-package com.ugts.authentication.exception;
+package com.ugts.authentication.exception.authentication;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

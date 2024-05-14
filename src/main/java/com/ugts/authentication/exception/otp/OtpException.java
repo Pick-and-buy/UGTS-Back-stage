@@ -1,4 +1,4 @@
-package com.ugts.authentication.exception;
+package com.ugts.authentication.exception.otp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationException extends RuntimeException {
-    private AuthenticationErrorCode authenticationErrorCode;
+public class OtpException extends RuntimeException {
+    private OtpErrorCode otpErrorCode;
 }

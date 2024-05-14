@@ -29,6 +29,7 @@ public enum UserErrorCode {
     EMAIL_EXISTED(1010, "Your email has already existed", HttpStatus.BAD_REQUEST),
     LAST_NAME_INVALID(1011, "Last name must be at least {min} characters", HttpStatus.BAD_REQUEST),
     FIRST_NAME_INVALID(1012, "First name must be at least {min} characters", HttpStatus.BAD_REQUEST),
+    PASSWORD_MISMATCH(1013, "Password mismatch", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
