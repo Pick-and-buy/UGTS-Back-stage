@@ -1,4 +1,4 @@
-package com.ugts.authentication.exception;
+package com.ugts.authentication.exception.authentication;
 
 import com.ugts.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;

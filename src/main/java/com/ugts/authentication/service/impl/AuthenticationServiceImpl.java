@@ -17,8 +17,8 @@ import com.ugts.authentication.dto.request.*;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.entity.InvalidToken;
-import com.ugts.authentication.exception.AuthenticationErrorCode;
-import com.ugts.authentication.exception.AuthenticationException;
+import com.ugts.authentication.exception.authentication.AuthenticationErrorCode;
+import com.ugts.authentication.exception.authentication.AuthenticationException;
 import com.ugts.authentication.repository.InvalidTokenRepository;
 import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.constant.PredefinedRole;
@@ -230,5 +230,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (AppException e) {
             log.info("Token already expired");
         }
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new UserException(UserErrorCode.PASSWORD_MISMATCH);
+        }
+        String newPassword = passwordEncoder.encode(request.getConfirmPassword());
+        userRepository.updatePassword(request.getEmail(), newPassword);
     }
 }
