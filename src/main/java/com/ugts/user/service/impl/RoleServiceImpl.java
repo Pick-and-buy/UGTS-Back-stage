@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -27,6 +28,7 @@ public class RoleServiceImpl implements RoleService {
 
     RoleMapper roleMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
@@ -38,6 +40,7 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.toRoleResponse(role);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<RoleResponse> getAllRoles() {
         return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
