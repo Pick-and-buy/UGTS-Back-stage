@@ -64,4 +64,12 @@ public class AuthenticationController {
 
         return ApiResponse.<Void>builder().build();
     }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        authenticationService.forgotPassword(request);
+        return ApiResponse.<String>builder()
+                .message("Password has been reset successfully")
+                .build();
+    }
 }
