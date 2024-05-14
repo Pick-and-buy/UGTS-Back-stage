@@ -17,17 +17,14 @@ import com.ugts.authentication.dto.request.*;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.entity.InvalidToken;
-import com.ugts.authentication.exception.authentication.AuthenticationErrorCode;
-import com.ugts.authentication.exception.authentication.AuthenticationException;
 import com.ugts.authentication.repository.InvalidTokenRepository;
 import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.constant.PredefinedRole;
 import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.Role;
 import com.ugts.user.entity.User;
-import com.ugts.user.exception.UserErrorCode;
-import com.ugts.user.exception.UserException;
 import com.ugts.user.mapper.UserMapper;
 import com.ugts.user.repository.RoleRepository;
 import com.ugts.user.repository.UserRepository;
@@ -73,13 +70,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UserException(UserErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
         if (Boolean.TRUE.equals(userRepository.existsByPhoneNumber(request.getPhoneNumber()))) {
-            throw new UserException(UserErrorCode.PHONE_NUMBER_EXISTED);
+            throw new AppException(ErrorCode.PHONE_NUMBER_EXISTED);
         }
         if (Boolean.TRUE.equals(userRepository.existsByEmail(request.getEmail()))) {
-            throw new UserException(UserErrorCode.EMAIL_EXISTED);
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         User user = userMapper.register(request);
@@ -98,12 +95,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         var user = userRepository
                 .findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) {
-            throw new AuthenticationException(AuthenticationErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         var token = generateToken(user);
 
@@ -153,7 +150,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = userRepository
                 .findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         var token = generateToken(user);
 
@@ -192,11 +189,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var verified = signedJWT.verify(verifier);
 
         if (!(verified && expireTime.after(new Date()))) {
-            throw new AuthenticationException(AuthenticationErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
         if (invalidTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
-            throw new AuthenticationException(AuthenticationErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
         return signedJWT;
@@ -235,7 +232,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new UserException(UserErrorCode.PASSWORD_MISMATCH);
+            throw new AppException(ErrorCode.PASSWORD_MISMATCH);
         }
         String newPassword = passwordEncoder.encode(request.getConfirmPassword());
         userRepository.updatePassword(request.getEmail(), newPassword);
@@ -245,10 +242,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void changePassword(String userId, ChangePasswordRequest request) {
         var user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new UserException(UserErrorCode.INVALID_OLD_PASSWORD);
+            throw new AppException(ErrorCode.INVALID_OLD_PASSWORD);
         }
 
         String newPassword = passwordEncoder.encode(request.getNewPassword());
