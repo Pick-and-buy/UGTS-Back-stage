@@ -3,10 +3,7 @@ package com.ugts.authentication.controller;
 import java.text.ParseException;
 
 import com.nimbusds.jose.JOSEException;
-import com.ugts.authentication.dto.request.IntrospectRequest;
-import com.ugts.authentication.dto.request.LoginRequest;
-import com.ugts.authentication.dto.request.RefreshTokenRequest;
-import com.ugts.authentication.dto.request.RegisterRequest;
+import com.ugts.authentication.dto.request.*;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.service.AuthenticationService;
@@ -59,5 +56,12 @@ public class AuthenticationController {
         var result = authenticationService.refreshToken(request);
 
         return ApiResponse.<LoginResponse>builder().result(result).build();
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+
+        return ApiResponse.<Void>builder().build();
     }
 }

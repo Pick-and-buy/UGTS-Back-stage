@@ -13,10 +13,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.ugts.authentication.dto.request.IntrospectRequest;
-import com.ugts.authentication.dto.request.LoginRequest;
-import com.ugts.authentication.dto.request.RefreshTokenRequest;
-import com.ugts.authentication.dto.request.RegisterRequest;
+import com.ugts.authentication.dto.request.*;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.entity.InvalidToken;
@@ -216,5 +213,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             isValid = false;
         }
         return IntrospectResponse.builder().valid(isValid).build();
+    }
+
+    @Override
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        try {
+            var signToken = verifyToken(request.getAccessToken(), true);
+
+            String jit = signToken.getJWTClaimsSet().getJWTID();
+            Date expireTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+            InvalidToken invalidToken =
+                    InvalidToken.builder().id(jit).expireTime(expireTime).build();
+
+            invalidTokenRepository.save(invalidToken);
+        } catch (AppException e) {
+            log.info("Token already expired");
+        }
     }
 }
