@@ -56,6 +56,7 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -143,7 +144,18 @@
 				</executions>
 				<configuration>
 					<excludes>
-<!--						<exclude>com/ugts/**</exclude>-->
+						<exclude>com/ugts/configuration</exclude>
+						<exclude>com/ugts/constant</exclude>
+						<exclude>com/ugts/dto</exclude>
+						<exclude>com/ugts/exception</exclude>
+						<exclude>com/ugts/authentication/dto</exclude>
+						<exclude>com/ugts/authentication/entity</exclude>
+						<exclude>com/ugts/authentication/repository</exclude>
+						<exclude>com/ugts/user/dto</exclude>
+						<exclude>com/ugts/user/entity</exclude>
+						<exclude>com/ugts/user/mapper</exclude>
+						<exclude>com/ugts/user/repository</exclude>
+						<exclude>com/ugts/user/validator</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
