@@ -8,12 +8,10 @@ import com.ugts.authentication.dto.record.ViaMailBody;
 import com.ugts.authentication.dto.request.ForgotPasswordRequest;
 import com.ugts.authentication.dto.request.VerifyOtpRequest;
 import com.ugts.authentication.entity.OtpViaEmail;
-import com.ugts.authentication.exception.otp.OtpErrorCode;
-import com.ugts.authentication.exception.otp.OtpException;
 import com.ugts.authentication.repository.OtpViaEmailRepository;
 import com.ugts.authentication.service.OtpViaEmailService;
-import com.ugts.user.exception.UserErrorCode;
-import com.ugts.user.exception.UserException;
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -37,7 +35,7 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
     public void sendOtpCode(ForgotPasswordRequest request) {
         var user = userRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         int otpCode = otpGenerator();
         ViaMailBody mailBody = ViaMailBody.builder()
@@ -60,15 +58,15 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
     public void verifyOtpCode(VerifyOtpRequest request) {
         var user = userRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         var otpCode = otpViaEmailRepository
                 .findByOtpAndUser(request.getOtpCode(), user)
-                .orElseThrow(() -> new OtpException(OtpErrorCode.INVALID_OTP));
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_OTP));
 
         if (otpCode.getExpireTime().before(Date.from(Instant.now()))) {
             otpViaEmailRepository.delete(otpCode);
-            throw new OtpException(OtpErrorCode.OTP_EXPIRED);
+            throw new AppException(ErrorCode.OTP_EXPIRED);
         }
 
         if (otpCode.getOtpCode().equals(request.getOtpCode())) {

@@ -2,9 +2,9 @@ package com.ugts.user.service.impl;
 
 import java.util.List;
 
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.user.dto.response.UserResponse;
-import com.ugts.user.exception.UserErrorCode;
-import com.ugts.user.exception.UserException;
 import com.ugts.user.mapper.UserMapper;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
@@ -38,6 +38,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(String userId) {
         return userMapper.userToUserResponse(
-                userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_EXISTED)));
+                userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 }
