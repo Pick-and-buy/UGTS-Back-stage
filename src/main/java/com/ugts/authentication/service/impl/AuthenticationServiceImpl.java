@@ -142,10 +142,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var expireTime = signedJwt.getJWTClaimsSet().getExpirationTime();
 
         InvalidToken invalidToken =
-                InvalidToken.builder()
-                        .id(jit)
-                        .expireTime(expireTime)
-                        .build();
+                InvalidToken.builder().id(jit).expireTime(expireTime).build();
 
         invalidTokenRepository.save(invalidToken);
 
@@ -157,10 +154,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = generateToken(user);
 
-        return LoginResponse.builder()
-                .accessToken(token)
-                .authenticated(true)
-                .build();
+        return LoginResponse.builder().accessToken(token).authenticated(true).build();
     }
 
     @Override
@@ -246,9 +240,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changePassword(String userId, ChangePasswordRequest request) {
-        var user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INVALID_OLD_PASSWORD);
