@@ -1,8 +1,10 @@
 package com.ugts.user.entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
+import com.ugts.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,4 +32,10 @@ public class User {
 
     @ManyToMany
     Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    Address address;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<Post> favorites = new HashSet<>();
 }
