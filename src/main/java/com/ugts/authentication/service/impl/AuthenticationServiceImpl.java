@@ -240,9 +240,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changePassword(String userId, ChangePasswordRequest request) {
-        var user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INVALID_OLD_PASSWORD);
