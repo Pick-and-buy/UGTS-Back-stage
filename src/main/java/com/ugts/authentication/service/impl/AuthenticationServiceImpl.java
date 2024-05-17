@@ -142,7 +142,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var expireTime = signedJwt.getJWTClaimsSet().getExpirationTime();
 
         InvalidToken invalidToken =
-                InvalidToken.builder().id(jit).expireTime(expireTime).build();
+                InvalidToken.builder()
+                        .id(jit)
+                        .expireTime(expireTime)
+                        .build();
 
         invalidTokenRepository.save(invalidToken);
 
@@ -154,7 +157,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var token = generateToken(user);
 
-        return LoginResponse.builder().accessToken(token).authenticated(true).build();
+        return LoginResponse.builder()
+                .accessToken(token)
+                .authenticated(true)
+                .build();
     }
 
     @Override

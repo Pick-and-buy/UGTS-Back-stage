@@ -40,4 +40,12 @@ public class UserController {
                 .result(userService.getUserById(userId))
                 .build();
     }
+
+    @GetMapping("/profile")
+    public ApiResponse<UserResponse> getProfile() {
+        return ApiResponse.<UserResponse>builder()
+                .message("Success")
+                .result(userService.getProfile())
+                .build();
+    }
 }
