@@ -1,5 +1,12 @@
 package com.ugts.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+
 import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.exception.AppException;
@@ -13,13 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -96,34 +96,34 @@ class UserServiceTest {
         Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1001);
     }
 
-//    @Test
-//    @WithMockUser(
-//            username = "test02",
-//            roles = {"USER"})
-//    void getProfile_validRequest_success() {
-//        // GIVEN
-//        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
-//
-//        // WHEN
-//        var response = userService.getProfile();
-//
-//        // THEN
-//        Assertions.assertThat(response.getUsername()).isEqualTo("test02");
-//        Assertions.assertThat(response.getId()).isEqualTo("42e2-bae5-9ea7c0f1c4d4");
-//    }
+    //    @Test
+    //    @WithMockUser(
+    //            username = "test02",
+    //            roles = {"USER"})
+    //    void getProfile_validRequest_success() {
+    //        // GIVEN
+    //        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
+    //
+    //        // WHEN
+    //        var response = userService.getProfile();
+    //
+    //        // THEN
+    //        Assertions.assertThat(response.getUsername()).isEqualTo("test02");
+    //        Assertions.assertThat(response.getId()).isEqualTo("42e2-bae5-9ea7c0f1c4d4");
+    //    }
 
-//    @Test
-//    @WithMockUser(
-//            username = "test02",
-//            roles = {"USER"})
-//    void getProfile_invalidRequest_fail() {
-//        // GIVEN
-//        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.ofNullable(null));
-//
-//        // WHEN
-//        var exception = assertThrows(AppException.class, () -> userService.getProfile());
-//
-//        // THEN
-//        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1005);
-//    }
+    //    @Test
+    //    @WithMockUser(
+    //            username = "test02",
+    //            roles = {"USER"})
+    //    void getProfile_invalidRequest_fail() {
+    //        // GIVEN
+    //        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.ofNullable(null));
+    //
+    //        // WHEN
+    //        var exception = assertThrows(AppException.class, () -> userService.getProfile());
+    //
+    //        // THEN
+    //        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1005);
+    //    }
 }
