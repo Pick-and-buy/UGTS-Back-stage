@@ -1,6 +1,6 @@
 package com.ugts.brand.controller;
 
-import com.ugts.brand.dto.request.CreateBrandRequest;
+import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.service.BrandService;
 import com.ugts.dto.ApiResponse;
@@ -21,7 +21,7 @@ public class BrandController {
     BrandService brandService;
 
     @PostMapping()
-    public ApiResponse<BrandResponse> createBrand(@RequestBody CreateBrandRequest request) {
+    public ApiResponse<BrandResponse> createBrand(@RequestBody BrandRequest request) {
         var newBrand = brandService.createBrand(request);
         return ApiResponse.<BrandResponse>builder()
                 .result(newBrand)
@@ -45,5 +45,13 @@ public class BrandController {
     @DeleteMapping("/{name}")
     public void deleteBrand(@PathVariable String name) {
         brandService.deleteBrand(name);
+    }
+
+    @PutMapping("/{name}")
+    public ApiResponse<BrandResponse> updateBrand(@PathVariable String name, @RequestBody BrandRequest request) {
+        return ApiResponse.<BrandResponse>builder()
+                .message("Update Success")
+                .result(brandService.updateBrand(name, request))
+                .build();
     }
 }
