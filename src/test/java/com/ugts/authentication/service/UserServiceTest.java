@@ -1,4 +1,4 @@
-package com.ugts.service;
+package com.ugts.authentication.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

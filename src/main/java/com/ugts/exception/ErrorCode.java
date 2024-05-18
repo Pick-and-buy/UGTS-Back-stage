@@ -46,6 +46,10 @@ public enum ErrorCode {
     INVALID_OTP(1001, "Invalid OTP", HttpStatus.BAD_REQUEST),
     OTP_EXPIRED(1002, "OTP has expired", HttpStatus.BAD_REQUEST),
     OTP_NOT_EXISTED(1003, "OTP not existed", HttpStatus.BAD_REQUEST),
+
+    // Brand
+    BRAND_EXISTED(1001, "Brand has already existed!", HttpStatus.BAD_REQUEST),
+    BRAND_NOT_EXISTED(1002, "Brand not exist!", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

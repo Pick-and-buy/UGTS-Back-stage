@@ -1,4 +1,4 @@
-package com.ugts.controller;
+package com.ugts.authentication.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
