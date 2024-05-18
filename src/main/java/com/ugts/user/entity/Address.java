@@ -19,7 +19,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String street;
-    String distinct;
+    String district;
     String province;
     String postalCode;
 
