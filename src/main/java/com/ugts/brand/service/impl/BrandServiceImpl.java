@@ -1,6 +1,6 @@
 package com.ugts.brand.service.impl;
 
-import com.ugts.brand.dto.request.CreateBrandRequest;
+import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.Brand;
 import com.ugts.brand.mapper.BrandMapper;
@@ -26,7 +26,7 @@ public class BrandServiceImpl implements BrandService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public BrandResponse createBrand(CreateBrandRequest request) {
+    public BrandResponse createBrand(BrandRequest request) {
         // check existed
         if (brandRepository.findByName(request.getName()).isPresent()) {
             throw new AppException(ErrorCode.BRAND_EXISTED);
@@ -65,5 +65,19 @@ public class BrandServiceImpl implements BrandService {
         var brand = brandRepository.findByName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
         brandRepository.delete(brand);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public BrandResponse updateBrand(String name, BrandRequest request) {
+        // update brand
+        var brand = brandRepository.findByName(name)
+                .map(existingBrand -> {
+                    existingBrand.setName(request.getName());
+                    return brandRepository.save(existingBrand);
+                })
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        return brandMapper.toBrandResponse(brand);
     }
 }

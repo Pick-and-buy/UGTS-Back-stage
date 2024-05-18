@@ -1,6 +1,6 @@
 package com.ugts.brand.service;
 
-import com.ugts.brand.dto.request.CreateBrandRequest;
+import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.Brand;
 import com.ugts.brand.mapper.BrandMapper;
@@ -33,7 +33,7 @@ class BrandServiceTest {
     @Test
     void testCreateBrand() {
         // given
-        CreateBrandRequest request = new CreateBrandRequest();
+        BrandRequest request = new BrandRequest();
         request.setName("Test Brand");
 
         Brand brand = new Brand();
