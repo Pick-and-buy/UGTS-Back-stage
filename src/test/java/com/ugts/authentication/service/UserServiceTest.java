@@ -1,4 +1,4 @@
-package com.ugts.service;
+package com.ugts.authentication.service;
 
 import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.authentication.service.AuthenticationService;
