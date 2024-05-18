@@ -1,5 +1,7 @@
 package com.ugts.brand.service.impl;
 
+import java.util.List;
+
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.Brand;
@@ -13,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,8 +53,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public BrandResponse getBrandByName(String name) {
         // check existed
-        var brand = brandRepository.findByName(name)
-                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        var brand = brandRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
         return brandMapper.toBrandResponse(brand);
     }
 
@@ -62,8 +61,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public void deleteBrand(String name) {
         // check existed
-        var brand = brandRepository.findByName(name)
-                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+        var brand = brandRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
         brandRepository.delete(brand);
     }
 
@@ -71,7 +69,8 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public BrandResponse updateBrand(String name, BrandRequest request) {
         // update brand
-        var brand = brandRepository.findByName(name)
+        var brand = brandRepository
+                .findByName(name)
                 .map(existingBrand -> {
                     existingBrand.setName(request.getName());
                     return brandRepository.save(existingBrand);

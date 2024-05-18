@@ -1,5 +1,7 @@
 package com.ugts.brand.controller;
 
+import java.util.List;
+
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.service.BrandService;
@@ -9,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,9 +23,7 @@ public class BrandController {
     @PostMapping()
     public ApiResponse<BrandResponse> createBrand(@RequestBody BrandRequest request) {
         var newBrand = brandService.createBrand(request);
-        return ApiResponse.<BrandResponse>builder()
-                .result(newBrand)
-                .build();
+        return ApiResponse.<BrandResponse>builder().result(newBrand).build();
     }
 
     @GetMapping

@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 
 import com.ugts.authentication.dto.request.RegisterRequest;
-import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.exception.AppException;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;

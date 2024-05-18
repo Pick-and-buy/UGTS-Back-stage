@@ -12,5 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PostController {
-}
+public class PostController {}
