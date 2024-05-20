@@ -25,7 +25,7 @@ public class Post {
 
     String title;
     String description;
-    Boolean status;
+    Boolean isAvailable;
 
     @OneToOne
     Product product;
