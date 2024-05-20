@@ -156,16 +156,20 @@
 					<excludes>
 						<exclude>com/ugts/configuration</exclude>
 						<exclude>com/ugts/constant</exclude>
-						<exclude>com/ugts/dto</exclude>
+						<exclude>com/ugts/dto/**</exclude>
 						<exclude>com/ugts/exception</exclude>
-						<exclude>com/ugts/authentication/dto</exclude>
+						<exclude>com/ugts/authentication/dto/**</exclude>
 						<exclude>com/ugts/authentication/entity</exclude>
 						<exclude>com/ugts/authentication/repository</exclude>
-						<exclude>com/ugts/user/dto</exclude>
+						<exclude>com/ugts/user/dto/**</exclude>
 						<exclude>com/ugts/user/entity</exclude>
 						<exclude>com/ugts/user/mapper</exclude>
 						<exclude>com/ugts/user/repository</exclude>
 						<exclude>com/ugts/user/validator</exclude>
+						<exclude>com/ugts/brand/dto/**</exclude>
+						<exclude>com/ugts/brand/entity</exclude>
+						<exclude>com/ugts/brand/mapper</exclude>
+						<exclude>com/ugts/brand/repository</exclude>f
 					</excludes>
 				</configuration>
 			</plugin>

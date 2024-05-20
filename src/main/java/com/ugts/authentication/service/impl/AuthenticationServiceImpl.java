@@ -113,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getPhoneNumber())
-                .issuer("dino.com")
+                .issuer("ugts.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.HOURS).toEpochMilli()))
