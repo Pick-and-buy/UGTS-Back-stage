@@ -6,6 +6,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +16,8 @@ import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.service.BrandService;
 import com.ugts.dto.ApiResponse;
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,9 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,6 +44,10 @@ class BrandControllerTest {
     private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String asJsonString(Object obj) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(obj);
+    }
 
     @BeforeEach
     public void setup() {
@@ -77,8 +83,24 @@ class BrandControllerTest {
         assertEquals(response.getName(), apiResponse.getResult().getName());
     }
 
-    private String asJsonString(Object obj) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(obj);
+    @Test
+    void testCreateBrand_fail_brandAlreadyExists() throws Exception {
+        // given (invalid request)
+        BrandRequest request = new BrandRequest();
+        request.setName("Test Brand");
+
+        // when & then
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/brands")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> {
+                    assertInstanceOf(AppException.class, result.getResolvedException());
+                    AppException exception = (AppException) result.getResolvedException();
+                    assertEquals(ErrorCode.BRAND_EXISTED, exception.getErrorCode());
+                });
+
+        verify(brandService).createBrand(request);
     }
 
     @Test
@@ -105,8 +127,7 @@ class BrandControllerTest {
         verify(brandService).getAllBrands();
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        ApiResponse<List<BrandResponse>> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
-        });
+        ApiResponse<List<BrandResponse>> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
         assertNotNull(apiResponse.getResult());
         assertEquals(2, apiResponse.getResult().size());
         assertEquals(brandResponse1.getId(), apiResponse.getResult().get(0).getId());
@@ -135,8 +156,7 @@ class BrandControllerTest {
         verify(brandService).getBrandByName(name);
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        ApiResponse<BrandResponse> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
-        });
+        ApiResponse<BrandResponse> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
         assertNotNull(apiResponse.getResult());
         assertEquals(response.getId(), apiResponse.getResult().getId());
         assertEquals(response.getName(), apiResponse.getResult().getName());
@@ -180,8 +200,7 @@ class BrandControllerTest {
         verify(brandService).updateBrand(name, request);
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        ApiResponse<BrandResponse> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {
-        });
+        ApiResponse<BrandResponse> apiResponse = objectMapper.readValue(responseBody, new TypeReference<>() {});
         assertNotNull(apiResponse.getResult());
         assertEquals(response.getId(), apiResponse.getResult().getId());
         assertEquals(response.getName(), apiResponse.getResult().getName());
