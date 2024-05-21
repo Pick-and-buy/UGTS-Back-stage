@@ -10,7 +10,7 @@ import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.post.service.GoogleCloudStorageService;
+import com.ugts.post.service.AwsS3Service;
 import com.ugts.post.service.PostService;
 import com.ugts.product.entity.Product;
 import com.ugts.product.entity.ProductImage;
@@ -34,14 +34,14 @@ public class PostServiceImpl implements PostService {
 
     ProductRepository productRepository;
 
-    GoogleCloudStorageService storageService;
+    AwsS3Service storageService;
 
     PostMapper postMapper;
 
     @PreAuthorize("hasRole('USER')")
     @Override
     public PostResponse createPost(CreatePostRequest request) throws IOException {
-        // Upload image to Google Cloud Storage
+        // Upload image to AWS S3
         MultipartFile image = request.getImage();
         String imageUrl = storageService.uploadFile(image);
 
