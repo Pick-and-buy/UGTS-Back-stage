@@ -67,10 +67,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-storage</artifactId>
-			<version>2.38.0</version>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.12.725</version>
 		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>auth</artifactId>
+			<version>2.25.56</version>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>regions</artifactId>
+			<version>2.25.56</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.h2database</groupId>
