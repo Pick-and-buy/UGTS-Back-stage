@@ -21,10 +21,10 @@ public class CreatePostRequest {
     Brand brand;
     String productName;
     double productPrice;
-    String color;
-    String size;
-    String condition;
-    String material;
+    String productColor;
+    String productSize;
+    String productCondition;
+    String productMaterial;
     Boolean isVerify;
 
     private MultipartFile image;
