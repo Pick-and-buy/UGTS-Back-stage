@@ -43,7 +43,11 @@ public class PostServiceImpl implements PostService {
     public PostResponse createPost(CreatePostRequest request) throws IOException {
         // Upload image to Google Cloud Storage
         MultipartFile image = request.getImage();
-        String imageUrl = storageService.uploadFile(image);
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = storageService.uploadFile(image);
+        }
+
 
         // Fetch user and product
         var user = userRepository
@@ -55,7 +59,13 @@ public class PostServiceImpl implements PostService {
         if (product == null) {
             product = new Product();
             product.setName(request.getProductName());
+            product.setBrand(request.getBrand());
             product.setPrice(request.getProductPrice());
+            product.setColor(request.getProductColor());
+            product.setSize(request.getProductSize());
+            product.setCondition(request.getProductCondition());
+            product.setMaterial(request.getProductMaterial());
+            product.setIsVerify(false);
             product = productRepository.save(product);
         }
 
@@ -69,7 +79,7 @@ public class PostServiceImpl implements PostService {
                 .user(user)
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .isAvailable(request.getIsAvailable())
+                .isAvailable(true)
                 .product(product)
                 .createdAt(new Date())
                 .updatedAt(new Date())

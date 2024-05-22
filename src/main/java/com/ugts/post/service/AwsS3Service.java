@@ -45,6 +45,9 @@ public class AwsS3Service {
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
+        if (file == null) {
+            throw new IllegalArgumentException("File cannot be null");
+        }
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
         File tempFile = convertMultiPartToFile(file);
         try {
