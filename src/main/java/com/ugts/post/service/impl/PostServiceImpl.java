@@ -3,8 +3,7 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.Date;
 
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.brand.repository.BrandRepository;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
@@ -35,11 +34,16 @@ public class PostServiceImpl implements PostService {
     ProductRepository productRepository;
 
     GoogleCloudStorageService storageService;
+    BrandRepository brandRepository;
+
+    AwsS3Service storageService;
 
     PostMapper postMapper;
 
+    @Transactional
     @PreAuthorize("hasRole('USER')")
     @Override
+    public PostResponse createPost(CreatePostRequest request, MultipartFile productImage) throws IOException {
     public PostResponse createPost(CreatePostRequest request) throws IOException {
         // Upload image to Google Cloud Storage
         MultipartFile image = request.getImage();
@@ -51,29 +55,27 @@ public class PostServiceImpl implements PostService {
 
         // Fetch user and product
         var user = userRepository
-                .findById(String.valueOf(request.getUser().getId()))
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .findById(request.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        var product = productRepository.findByName(request.getProductName()).orElse(null);
+        var brand = brandRepository.findByName(request.getBrand().getName()).orElse(null);
 
-        if (product == null) {
-            product = new Product();
-            product.setName(request.getProductName());
-            product.setBrand(request.getBrand());
-            product.setPrice(request.getProductPrice());
-            product.setColor(request.getProductColor());
-            product.setSize(request.getProductSize());
-            product.setCondition(request.getProductCondition());
-            product.setMaterial(request.getProductMaterial());
-            product.setIsVerify(false);
-            product = productRepository.save(product);
-        }
+        String imageUrl = storageService.uploadFile(productImage);
 
-        // Add image to product
-        ProductImage productImage = new ProductImage();
-        productImage.setProduct(product);
-        productImage.setImageUrl(imageUrl);
-        product.getImages().add(productImage);
+        Product product = Product.builder()
+                .name(request.getProductName())
+                .brand(brand)
+                .price(request.getProductPrice())
+                .color(request.getProductColor())
+                .size(request.getProductSize())
+                .condition(request.getProductCondition())
+                .material(request.getProductMaterial())
+                .isVerify(false)
+                .build();
+
+        ProductImage image = new ProductImage(null, product, imageUrl);
+        product.getImages().add(image);
+        productRepository.save(product);
 
         Post post = Post.builder()
                 .user(user)
@@ -85,8 +87,6 @@ public class PostServiceImpl implements PostService {
                 .updatedAt(new Date())
                 .build();
 
-        // Save post
-        var newPost = postRepository.save(post);
-        return postMapper.postToPostResponse(newPost);
+        return postMapper.postToPostResponse(postRepository.save(post));
     }
 }

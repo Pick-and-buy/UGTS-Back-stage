@@ -1,5 +1,12 @@
 package com.ugts.post.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Objects;
+import java.util.UUID;
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -10,17 +17,12 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Objects;
-import java.util.UUID;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -33,8 +35,7 @@ public class AwsS3Service {
             @Value("${aws.s3.bucket-name}") String bucketName,
             @Value("${aws.s3.region}") String region,
             @Value("${aws.accessKeyId}") String accessKeyId,
-            @Value("${aws.secretAccessKey}") String secretAccessKey
-    ) {
+            @Value("${aws.secretAccessKey}") String secretAccessKey) {
         this.bucketName = bucketName;
 
         AWSCredentials credentials = new BasicAWSCredentials(accessKeyId, secretAccessKey);
@@ -61,15 +62,20 @@ public class AwsS3Service {
         }
     }
 
-    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+    public File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         try (FileOutputStream fos = new FileOutputStream(convFile)) {
             fos.write(file.getBytes());
+            fos.close();
         }
-        try {
-            Files.delete(convFile.toPath());
-        } catch (IOException e) {
-            throw new RuntimeException("Error deleting temporary file: " + convFile.getName(), e);
+        if (Files.exists(convFile.toPath())) {
+            try {
+                Files.delete(convFile.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException("Error deleting temporary file: " + convFile.getName(), e);
+            }
+        } else {
+            log.warn("File {} does not exist", convFile.getName());
         }
         return convFile;
     }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Slf4j
@@ -22,8 +23,10 @@ public class PostController {
     PostService postService;
 
     @PostMapping
-    public ApiResponse<PostResponse> createPost(@RequestBody CreatePostRequest request) throws IOException {
-        var result = postService.createPost(request);
+    public ApiResponse<PostResponse> createPost(
+            @RequestPart CreatePostRequest request,
+            @RequestPart("productImage") MultipartFile productImage) throws IOException {
+        var result = postService.createPost(request, productImage);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)
