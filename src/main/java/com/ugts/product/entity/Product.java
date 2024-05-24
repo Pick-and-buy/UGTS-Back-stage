@@ -25,7 +25,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
     double price;
