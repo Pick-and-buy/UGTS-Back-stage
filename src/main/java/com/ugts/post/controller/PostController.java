@@ -13,20 +13,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostController {
+
     PostService postService;
 
     @PostMapping
     public ApiResponse<PostResponse> createPost(
-            @RequestPart CreatePostRequest request,
-            @RequestPart("productImage") MultipartFile productImage) throws IOException {
-        var result = postService.createPost(request, productImage);
+            @RequestPart CreatePostRequest request, @RequestPart("productImage") MultipartFile productImage)
+            throws IOException {
+        var result = postService.savePost(request, productImage);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)
