@@ -17,22 +17,13 @@ public class CommentValidationServiceImpl implements ICommentValidationService {
     private final Trie trie;
     @Override
     public String filterBadWords(String content) {
-        return trie.replaceBadWords(content);
-
-//        List<String> badWords = badWordConfig.getBadWords();
-//        for (String badWord : badWords) {
-//            String regex = "(?i)" + badWord;  // Case-insensitive matching
-//            Pattern pattern = Pattern.compile(regex);
-//            Matcher matcher = pattern.matcher(content);
-//
-//            StringBuffer stringBuffer = new StringBuffer();
-//            while (matcher.find()) {
-//                String replacement = "*".repeat(matcher.group().length());
-//                matcher.appendReplacement(stringBuffer, replacement);
-//            }
-//            matcher.appendTail(stringBuffer);
-//            content = stringBuffer.toString();
-//        }
-//        return content;
+        try {
+            return trie.replaceBadWords(content);
+        } catch (Exception e) {
+            // Log the exception
+            System.err.println("Exception occurred while filtering bad words: " + e.getMessage());
+            // Return the original content if an error occurs
+            return content;
+        }
     }
 }

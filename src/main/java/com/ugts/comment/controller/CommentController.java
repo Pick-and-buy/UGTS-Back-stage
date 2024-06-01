@@ -7,6 +7,7 @@ import com.ugts.comment.service.ICommentService;
 import com.ugts.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final ICommentService iCommentService;
-    @RequestMapping
+    @PostMapping
     public String createComments(@RequestBody CommentRequestDto commentRequestDto) {
         var comment = iCommentService.createComment(commentRequestDto);
         return ApiResponse.<CommentResponseDto>builder().result(comment).build().toString();

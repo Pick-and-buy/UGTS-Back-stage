@@ -3,21 +3,29 @@ package com.ugts.comment.util;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class Trie {
     private TrieNode root;
+    private final Lock lock = new ReentrantLock();
 
     public Trie() {
         root = new TrieNode();
     }
 
     public void insert(String word) {
-        TrieNode current = root;
-        for (char ch : word.toCharArray()) {
-            current = current.getChildren().computeIfAbsent(ch, c -> new TrieNode());
+        lock.lock();
+        try {
+            TrieNode current = root;
+            for (char ch : word.toCharArray()) {
+                current = current.getChildren().computeIfAbsent(ch, c -> new TrieNode());
+            }
+            current.setEndOfWord(true);
+        } finally {
+            lock.unlock();
         }
-        current.setEndOfWord(true);
     }
 
     public boolean containsBadWord(String word) {
