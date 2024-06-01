@@ -1,6 +1,5 @@
 package com.ugts.comment.service.Impl;
 
-import com.ugts.comment.dto.CommentDto;
 import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import com.ugts.comment.entity.Comment;
@@ -14,8 +13,9 @@ import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +33,10 @@ public class CommentServiceImpl implements ICommentService {
                 throw new IllegalArgumentException("Comment request must not be null");
             }
             //TODO: create comment, check if any bad words
-            User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-            Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(() -> new RuntimeException("Post not found"));
+            User user = userRepository.findById(requestDto.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            Post post = postRepository.findById(requestDto.getPostId())
+                    .orElseThrow(() -> new RuntimeException("Post not found"));
 
             Comment saveComment = commentMapper.toComment(requestDto, user, post);
             String filteredContent = commentValidationService.filterBadWords(requestDto.getCommentContent());
@@ -49,7 +51,9 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
-    public void fetchComment(Long postId) {
-        //TODO: fetch all comment by post
+    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+        return commentRepository.findByPostId(postId).stream()
+                .map(commentMapper::toCommentResponse)
+                .collect(Collectors.toList());
     }
 }
