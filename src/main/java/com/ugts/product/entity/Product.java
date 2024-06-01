@@ -33,5 +33,9 @@ public class Product {
     String size;
     String condition;
     String material;
+    String accessories;
+    String dateCode;
+    String serialNumber;
+    String purchasedPlace;
     Boolean isVerify;
 }
