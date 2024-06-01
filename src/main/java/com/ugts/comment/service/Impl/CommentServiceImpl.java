@@ -7,8 +7,15 @@ import com.ugts.comment.entity.Comment;
 import com.ugts.comment.mapper.CommentMapper;
 import com.ugts.comment.repository.CommentRepository;
 import com.ugts.comment.service.ICommentService;
+import com.ugts.post.entity.Post;
+import com.ugts.post.repository.PostRepository;
+import com.ugts.user.entity.User;
+import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,18 +23,33 @@ public class CommentServiceImpl implements ICommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final CommentValidationServiceImpl commentValidationService;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
     @Override
     public CommentResponseDto createComment(CommentRequestDto requestDto) {
-        //TODO: create comment, check if any bad words
-        Comment comment = commentMapper.toComment(requestDto);
-        String filteredContent = commentValidationService.filterBadWords(comment.getCommentContent());
-        comment.setCommentContent(filteredContent);
-        commentRepository.save(comment);
-        return commentMapper.toCommentResponse(comment);
+        try {
+            if (Objects.equals(requestDto.getCommentContent(), "")) {
+                //TODO: adding null exception
+                throw new IllegalArgumentException("Comment request must not be null");
+            }
+            //TODO: create comment, check if any bad words
+            User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+            Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(() -> new RuntimeException("Post not found"));
+
+            Comment saveComment = commentMapper.toComment(requestDto, user, post);
+            String filteredContent = commentValidationService.filterBadWords(requestDto.getCommentContent());
+            saveComment.setCommentContent(filteredContent);
+            commentRepository.save(saveComment);
+            return commentMapper.toCommentResponse(saveComment);
+        }catch (Exception e) {
+            System.err.println("Exception occurred while creating comment: " + e.getMessage());
+            // Handle exception as necessary, e.g., rethrow or return null
+            throw new RuntimeException("Error creating comment", e);
+        }
     }
 
     @Override
     public void fetchComment(Long postId) {
-
+        //TODO: fetch all comment by post
     }
 }
