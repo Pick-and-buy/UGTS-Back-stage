@@ -20,14 +20,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     User user;
 
     String title;
     String description;
     Boolean isAvailable;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Product product;
 
     Date createdAt;
