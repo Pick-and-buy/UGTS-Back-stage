@@ -3,8 +3,10 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.HashSet;
 
-import com.google.cloud.storage.Storage;
 import com.ugts.CloudService.GoogleCloudStorageService;
+import com.ugts.brand.repository.BrandRepository;
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
@@ -17,9 +19,9 @@ import com.ugts.product.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -27,27 +29,28 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImpl implements PostService {
 
-    Storage storage;
-
     PostRepository postRepository;
 
     ProductRepository productRepository;
+
+    BrandRepository brandRepository;
 
     PostMapper postMapper;
 
     GoogleCloudStorageService googleCloudStorageService;
 
-    @NonFinal
-    @Value("${google.cloud.storage.bucket}")
-    String bucketName;
-
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
     public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
         String fileUrl = googleCloudStorageService.uploadFileToGCS(file);
 
+        var brand = brandRepository.findByName(postRequest.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
         var product = Product.builder()
                 .name(postRequest.getProductName())
-                .brand(postRequest.getBrand())
+                .brand(brand)
                 .price(postRequest.getProductPrice())
                 .color(postRequest.getProductColor())
                 .size(postRequest.getProductSize())
