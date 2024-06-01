@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.UUID;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ugts.CloudService.GoogleCloudStorageService;
+import com.ugts.brand.repository.BrandRepository;
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
@@ -23,7 +25,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -31,43 +35,32 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImpl implements PostService {
 
-    Storage storage;
-
     PostRepository postRepository;
 
     UserRepository userRepository;
 
     ProductRepository productRepository;
 
-    GoogleCloudStorageService storageService;
     BrandRepository brandRepository;
     
+    BrandRepository brandRepository;
+
     PostMapper postMapper;
 
     GoogleCloudStorageService googleCloudStorageService;
 
-    @NonFinal
-    @Value("${google.cloud.storage.bucket}")
-    String bucketName;
-
     @Override
-    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
-        String fileUrl = googleCloudStorageService.uploadFileToGCS(file);
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    @Override
-    public PostResponse createPost(CreatePostRequest request, MultipartFile productImage) throws IOException {
-    public PostResponse createPost(CreatePostRequest request) throws IOException {
-        // Upload image to Google Cloud Storage
-        MultipartFile image = request.getImage();
-        String imageUrl = null;
-        if (image != null) {
-            imageUrl = storageService.uploadFile(image);
-        }
+    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
+        String fileUrl = googleCloudStorageService.uploadFileToGCS(file);
+
+        var brand = brandRepository.findByName(postRequest.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         var product = Product.builder()
                 .name(postRequest.getProductName())
-                .brand(postRequest.getBrand())
+                .brand(brand)
                 .price(postRequest.getProductPrice())
                 .color(postRequest.getProductColor())
                 .size(postRequest.getProductSize())
@@ -85,11 +78,14 @@ public class PostServiceImpl implements PostService {
 
         Product savedProduct = productRepository.save(product);
 
-        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(multipartFile.getBytes())) {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(awsBucketName, fileName, inputStream, null);
-            amazonS3.putObject(putObjectRequest);
-        }
+        var post = Post.builder()
+                .user(postRequest.getUser())
+                .title(postRequest.getTitle())
+                .description(postRequest.getDescription())
+                .isAvailable(postRequest.getIsAvailable())
+                .product(savedProduct)
+                .build();
 
-        return amazonS3.getUrl(awsBucketName, fileName).toString();
+        return postMapper.postToPostResponse(postRepository.save(post));
     }
 }
