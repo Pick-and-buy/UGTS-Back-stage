@@ -19,7 +19,7 @@ public class CommentController {
 
     private final ICommentService iCommentService;
     @RequestMapping
-    public String getComments(@RequestBody CommentRequestDto commentRequestDto) {
+    public String createComments(@RequestBody CommentRequestDto commentRequestDto) {
         var comment = iCommentService.createComment(commentRequestDto);
         return ApiResponse.<CommentResponseDto>builder().result(comment).build().toString();
     }
