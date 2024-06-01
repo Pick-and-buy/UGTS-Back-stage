@@ -1,5 +1,6 @@
 package com.ugts.comment.entity;
 
+import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,8 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    Post post;
+
 }
