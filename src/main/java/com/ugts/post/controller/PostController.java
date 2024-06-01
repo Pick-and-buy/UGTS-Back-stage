@@ -26,7 +26,7 @@ public class PostController {
     public ApiResponse<PostResponse> createPost(
             @RequestPart CreatePostRequest request, @RequestPart("productImage") MultipartFile productImage)
             throws IOException {
-        var result = postService.savePost(request, productImage);
+        var result = postService.createPost(request, productImage);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)

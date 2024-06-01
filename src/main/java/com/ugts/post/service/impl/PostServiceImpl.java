@@ -1,15 +1,17 @@
 package com.ugts.post.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.UUID;
 
-import com.ugts.brand.repository.BrandRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.post.service.GoogleCloudStorageService;
 import com.ugts.post.service.PostService;
 import com.ugts.product.entity.Product;
 import com.ugts.product.entity.ProductImage;
@@ -19,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostServiceImpl implements PostService {
+
+    Storage storage;
 
     PostRepository postRepository;
 
@@ -35,11 +41,18 @@ public class PostServiceImpl implements PostService {
 
     GoogleCloudStorageService storageService;
     BrandRepository brandRepository;
-
-    AwsS3Service storageService;
-
+    
     PostMapper postMapper;
 
+    GoogleCloudStorageService googleCloudStorageService;
+
+    @NonFinal
+    @Value("${google.cloud.storage.bucket}")
+    String bucketName;
+
+    @Override
+    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
+        String fileUrl = googleCloudStorageService.uploadFileToGCS(file);
     @Transactional
     @PreAuthorize("hasRole('USER')")
     @Override
@@ -52,41 +65,31 @@ public class PostServiceImpl implements PostService {
             imageUrl = storageService.uploadFile(image);
         }
 
-
-        // Fetch user and product
-        var user = userRepository
-                .findById(request.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        var brand = brandRepository.findByName(request.getBrand().getName()).orElse(null);
-
-        String imageUrl = storageService.uploadFile(productImage);
-
-        Product product = Product.builder()
-                .name(request.getProductName())
-                .brand(brand)
-                .price(request.getProductPrice())
-                .color(request.getProductColor())
-                .size(request.getProductSize())
-                .condition(request.getProductCondition())
-                .material(request.getProductMaterial())
-                .isVerify(false)
+        var product = Product.builder()
+                .name(postRequest.getProductName())
+                .brand(postRequest.getBrand())
+                .price(postRequest.getProductPrice())
+                .color(postRequest.getProductColor())
+                .size(postRequest.getProductSize())
+                .condition(postRequest.getProductCondition())
+                .material(postRequest.getProductMaterial())
+                .isVerify(postRequest.getIsVerify())
                 .build();
 
-        ProductImage image = new ProductImage(null, product, imageUrl);
-        product.getImages().add(image);
-        productRepository.save(product);
+        var productImage = ProductImage.builder().imageUrl(fileUrl).build();
 
-        Post post = Post.builder()
-                .user(user)
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .isAvailable(true)
-                .product(product)
-                .createdAt(new Date())
-                .updatedAt(new Date())
-                .build();
+        if (product.getImages() == null) {
+            product.setImages(new HashSet<>());
+        }
+        product.getImages().add(productImage);
 
-        return postMapper.postToPostResponse(postRepository.save(post));
+        Product savedProduct = productRepository.save(product);
+
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(multipartFile.getBytes())) {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(awsBucketName, fileName, inputStream, null);
+            amazonS3.putObject(putObjectRequest);
+        }
+
+        return amazonS3.getUrl(awsBucketName, fileName).toString();
     }
 }
