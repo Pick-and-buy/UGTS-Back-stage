@@ -17,9 +17,6 @@ import lombok.experimental.FieldDefaults;
 public class RegisterRequest {
     Long id;
 
-    @Size(min = 4, message = "USERNAME_INVALID")
-    String username;
-
     // the password must contain:
     // at least 8 characters
     // a lower case
