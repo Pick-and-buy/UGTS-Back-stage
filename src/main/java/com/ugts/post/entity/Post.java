@@ -23,7 +23,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -33,7 +33,7 @@ public class Post {
     String description;
     Boolean isAvailable;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Product product;
 
     Date createdAt;
