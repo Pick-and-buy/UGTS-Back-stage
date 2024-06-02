@@ -17,8 +17,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     User user;

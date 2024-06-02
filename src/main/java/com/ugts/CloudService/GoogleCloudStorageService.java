@@ -26,9 +26,10 @@ public class GoogleCloudStorageService {
     @Value("${google.cloud.storage.bucket}")
     String bucketName;
 
-    public String uploadFileToGCS(MultipartFile multipartFile) throws IOException {
+    public String uploadFileToGCS(MultipartFile multipartFile, String postId) throws IOException {
+        String folderName = "selling-post/" + postId;
         String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobId blobId = BlobId.of(bucketName, folderName + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(multipartFile.getContentType())
                 .build();

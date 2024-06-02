@@ -1,6 +1,7 @@
 package com.ugts.post.service.impl;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 
 import com.ugts.CloudService.GoogleCloudStorageService;
@@ -16,10 +17,12 @@ import com.ugts.post.service.PostService;
 import com.ugts.product.entity.Product;
 import com.ugts.product.entity.ProductImage;
 import com.ugts.product.repository.ProductRepository;
+import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,15 +42,18 @@ public class PostServiceImpl implements PostService {
 
     GoogleCloudStorageService googleCloudStorageService;
 
+    UserRepository userRepository;
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
-        String fileUrl = googleCloudStorageService.uploadFileToGCS(file);
-
-        var brand = brandRepository.findByName(postRequest.getBrand().getName())
+        // check brand existed
+        var brand = brandRepository
+                .findByName(postRequest.getBrand().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
+        // create product process
         var product = Product.builder()
                 .name(postRequest.getProductName())
                 .brand(brand)
@@ -56,25 +62,43 @@ public class PostServiceImpl implements PostService {
                 .size(postRequest.getProductSize())
                 .condition(postRequest.getProductCondition())
                 .material(postRequest.getProductMaterial())
-                .isVerify(postRequest.getIsVerify())
+                .isVerify(false)
                 .build();
 
-        var productImage = ProductImage.builder().imageUrl(fileUrl).build();
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
 
+        var user = userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // create post process
+        var post = Post.builder()
+                .user(user)
+                .title(postRequest.getTitle())
+                .description(postRequest.getDescription())
+                .isAvailable(true)
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .product(product)
+                .build();
+
+        // upload product image to GCS
+        String fileUrl = googleCloudStorageService.uploadFileToGCS(file, postRequest.getId());
+
+        // add product image
+        var productImage =
+                ProductImage.builder().product(product).imageUrl(fileUrl).build();
+
+        // check if product image null
         if (product.getImages() == null) {
             product.setImages(new HashSet<>());
         }
+
+        // add image to product
         product.getImages().add(productImage);
 
-        Product savedProduct = productRepository.save(product);
-
-        var post = Post.builder()
-                .user(postRequest.getUser())
-                .title(postRequest.getTitle())
-                .description(postRequest.getDescription())
-                .isAvailable(postRequest.getIsAvailable())
-                .product(savedProduct)
-                .build();
+        productRepository.save(product);
 
         return postMapper.postToPostResponse(postRepository.save(post));
     }
