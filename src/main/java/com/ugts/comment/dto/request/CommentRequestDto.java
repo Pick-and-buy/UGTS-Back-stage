@@ -1,8 +1,5 @@
 package com.ugts.comment.dto.request;
 
-import com.ugts.post.entity.Post;
-import com.ugts.user.entity.User;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data

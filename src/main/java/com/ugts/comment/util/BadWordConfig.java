@@ -1,16 +1,17 @@
 package com.ugts.comment.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class BadWordConfig {
     private final Trie trie;
+
     @PostConstruct
     public void init() {
         trie.buildTrie(badWords);
@@ -473,8 +474,7 @@ public class BadWordConfig {
             "tổ cha",
             "bà cha mày",
             "cmn",
-            "cmnl"
-    );
+            "cmnl");
 
     public List<String> getBadWords() {
         return badWords;

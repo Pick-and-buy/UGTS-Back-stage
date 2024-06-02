@@ -1,7 +1,5 @@
 package com.ugts.comment.dto.response;
 
-import com.ugts.post.entity.Post;
-import com.ugts.user.entity.User;
 import lombok.Data;
 
 @Data

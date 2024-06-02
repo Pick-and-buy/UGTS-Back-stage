@@ -1,7 +1,5 @@
 package com.ugts.comment.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,16 +1,14 @@
 package com.ugts.comment.controller;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class CommentControllerTest {
 
     @Test
-    void createComments() {
-    }
+    void createComments() {}
 
     @Test
-    void getCommentsByPostId() {
-    }
+    void getCommentsByPostId() {}
 }

@@ -1,16 +1,14 @@
 package com.ugts.comment.service.Impl;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class CommentServiceImplTest {
 
     @Test
-    void createComment() {
-    }
+    void createComment() {}
 
     @Test
-    void getCommentsByPostId() {
-    }
+    void getCommentsByPostId() {}
 }

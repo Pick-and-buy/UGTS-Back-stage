@@ -1,5 +1,9 @@
 package com.ugts.comment.service.Impl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import com.ugts.comment.entity.Comment;
@@ -13,10 +17,6 @@ import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements ICommentService {
@@ -25,17 +25,20 @@ public class CommentServiceImpl implements ICommentService {
     private final CommentValidationServiceImpl commentValidationService;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+
     @Override
     public CommentResponseDto createComment(CommentRequestDto requestDto) {
         try {
             if (Objects.equals(requestDto.getCommentContent(), "")) {
-                //TODO: adding null exception
+                // TODO: adding null exception
                 throw new IllegalArgumentException("Comment request must not be null");
             }
-            //TODO: create comment, check if any bad words
-            User user = userRepository.findById(requestDto.getUserId())
+            // TODO: create comment, check if any bad words
+            User user = userRepository
+                    .findById(requestDto.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            Post post = postRepository.findById(requestDto.getPostId())
+            Post post = postRepository
+                    .findById(requestDto.getPostId())
                     .orElseThrow(() -> new RuntimeException("Post not found"));
 
             Comment saveComment = commentMapper.toComment(requestDto, user, post);
@@ -43,7 +46,7 @@ public class CommentServiceImpl implements ICommentService {
             saveComment.setCommentContent(filteredContent);
             commentRepository.save(saveComment);
             return commentMapper.toCommentResponse(saveComment);
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Exception occurred while creating comment: " + e.getMessage());
             // Handle exception as necessary, e.g., rethrow or return null
             throw new RuntimeException("Error creating comment", e);
