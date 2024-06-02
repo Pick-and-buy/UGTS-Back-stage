@@ -27,7 +27,7 @@ public class CommentController {
     //TODO: fetch comments API by post id
     //TODO: add exception
     @GetMapping("/{postId}")
-    public List<CommentResponseDto> getCommentsByPostId(@PathVariable Long postId) {
+    public List<CommentResponseDto> getCommentsByPostId(@PathVariable String postId) {
         return iCommentService.getCommentsByPostId(postId);
     }
 }

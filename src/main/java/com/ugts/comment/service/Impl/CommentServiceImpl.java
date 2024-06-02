@@ -51,7 +51,7 @@ public class CommentServiceImpl implements ICommentService {
     }
 
     @Override
-    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+    public List<CommentResponseDto> getCommentsByPostId(String postId) {
         return commentRepository.findByPostId(postId).stream()
                 .map(commentMapper::toCommentResponse)
                 .collect(Collectors.toList());
