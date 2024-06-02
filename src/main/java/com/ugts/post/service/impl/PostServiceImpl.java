@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 
-import com.ugts.CloudService.GoogleCloudStorageService;
 import com.ugts.brand.repository.BrandRepository;
+import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.post.dto.request.CreatePostRequest;

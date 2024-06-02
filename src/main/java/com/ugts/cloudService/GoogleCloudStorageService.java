@@ -1,4 +1,4 @@
-package com.ugts.CloudService;
+package com.ugts.cloudService;
 
 import java.io.IOException;
 import java.util.UUID;

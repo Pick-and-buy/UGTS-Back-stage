@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ugts.comment.entity.Comment;
 import com.ugts.post.entity.Post;
 import jakarta.persistence.*;
@@ -37,9 +38,11 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Post> favorites = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Comment> comments = new HashSet<>();
 }
