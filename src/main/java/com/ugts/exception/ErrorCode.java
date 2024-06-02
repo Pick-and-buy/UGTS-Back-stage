@@ -50,6 +50,8 @@ public enum ErrorCode {
     // Brand
     BRAND_EXISTED(1001, "Brand has already existed!", HttpStatus.BAD_REQUEST),
     BRAND_NOT_EXISTED(1002, "Brand not exist!", HttpStatus.BAD_REQUEST),
+
+    // Comment
     ;
     int code;
     String message;
