@@ -22,5 +22,9 @@ public class CreatePostRequest {
     String productSize;
     String productCondition;
     String productMaterial;
+    String productAccessories;
+    String productDateCode;
+    String productSerialNumber;
+    String productPurchasedPlace;
     Boolean isVerify;
 }
