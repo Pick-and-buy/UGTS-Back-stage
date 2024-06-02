@@ -7,6 +7,7 @@ import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 //@Mapper(componentModel = "spring")
@@ -17,8 +18,10 @@ public class CommentMapper {
         CommentResponseDto commentResponseDto = new CommentResponseDto();
         commentResponseDto.setId(comment.getId());
         commentResponseDto.setCommentContent(comment.getCommentContent());
-        commentResponseDto.setUser(Optional.ofNullable(comment.getUser()).map(User::getUsername).orElse(null));
-        commentResponseDto.setPost(Optional.ofNullable(comment.getPost()).map(Post::getId).orElse(null));
+        commentResponseDto.setUser(
+                Optional.ofNullable(comment.getUser()).map(User::getUsername).orElse(null));
+        commentResponseDto.setPost(Long.valueOf(Objects.requireNonNull(
+                Optional.ofNullable(comment.getPost()).map(Post::getId).orElse(null))));
         return commentResponseDto;
     }
 
