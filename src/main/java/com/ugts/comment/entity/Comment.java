@@ -14,7 +14,7 @@ import lombok.*;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @Column(name = "comment_content")
     private String commentContent;
