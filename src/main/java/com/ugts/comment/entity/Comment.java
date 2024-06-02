@@ -24,5 +24,4 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     Post post;
-
 }

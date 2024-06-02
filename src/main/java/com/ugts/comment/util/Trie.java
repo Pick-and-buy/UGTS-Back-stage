@@ -1,10 +1,10 @@
 package com.ugts.comment.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class Trie {
@@ -73,4 +73,3 @@ public class Trie {
         return result.toString();
     }
 }
-
