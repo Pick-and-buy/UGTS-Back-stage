@@ -1,20 +1,18 @@
 package com.ugts.post.dto.request;
 
 import com.ugts.brand.entity.Brand;
-import com.ugts.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreatePostRequest {
-    private User user;
-    private String title;
-    private String description;
+    String id;
+    String title;
+    String description;
     Boolean isAvailable;
 
     Brand brand;
