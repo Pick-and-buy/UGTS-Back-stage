@@ -20,6 +20,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    String username;
+
     String password;
     String lastName;
     String firstName;
