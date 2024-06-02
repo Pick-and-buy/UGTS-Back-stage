@@ -25,7 +25,6 @@ public enum ErrorCode {
     // User
     USER_EXISTED(1001, "User has already existed!", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1002, "User not exist!", HttpStatus.NOT_FOUND),
-    USERNAME_INVALID(1003, "Username must be at least {min} characters!", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID_1(1004, "Password must be at least {min} characters!", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID_2(
             1005,
