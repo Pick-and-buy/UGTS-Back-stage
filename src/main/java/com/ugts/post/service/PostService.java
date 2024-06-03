@@ -7,5 +7,5 @@ import com.ugts.post.dto.response.PostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
-    PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException;
+    PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException;
 }

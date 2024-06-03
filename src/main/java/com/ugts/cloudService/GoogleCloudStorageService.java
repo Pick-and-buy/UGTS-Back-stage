@@ -1,6 +1,8 @@
 package com.ugts.cloudService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.google.cloud.storage.Blob;
@@ -26,15 +28,26 @@ public class GoogleCloudStorageService {
     @Value("${google.cloud.storage.bucket}")
     String bucketName;
 
-    public String uploadFileToGCS(MultipartFile multipartFile, String postId) throws IOException {
-        String folderName = "selling-post/" + postId;
-        String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-        BlobId blobId = BlobId.of(bucketName, folderName + "/" + fileName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                .setContentType(multipartFile.getContentType())
-                .build();
-        byte[] fileBytes = multipartFile.getBytes();
-        Blob blob = storage.create(blobInfo, fileBytes);
-        return String.format("https://storage.googleapis.com/%s/%s", bucketName, blob.getName());
+    public List<String> uploadFilesToGCS(MultipartFile[] multipartFiles, String postId) throws IOException {
+        List<String> uploadedFileUrls = new ArrayList<>();
+
+        for (MultipartFile files : multipartFiles) {
+            String folderName = "selling-post/" + postId;
+            String fileName = UUID.randomUUID() + "-" + files.getOriginalFilename();
+            BlobId blobId = BlobId.of(bucketName, folderName + "/" + fileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                    .setContentType(files.getContentType())
+                    .build();
+
+            // convert file to bytes
+            byte[] fileBytes = files.getBytes();
+
+            // upload file to GCS
+            Blob blob = storage.create(blobInfo, fileBytes);
+            String fileUrl = String.format("https://storage.googleapis.com/%s/%s", bucketName, blob.getName());
+            uploadedFileUrls.add(fileUrl);
+        }
+
+        return uploadedFileUrls;
     }
 }
