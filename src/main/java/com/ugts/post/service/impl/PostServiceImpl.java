@@ -3,6 +3,7 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
@@ -47,7 +48,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile file) throws IOException {
+    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
@@ -65,6 +66,7 @@ public class PostServiceImpl implements PostService {
                 .isVerify(false)
                 .build();
 
+        // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
@@ -83,23 +85,28 @@ public class PostServiceImpl implements PostService {
                 .product(product)
                 .build();
 
+        // save new post into database
         var newPost = postRepository.save(post);
 
         // upload product image to GCS
-        String fileUrl = googleCloudStorageService.uploadFileToGCS(file, post.getId());
+        List<String> fileUrls = googleCloudStorageService.uploadFilesToGCS(files, post.getId());
 
-        // add product image
-        var productImage =
-                ProductImage.builder().product(product).imageUrl(fileUrl).build();
+        // add product image for each URL
+        for (String fileUrl : fileUrls) {
+            // check if product image null
+            if (product.getImages() == null) {
+                product.setImages(new HashSet<>());
+            }
 
-        // check if product image null
-        if (product.getImages() == null) {
-            product.setImages(new HashSet<>());
+            // add product image to product
+            var productImage = ProductImage.builder()
+                    .product(product)
+                    .imageUrl(fileUrl)
+                    .build();
+            product.getImages().add(productImage);
         }
 
-        // add image to product
-        product.getImages().add(productImage);
-
+        // save product into database
         productRepository.save(product);
 
         return postMapper.postToPostResponse(postRepository.save(newPost));
