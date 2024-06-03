@@ -83,8 +83,10 @@ public class PostServiceImpl implements PostService {
                 .product(product)
                 .build();
 
+        var newPost = postRepository.save(post);
+
         // upload product image to GCS
-        String fileUrl = googleCloudStorageService.uploadFileToGCS(file, postRequest.getId());
+        String fileUrl = googleCloudStorageService.uploadFileToGCS(file, post.getId());
 
         // add product image
         var productImage =
@@ -100,6 +102,6 @@ public class PostServiceImpl implements PostService {
 
         productRepository.save(product);
 
-        return postMapper.postToPostResponse(postRepository.save(post));
+        return postMapper.postToPostResponse(postRepository.save(newPost));
     }
 }
