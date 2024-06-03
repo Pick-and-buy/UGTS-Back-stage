@@ -1,6 +1,7 @@
 package com.ugts.post.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.ugts.dto.ApiResponse;
 import com.ugts.post.dto.request.CreatePostRequest;
@@ -29,6 +30,15 @@ public class PostController {
         var result = postService.createPost(request, productImages);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<PostResponse>> getAllPosts() {
+        var result = postService.getAllPosts();
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Get All Post Success")
                 .result(result)
                 .build();
     }
