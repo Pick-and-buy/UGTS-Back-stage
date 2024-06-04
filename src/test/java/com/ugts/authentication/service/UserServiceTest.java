@@ -1,4 +1,11 @@
-package com.ugts.service;
+package com.ugts.authentication.service;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,7 +15,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 
 import com.ugts.authentication.dto.request.RegisterRequest;
-import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.exception.AppException;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;
