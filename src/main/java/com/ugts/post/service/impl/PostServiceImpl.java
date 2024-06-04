@@ -111,4 +111,10 @@ public class PostServiceImpl implements PostService {
 
         return postMapper.postToPostResponse(postRepository.save(newPost));
     }
+
+    @Override
+    public List<PostResponse> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        return postMapper.getAllPosts(posts);
+    }
 }
