@@ -25,6 +25,6 @@ public class OtpViaEmail {
     @Column(nullable = false)
     private Date expireTime;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }

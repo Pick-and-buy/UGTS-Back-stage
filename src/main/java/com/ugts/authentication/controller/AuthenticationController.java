@@ -71,7 +71,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/change-password/{userId}")
-    public ApiResponse<String> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
+    public ApiResponse<String> changePassword(
+            @PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(userId, request);
         return ApiResponse.<String>builder()
                 .message("Password has been change successfully")
