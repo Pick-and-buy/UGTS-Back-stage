@@ -10,6 +10,7 @@ import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.post.dto.request.CreatePostRequest;
+import com.ugts.post.dto.request.UpdatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
@@ -63,6 +64,10 @@ public class PostServiceImpl implements PostService {
                 .size(postRequest.getProductSize())
                 .condition(postRequest.getProductCondition())
                 .material(postRequest.getProductMaterial())
+                .accessories(postRequest.getProductAccessories())
+                .dateCode(postRequest.getProductDateCode())
+                .serialNumber(postRequest.getProductSerialNumber())
+                .purchasedPlace(postRequest.getProductPurchasedPlace())
                 .isVerify(false)
                 .build();
 
@@ -116,5 +121,38 @@ public class PostServiceImpl implements PostService {
     public List<PostResponse> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return postMapper.getAllPosts(posts);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public PostResponse updatePost(String postId, UpdatePostRequest request) {
+        var post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        var product = productRepository.findById(request.getProduct().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
+
+        product.setName(request.getProduct().getName());
+        product.setPrice(request.getProduct().getPrice());
+        product.setColor(request.getProduct().getColor());
+        product.setSize(request.getProduct().getSize());
+        product.setCondition(request.getProduct().getCondition());
+        product.setMaterial(request.getProduct().getMaterial());
+        product.setAccessories(request.getProduct().getAccessories());
+        product.setDateCode(request.getProduct().getDateCode());
+        product.setSerialNumber(request.getProduct().getSerialNumber());
+        product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+
+        var updatedProduct = productRepository.save(product);
+
+        post.setTitle(request.getTitle());
+        post.setDescription(request.getDescription());
+        post.setIsAvailable(true);
+        post.setProduct(updatedProduct);
+        post.setUpdatedAt(new Date());
+
+        Post updatedPost = postRepository.save(post);
+        return postMapper.postToPostResponse(updatedPost);
     }
 }
