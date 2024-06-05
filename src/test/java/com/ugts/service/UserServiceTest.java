@@ -427,6 +427,7 @@ class UserServiceTest {
         forgotPasswordRequest.setEmail("test04@gmail.com");
         forgotPasswordRequest.setPassword("Huy09122002@");
         forgotPasswordRequest.setConfirmPassword("Huy09122002@");
+        when(userRepository.existsByEmail(anyString())).thenReturn(true);
         when(passwordEncoder.encode("Huy09122002@")).thenReturn("$2a$10$2vEGTnlBs43HJz82IZg6LOr.WvcedCFtZ2khnV1VrKWjP9WvzksU.");
         authenticationService.forgotPassword(forgotPasswordRequest);
 
@@ -452,10 +453,10 @@ class UserServiceTest {
         request.setEmail(email);
         request.setPassword(password);
         request.setConfirmPassword(password);
-        authenticationService.forgotPassword(request);
         when(userRepository.existsByEmail(email)).thenReturn(false);
+        var exception = assertThrows(AppException.class, () -> authenticationService.forgotPassword(request));
+        Assertions.assertThat(exception.getErrorCode().getMessage()).isEqualTo("User not exist!");
         verify(userRepository, never()).updatePassword(email, password);
-
     }
 
     @Test
