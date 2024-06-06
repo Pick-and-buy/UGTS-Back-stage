@@ -1,23 +1,26 @@
-package com.ugts.service;
+package com.ugts.authentication.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import com.ugts.authentication.dto.request.*;
+import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.entity.InvalidToken;
 import com.ugts.authentication.repository.InvalidTokenRepository;
-import com.ugts.authentication.service.AuthenticationService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.user.dto.response.UserResponse;
@@ -29,11 +32,7 @@ import com.ugts.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,13 +40,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -72,13 +64,16 @@ class UserServiceTest {
     @Mock
     private UserMapper userMapper;
 
-
     @Mock
     InvalidTokenRepository invalidTokenRepository;
+
     @Mock
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-    @ConditionalOnProperty(prefix = "spring", value = "datasource.driverClassName",havingValue = "org.postgresql.Driver")
+    @ConditionalOnProperty(
+            prefix = "spring",
+            value = "datasource.driverClassName",
+            havingValue = "org.postgresql.Driver")
     @BeforeEach
     public void initData() {
         LocalDate dob = LocalDate.of(2000, 1, 1);
@@ -152,8 +147,9 @@ class UserServiceTest {
         var exception = authenticationService.register(request);
 
         // THEN
-        Assertions.assertThat(exception.getEmail()).isEqualTo("test01@@gmail.comn").withFailMessage("Your email has already existed");
-
+        Assertions.assertThat(exception.getEmail())
+                .isEqualTo("test01@@gmail.comn")
+                .withFailMessage("Your email has already existed");
     }
 
     @Test
@@ -168,8 +164,7 @@ class UserServiceTest {
         var exception = authenticationService.register(request);
 
         // THEN
-        Assertions.assertThat(exception.getPhoneNumber())
-                .isEqualTo("098765234");
+        Assertions.assertThat(exception.getPhoneNumber()).isEqualTo("098765234");
         Assertions.assertThat(exception.getPhoneNumber()).isNotEmpty();
     }
 
@@ -185,8 +180,7 @@ class UserServiceTest {
         var exception = authenticationService.register(request);
 
         // THEN
-        Assertions.assertThat(exception.getDob())
-                .isEqualTo(LocalDate.of(2020, 3, 3));
+        Assertions.assertThat(exception.getDob()).isEqualTo(LocalDate.of(2020, 3, 3));
     }
 
     @Test
@@ -227,7 +221,9 @@ class UserServiceTest {
         var exception = authenticationService.register(request);
 
         // THEN
-        Assertions.assertThat(exception.getUsername()).isEqualTo("tes").withFailMessage("Username must be at least 4 characters ");
+        Assertions.assertThat(exception.getUsername())
+                .isEqualTo("tes")
+                .withFailMessage("Username must be at least 4 characters ");
     }
 
     @Test
@@ -257,8 +253,8 @@ class UserServiceTest {
         var response = authenticationService.register(request);
         //    System.out.println("Response object: " +authenticationService.register(request));
         Assertions.assertThat(response.getFirstName())
-                .isEqualTo("Ti").withFailMessage("Firstname must be at least 3 characters");
-
+                .isEqualTo("Ti")
+                .withFailMessage("Firstname must be at least 3 characters");
     }
 
     @Test
@@ -289,9 +285,7 @@ class UserServiceTest {
 
         var response = authenticationService.register(request);
         //    System.out.println("Response object: " +authenticationService.register(request));
-        Assertions.assertThat(response.getLastName())
-                .isEqualTo("QA");
-
+        Assertions.assertThat(response.getLastName()).isEqualTo("QA");
     }
 
     @Test
@@ -304,11 +298,10 @@ class UserServiceTest {
         user.setPassword("$2a$10$BstjgU3EED/pAwv3mndbtOrQWiB2by35xF2YOgQwqJRBpFrYMjx2.");
 
         when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(anyString(),anyString())).thenReturn(true);
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         LoginResponse response = authenticationService.login(request);
         assertNotNull(response);
         assertTrue(response.isAuthenticated());
-
     }
 
     @Test
@@ -422,31 +415,32 @@ class UserServiceTest {
     }
 
     @Test
-    void forgotPassword_Success(){
+    void forgotPassword_Success() {
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest();
         forgotPasswordRequest.setEmail("test04@gmail.com");
         forgotPasswordRequest.setPassword("Huy09122002@");
         forgotPasswordRequest.setConfirmPassword("Huy09122002@");
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
-        when(passwordEncoder.encode("Huy09122002@")).thenReturn("$2a$10$2vEGTnlBs43HJz82IZg6LOr.WvcedCFtZ2khnV1VrKWjP9WvzksU.");
+        when(passwordEncoder.encode("Huy09122002@"))
+                .thenReturn("$2a$10$2vEGTnlBs43HJz82IZg6LOr.WvcedCFtZ2khnV1VrKWjP9WvzksU.");
         authenticationService.forgotPassword(forgotPasswordRequest);
 
         verify(userRepository).updatePassword(eq("test04@gmail.com"), anyString());
     }
 
     @Test
-    void forgotPassword_MisMatch_Fail(){
-            ForgotPasswordRequest request = new ForgotPasswordRequest();
-            request.setEmail("test04@gmail.com");
-            request.setPassword("Huy09122002@");
-            request.setConfirmPassword("Anh09122002@");
+    void forgotPassword_MisMatch_Fail() {
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail("test04@gmail.com");
+        request.setPassword("Huy09122002@");
+        request.setConfirmPassword("Anh09122002@");
 
-            assertThrows(AppException.class, () -> authenticationService.forgotPassword(request));
-            verify(userRepository, never()).updatePassword(anyString(), anyString());
+        assertThrows(AppException.class, () -> authenticationService.forgotPassword(request));
+        verify(userRepository, never()).updatePassword(anyString(), anyString());
     }
 
     @Test
-    void forgotPassword_InvalidEmail(){
+    void forgotPassword_InvalidEmail() {
         String email = "test10@gmail.com";
         String password = "Huy09122002@";
         ForgotPasswordRequest request = new ForgotPasswordRequest();
@@ -474,7 +468,8 @@ class UserServiceTest {
         user.setPassword("$2a$10$j7gNK.nqjwM.mtZLeWyD1ufux0qMW.aJV2Z877dbR/VVTTkSUxLiG");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(request.getOldPassword(), user.getPassword())).thenReturn(true);
+        when(passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+                .thenReturn(true);
         String encodedPassword = "$2a$10$lR6bxShpSyvBdN2KbdV.puUl2bGJyWn9QJt0qGAqpw7FQQRnn3mT6";
         when(passwordEncoder.encode(request.getNewPassword())).thenReturn(encodedPassword);
 
@@ -483,12 +478,10 @@ class UserServiceTest {
 
         verify(userRepository).changePassword(eq(userId), anyString());
         assertEquals(encodedPassword, passwordEncoder.encode(request.getNewPassword()));
-
     }
 
-
     @Test
-    void changePassword_UserNotFound(){
+    void changePassword_UserNotFound() {
         String userId = "691d6c62-b34c-4bfe-ba9f-9db3f34f83";
         ChangePasswordRequest request = new ChangePasswordRequest();
         request.setOldPassword("Huy09122002@");
@@ -496,12 +489,14 @@ class UserServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> authenticationService.changePassword(userId, request));
+        AppException exception =
+                assertThrows(AppException.class, () -> authenticationService.changePassword(userId, request));
         assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
         verify(userRepository, never()).changePassword(anyString(), anyString());
     }
+
     @Test
-    void changePassword_invalidOldPassword(){
+    void changePassword_invalidOldPassword() {
         String userId = "691d6c62-b34c-4bfe-ba9f-9db3f34f8321";
         ChangePasswordRequest request = new ChangePasswordRequest();
         request.setOldPassword("Huy09122002@");
@@ -515,7 +510,6 @@ class UserServiceTest {
 
         assertThrows(AppException.class, () -> authenticationService.changePassword(userId, request));
         verify(userRepository, never()).changePassword(anyString(), anyString());
-
     }
 
     //    @Test
@@ -533,7 +527,7 @@ class UserServiceTest {
     //        Assertions.assertThat(response.getUsername()).isEqualTo("test02");
     //        Assertions.assertThat(response.getId()).isEqualTo("42e2-bae5-9ea7c0f1c4d4");
     //    }
-    //
+
     //    @Test
     //    @WithMockUser(
     //            username = "test02",
@@ -548,5 +542,4 @@ class UserServiceTest {
     //        // THEN
     //        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1005);
     //    }
-
 }

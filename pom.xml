@@ -67,9 +67,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-client</artifactId>
-			<version>6.3.0</version>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-storage</artifactId>
+			<version>2.38.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-storage</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-dependencies</artifactId>
+			<version>5.3.0</version>
+			<type>pom</type>
+			<scope>import</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -160,16 +172,20 @@
 					<excludes>
 						<exclude>com/ugts/configuration</exclude>
 						<exclude>com/ugts/constant</exclude>
-						<exclude>com/ugts/dto</exclude>
+						<exclude>com/ugts/dto/**</exclude>
 						<exclude>com/ugts/exception</exclude>
-						<exclude>com/ugts/authentication/dto</exclude>
+						<exclude>com/ugts/authentication/dto/**</exclude>
 						<exclude>com/ugts/authentication/entity</exclude>
 						<exclude>com/ugts/authentication/repository</exclude>
-						<exclude>com/ugts/user/dto</exclude>
+						<exclude>com/ugts/user/dto/**</exclude>
 						<exclude>com/ugts/user/entity</exclude>
 						<exclude>com/ugts/user/mapper</exclude>
 						<exclude>com/ugts/user/repository</exclude>
 						<exclude>com/ugts/user/validator</exclude>
+						<exclude>com/ugts/brand/dto/**</exclude>
+						<exclude>com/ugts/brand/entity</exclude>
+						<exclude>com/ugts/brand/mapper</exclude>
+						<exclude>com/ugts/brand/repository</exclude>f
 					</excludes>
 				</configuration>
 			</plugin>
