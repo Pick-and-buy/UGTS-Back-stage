@@ -61,4 +61,13 @@ public class PostController {
                 .result(result)
                 .build();
     }
+
+    @GetMapping("/brands")
+    public ApiResponse<List<PostResponse>> getPostByBrandName(@RequestParam String name) {
+        var result = postService.getPostsByBrand(name);
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Get Post By Brand Name Success")
+                .result(result)
+                .build();
+    }
 }

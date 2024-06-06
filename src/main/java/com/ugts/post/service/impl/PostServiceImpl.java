@@ -71,6 +71,8 @@ public class PostServiceImpl implements PostService {
                 .isVerify(false)
                 .build();
 
+        var newProduct = productRepository.save(product);
+
         // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
@@ -87,7 +89,7 @@ public class PostServiceImpl implements PostService {
                 .isAvailable(true)
                 .createdAt(new Date())
                 .updatedAt(new Date())
-                .product(product)
+                .product(newProduct)
                 .build();
 
         // save new post into database
@@ -158,5 +160,11 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostById(String postId) {
         var post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         return postMapper.postToPostResponse(post);
+    }
+
+    @Override
+    public List<PostResponse> getPostsByBrand(String brandName) {
+        var posts = postRepository.findAllByBrandName(brandName);
+        return postMapper.getAllPosts(posts);
     }
 }

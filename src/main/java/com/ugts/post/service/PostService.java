@@ -16,4 +16,6 @@ public interface PostService {
     PostResponse updatePost(String id, UpdatePostRequest postRequest);
 
     PostResponse getPostById(String postId);
+
+    List<PostResponse> getPostsByBrand(String brandName);
 }
