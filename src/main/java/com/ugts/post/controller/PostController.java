@@ -52,4 +52,13 @@ public class PostController {
                 .result(result)
                 .build();
     }
+
+    @GetMapping("/{postId}")
+    public ApiResponse<PostResponse> getPostById(@PathVariable String postId) {
+        var result = postService.getPostById(postId);
+        return ApiResponse.<PostResponse>builder()
+                .message("Get Post By Id Success")
+                .result(result)
+                .build();
+    }
 }
