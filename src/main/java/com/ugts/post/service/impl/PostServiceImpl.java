@@ -104,10 +104,8 @@ public class PostServiceImpl implements PostService {
             }
 
             // add product image to product
-            var productImage = ProductImage.builder()
-                    .product(product)
-                    .imageUrl(fileUrl)
-                    .build();
+            var productImage =
+                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
             product.getImages().add(productImage);
         }
 
@@ -127,10 +125,10 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public PostResponse updatePost(String postId, UpdatePostRequest request) {
-        var post = postRepository.findById(postId)
-                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        var post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        var product = productRepository.findById(request.getProduct().getId())
+        var product = productRepository
+                .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         product.setName(request.getProduct().getName());

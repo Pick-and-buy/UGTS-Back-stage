@@ -6,7 +6,6 @@ import java.util.List;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.request.UpdatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
-import com.ugts.post.entity.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
@@ -15,5 +14,4 @@ public interface PostService {
     List<PostResponse> getAllPosts();
 
     PostResponse updatePost(String id, UpdatePostRequest postRequest);
-
 }
