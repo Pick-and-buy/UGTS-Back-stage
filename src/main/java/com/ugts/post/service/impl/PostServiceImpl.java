@@ -57,17 +57,17 @@ public class PostServiceImpl implements PostService {
 
         // create product process
         var product = Product.builder()
-                .name(postRequest.getProductName())
+                .name(postRequest.getProduct().getName())
                 .brand(brand)
-                .price(postRequest.getProductPrice())
-                .color(postRequest.getProductColor())
-                .size(postRequest.getProductSize())
-                .condition(postRequest.getProductCondition())
-                .material(postRequest.getProductMaterial())
-                .accessories(postRequest.getProductAccessories())
-                .dateCode(postRequest.getProductDateCode())
-                .serialNumber(postRequest.getProductSerialNumber())
-                .purchasedPlace(postRequest.getProductPurchasedPlace())
+                .price(postRequest.getProduct().getPrice())
+                .color(postRequest.getProduct().getColor())
+                .size(postRequest.getProduct().getSize())
+                .condition(postRequest.getProduct().getCondition())
+                .material(postRequest.getProduct().getMaterial())
+                .accessories(postRequest.getProduct().getAccessories())
+                .dateCode(postRequest.getProduct().getDateCode())
+                .serialNumber(postRequest.getProduct().getSerialNumber())
+                .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .isVerify(false)
                 .build();
 
