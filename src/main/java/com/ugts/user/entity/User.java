@@ -40,9 +40,20 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    Set<Post> favorites = new HashSet<>();
+    Set<Post> createdPosts = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Comment> comments = new HashSet<>();
+
+    @ManyToMany
+    Set<Post> likedPosts = new HashSet<>();
+
+    @ManyToMany
+    Set<Post> viewedPosts = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "purchasedUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<Post> purchasedPosts = new HashSet<>();
+
 }

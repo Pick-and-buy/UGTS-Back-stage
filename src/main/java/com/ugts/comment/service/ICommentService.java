@@ -6,7 +6,6 @@ import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface ICommentService {
     CommentResponseDto createComment(CommentRequestDto commentRequestDto);
 

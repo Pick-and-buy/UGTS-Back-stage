@@ -27,7 +27,6 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
-
     double price;
     String color;
     String size;
