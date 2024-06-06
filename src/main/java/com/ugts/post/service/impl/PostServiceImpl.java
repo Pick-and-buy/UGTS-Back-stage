@@ -153,4 +153,10 @@ public class PostServiceImpl implements PostService {
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }
+
+    @Override
+    public PostResponse getPostById(String postId) {
+        var post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        return postMapper.postToPostResponse(post);
+    }
 }

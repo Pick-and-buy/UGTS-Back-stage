@@ -14,4 +14,6 @@ public interface PostService {
     List<PostResponse> getAllPosts();
 
     PostResponse updatePost(String id, UpdatePostRequest postRequest);
+
+    PostResponse getPostById(String postId);
 }
