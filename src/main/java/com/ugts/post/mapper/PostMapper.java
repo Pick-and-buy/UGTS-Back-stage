@@ -17,4 +17,7 @@ public interface PostMapper {
 
     List<PostResponse> getRecommendedPosts(List<Post> posts);
 
+    List<PostResponse> getFollowedPosts(List<Post> posts);
+
+
 }

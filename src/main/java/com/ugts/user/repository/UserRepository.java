@@ -35,12 +35,15 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("UPDATE User u SET u.password = ?2 WHERE u.id = ?1")
     void changePassword(String userId, String newPassword);
 
-    @Query("SELECT u FROM User u JOIN u.likedPosts p WHERE p.id = :postId")
-    List<User> findUsersByLikedPost(@Param("postId") String postId);
-
-    @Query("SELECT u FROM User u JOIN u.viewedPosts p WHERE p.id = :postId")
-    List<User> findUsersByViewedPost(@Param("postId") String postId);
+//    @Query("SELECT u FROM User u JOIN u.likedPosts p WHERE p.id = :postId")
+//    List<User> findUsersByLikedPost(@Param("postId") String postId);
+//
+//    @Query("SELECT u FROM User u JOIN u.viewedPosts p WHERE p.id = :postId")
+//    List<User> findUsersByViewedPost(@Param("postId") String postId);
 
 //    @Query("SELECT u FROM User u JOIN u.purchasedPosts p WHERE p.id = :postId")
 //    List<User> findUsersByPurchasedPost(@Param("postId") String postId);
+
+    @Query("SELECT u.following FROM User u WHERE u.id = :userId")
+    List<User> findFollowingUsers(@Param("userId") String userId);
 }
