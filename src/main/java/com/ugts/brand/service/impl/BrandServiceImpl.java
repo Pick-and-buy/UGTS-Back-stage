@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -32,6 +33,7 @@ public class BrandServiceImpl implements BrandService {
     GoogleCloudStorageService googleCloudStorageService;
 
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
     public BrandResponse createBrand(BrandRequest request, MultipartFile[] files) throws IOException {
         // check existed
@@ -40,28 +42,31 @@ public class BrandServiceImpl implements BrandService {
         }
 
         // create brand
-        Brand brand = brandMapper.toBrand(request);
-        // upload product image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadBrandLogosToGCS(files, brand.getId());
+        var brand = brandMapper.toBrand(request);
 
-        // add product image for each URL
+        // save new brand to database
+        var newBrand = brandRepository.save(brand);
+
+        // upload brand logo to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadBrandLogosToGCS(files, String.valueOf(brand.getId()));
+
+        // add brand logo for each URL
         for (String fileUrl : fileUrls) {
-            // check if product image null
-            if (brand.getBrandLogos() == null) {
-                brand.setBrandLogos(new HashSet<>());
+            // check if brand image null
+            if (newBrand.getBrandLogos() == null) {
+                newBrand.setBrandLogos(new HashSet<>());
             }
 
-            // add product image to product
-            var brandLogo = BrandLogo.builder().brand(brand).logoUrl(fileUrl).build();
-            brand.getBrandLogos().add(brandLogo);
+            // add brand image to product
+            var brandLogo = BrandLogo.builder().brand(newBrand).logoUrl(fileUrl).build();
+            newBrand.getBrandLogos().add(brandLogo);
         }
-        // save to db
-        brand = brandRepository.save(brand);
+        // save brand with logo to database
+        brand = brandRepository.save(newBrand);
 
         return brandMapper.toBrandResponse(brand);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<BrandResponse> getAllBrands() {
         return brandRepository.findAll().stream()
