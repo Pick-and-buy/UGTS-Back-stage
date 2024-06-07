@@ -2,6 +2,7 @@ package com.ugts.user.service;
 
 import java.util.List;
 
+import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 
 public interface UserService {
@@ -10,4 +11,6 @@ public interface UserService {
     UserResponse getUserById(String userId);
 
     UserResponse getProfile();
+
+    UserResponse updateUserInfo(String userId, UserUpdateRequest request);
 }

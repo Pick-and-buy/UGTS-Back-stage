@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.mapper.UserMapper;
 import com.ugts.user.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -26,6 +28,8 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     UserMapper userMapper;
+
+
 
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
     @Override
@@ -53,5 +57,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.userToUserResponse(user);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER')")
+    @Override
+    public UserResponse updateUserInfo(String userId, UserUpdateRequest request) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setDob(request.getDob());
+
+        return userMapper.userToUserResponse(userRepository.save(user));
     }
 }

@@ -3,6 +3,7 @@ package com.ugts.user.controller;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
@@ -46,6 +47,14 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .message("Success")
                 .result(userService.getProfile())
+                .build();
+    }
+
+    @PutMapping("/{userId}")
+    public ApiResponse<UserResponse> updateUserInfo(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .message("Update Success")
+                .result(userService.updateUserInfo(userId, request))
                 .build();
     }
 }
