@@ -3,7 +3,7 @@ package com.ugts.product.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.entity.Brand;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,7 +26,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();
 
-    @JsonIgnore
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 

@@ -1,4 +1,4 @@
-package com.ugts.comment.service.Impl;
+package com.ugts.comment.service.impl;
 
 import com.ugts.comment.service.ICommentValidationService;
 import com.ugts.comment.util.BadWordConfig;

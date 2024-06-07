@@ -1,6 +1,4 @@
-package com.ugts.comment.service.Impl;
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.ugts.comment.service.impl;
 
 import org.junit.jupiter.api.Test;
 
