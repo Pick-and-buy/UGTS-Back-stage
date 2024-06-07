@@ -1,13 +1,17 @@
 package com.ugts.brand.service.impl;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.Brand;
+import com.ugts.brand.entity.BrandLogo;
 import com.ugts.brand.mapper.BrandMapper;
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brand.service.BrandService;
+import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import lombok.AccessLevel;
@@ -15,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +29,11 @@ public class BrandServiceImpl implements BrandService {
 
     BrandMapper brandMapper;
 
+    GoogleCloudStorageService googleCloudStorageService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public BrandResponse createBrand(BrandRequest request) {
+    public BrandResponse createBrand(BrandRequest request, MultipartFile[] files) throws IOException {
         // check existed
         if (brandRepository.findByName(request.getName()).isPresent()) {
             throw new AppException(ErrorCode.BRAND_EXISTED);
@@ -34,7 +41,20 @@ public class BrandServiceImpl implements BrandService {
 
         // create brand
         Brand brand = brandMapper.toBrand(request);
+        // upload product image to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadBrandLogosToGCS(files, brand.getId());
 
+        // add product image for each URL
+        for (String fileUrl : fileUrls) {
+            // check if product image null
+            if (brand.getBrandLogos() == null) {
+                brand.setBrandLogos(new HashSet<>());
+            }
+
+            // add product image to product
+            var brandLogo = BrandLogo.builder().brand(brand).logoUrl(fileUrl).build();
+            brand.getBrandLogos().add(brandLogo);
+        }
         // save to db
         brand = brandRepository.save(brand);
 

@@ -28,11 +28,10 @@ public class GoogleCloudStorageService {
     @Value("${google.cloud.storage.bucket}")
     String bucketName;
 
-    public List<String> uploadFilesToGCS(MultipartFile[] multipartFiles, String postId) throws IOException {
+    public List<String> uploadFilesToGCS(MultipartFile[] multipartFiles, String folderName) throws IOException {
         List<String> uploadedFileUrls = new ArrayList<>();
 
         for (MultipartFile files : multipartFiles) {
-            String folderName = "selling-post/" + postId;
             String fileName = UUID.randomUUID() + "-" + files.getOriginalFilename();
             BlobId blobId = BlobId.of(bucketName, folderName + "/" + fileName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
@@ -49,5 +48,15 @@ public class GoogleCloudStorageService {
         }
 
         return uploadedFileUrls;
+    }
+
+    public List<String> uploadBrandLogosToGCS(MultipartFile[] brandLogos, String brandId) throws IOException {
+        String brandImagesFolder = "brand-images/" + brandId;
+        return uploadFilesToGCS(brandLogos, brandImagesFolder);
+    }
+
+    public List<String> uploadProductImagesToGCS(MultipartFile[] productImages, String productId) throws IOException {
+        String productImagesFolder = "product-images/" + productId;
+        return uploadFilesToGCS(productImages, productImagesFolder);
     }
 }
