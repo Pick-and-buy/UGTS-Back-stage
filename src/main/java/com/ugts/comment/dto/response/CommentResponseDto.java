@@ -6,6 +6,7 @@ import lombok.Data;
 public class CommentResponseDto {
     private String id;
     private String commentContent;
+    private String username;
     private String userId;
     private String postId;
 }

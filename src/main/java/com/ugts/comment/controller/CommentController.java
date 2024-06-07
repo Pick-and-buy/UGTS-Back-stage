@@ -19,9 +19,9 @@ public class CommentController {
     private final ICommentService iCommentService;
 
     @PostMapping
-    public String createComments(@RequestBody CommentRequestDto commentRequestDto) {
+    public ApiResponse<CommentResponseDto> createComments(@RequestBody CommentRequestDto commentRequestDto) {
         var comment = iCommentService.createComment(commentRequestDto);
-        return ApiResponse.<CommentResponseDto>builder().result(comment).build().toString();
+        return ApiResponse.<CommentResponseDto>builder().result(comment).build();
     }
 
     // TODO: fetch comments API by post id

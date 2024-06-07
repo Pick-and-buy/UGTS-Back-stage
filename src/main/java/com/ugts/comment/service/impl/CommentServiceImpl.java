@@ -1,4 +1,4 @@
-package com.ugts.comment.service.Impl;
+package com.ugts.comment.service.impl;
 
 import java.util.List;
 import java.util.Objects;

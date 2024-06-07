@@ -6,10 +6,12 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ugts.comment.entity.Comment;
+import com.ugts.follow.entity.Follow;
 import com.ugts.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
@@ -19,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+//@Component
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,36 +59,10 @@ public class User {
     @OneToMany(mappedBy = "purchasedUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Post> purchasedPosts = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_following",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "followed_id"))
-    private Set<User> following = new HashSet<>();
+    @OneToMany(mappedBy = "follower")
+    private Set<Follow> following = new HashSet<>();
 
-    @ManyToMany(mappedBy = "following")
-    private Set<User> followers = new HashSet<>();
-
-    public void addViewedPost(Post post) {
-        viewedPosts.add(post);
-    }
-
-    public void addLikedPost(Post post) {
-        likedPosts.add(post);
-    }
-
-    public void addPurchasedPost(Post post) {
-        purchasedPosts.add(post);
-    }
-
-    public void followUser(User user) {
-        followers.add(user);
-        user.getFollowers().add(this);
-    }
-
-    public void unfollowUser(User user) {
-        following.remove(user);
-        user.getFollowers().remove(this);
-    }
+    @OneToMany(mappedBy = "following")
+    private Set<Follow> followers = new HashSet<>();
 
 }

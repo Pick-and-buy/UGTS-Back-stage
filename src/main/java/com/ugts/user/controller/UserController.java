@@ -41,11 +41,4 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/profile")
-    public ApiResponse<UserResponse> getProfile() {
-        return ApiResponse.<UserResponse>builder()
-                .message("Success")
-                .result(userService.getProfile())
-                .build();
-    }
 }

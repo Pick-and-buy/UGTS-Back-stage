@@ -1,6 +1,7 @@
 package com.ugts.homepage.controller;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.homepage.service.IHomepageService;
 import com.ugts.homepage.service.impl.HomepageServiceImpl;
 import com.ugts.post.dto.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/homepage")
 public class HomeController {
-    private final HomepageServiceImpl homepageService;
+    private final IHomepageService homepageService;
 
     @GetMapping("/recommendation/{userId}")
     public ApiResponse<List<PostResponse>> recommendationList(@PathVariable String userId) {
@@ -28,7 +29,7 @@ public class HomeController {
                 .build();
     }
 
-    @GetMapping("/followed-post-list/{userId}")
+    @GetMapping("/followed-posts/{userId}")
     public ApiResponse<List<PostResponse>> followedPostList(@PathVariable String userId) {
         var followerPostList = homepageService.getFollowedPosts(userId);
         return ApiResponse.<List<PostResponse>>builder()
