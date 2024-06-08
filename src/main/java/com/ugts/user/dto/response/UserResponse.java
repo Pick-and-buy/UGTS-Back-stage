@@ -3,6 +3,7 @@ package com.ugts.user.dto.response;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.ugts.post.dto.response.PostResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,4 +22,5 @@ public class UserResponse {
     String phoneNumber;
     LocalDate dob;
     Set<RoleResponse> roles;
+    Set<PostResponse> createdPosts;
 }

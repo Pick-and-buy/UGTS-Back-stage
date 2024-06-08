@@ -11,7 +11,6 @@ import com.ugts.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@Component
+// @Component
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -65,5 +64,4 @@ public class User {
 
     @OneToMany(mappedBy = "following")
     private Set<Follow> followers = new HashSet<>();
-
 }
