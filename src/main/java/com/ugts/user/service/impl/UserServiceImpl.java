@@ -1,7 +1,9 @@
 package com.ugts.user.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 
+import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.post.dto.response.PostResponse;
@@ -9,6 +11,7 @@ import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.dto.request.LikeRequestDto;
+import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;
 import com.ugts.user.mapper.UserMapper;
@@ -22,6 +25,8 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -36,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
 
     private final PostMapper postMapper;
+  
+    GoogleCloudStorageService googleCloudStorageService;
 
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
     @Override
@@ -99,5 +106,33 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         List<Post> likedPosts = postRepository.findPostsLikedByUser(user.getId());
         return likedPosts.stream().map(postMapper::postToPostResponse).toList();
+      
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER')")
+    @Override
+    public UserResponse updateUserInfo(String userId, UserUpdateRequest request){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setDob(request.getDob());
+
+        return userMapper.userToUserResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER')")
+    @Override
+    public UserResponse updateUserAvatar(String userId, MultipartFile file) throws IOException {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        String avatarUrl = googleCloudStorageService.uploadUserAvatarToGCS(file, userId);
+        user.setAvatar(avatarUrl);
+
+        return userMapper.userToUserResponse(userRepository.save(user));
     }
 }

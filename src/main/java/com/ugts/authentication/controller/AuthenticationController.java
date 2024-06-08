@@ -33,7 +33,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         var result = authenticationService.login(request);
 
         return ApiResponse.<LoginResponse>builder().result(result).build();
@@ -63,7 +63,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot-password")
-    public ApiResponse<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+    public ApiResponse<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         authenticationService.forgotPassword(request);
         return ApiResponse.<String>builder()
                 .message("Password has been reset successfully")
@@ -71,7 +71,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/change-password/{userId}")
-    public ApiResponse<String> changePassword(@PathVariable String userId, @RequestBody ChangePasswordRequest request) {
+    public ApiResponse<String> changePassword(
+            @PathVariable String userId, @Valid @RequestBody ChangePasswordRequest request) {
         authenticationService.changePassword(userId, request);
         return ApiResponse.<String>builder()
                 .message("Password has been change successfully")

@@ -1,8 +1,10 @@
 package com.ugts.user.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
@@ -11,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -41,4 +44,33 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/profile")
+    public ApiResponse<UserResponse> getProfile() {
+        return ApiResponse.<UserResponse>builder()
+                .message("Success")
+                .result(userService.getProfile())
+                .build();
+    }
+
+    @PutMapping("/{userId}")
+    public ApiResponse<UserResponse> updateUserInfo(
+            @PathVariable String userId,
+            @RequestBody UserUpdateRequest request
+    ) {
+        return ApiResponse.<UserResponse>builder()
+                .message("Update Success")
+                .result(userService.updateUserInfo(userId, request))
+                .build();
+    }
+
+    @PutMapping("/{userId}/avatar")
+    public ApiResponse<UserResponse> updateUserAvatar(
+            @PathVariable String userId,
+            @RequestPart("avatar") MultipartFile avatar
+    ) throws IOException {
+        return ApiResponse.<UserResponse>builder()
+                .message("Update Avatar Success")
+                .result(userService.updateUserAvatar(userId, avatar))
+                .build();
+    }
 }

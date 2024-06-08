@@ -46,7 +46,7 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
 
         OtpViaEmail otpViaEmail = OtpViaEmail.builder()
                 .otpCode(otpCode)
-                .expireTime(new Date(System.currentTimeMillis() + 70 * 1000))
+                .expireTime(new Date(System.currentTimeMillis() + 2 * 60 * 1000))
                 .user(user)
                 .build();
 

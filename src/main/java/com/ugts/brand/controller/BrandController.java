@@ -1,5 +1,6 @@
 package com.ugts.brand.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ugts.brand.dto.request.BrandRequest;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -21,8 +23,9 @@ public class BrandController {
     BrandService brandService;
 
     @PostMapping()
-    public ApiResponse<BrandResponse> createBrand(@RequestBody BrandRequest request) {
-        var newBrand = brandService.createBrand(request);
+    public ApiResponse<BrandResponse> createBrand(
+            @RequestPart BrandRequest request, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
+        var newBrand = brandService.createBrand(request, brandLogo);
         return ApiResponse.<BrandResponse>builder().result(newBrand).build();
     }
 

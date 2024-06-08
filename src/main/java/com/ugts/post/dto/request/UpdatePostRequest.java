@@ -10,11 +10,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePostRequest {
+public class UpdatePostRequest {
     String id;
     String title;
     String description;
-    Boolean isAvailable;
 
     Brand brand;
     Product product;

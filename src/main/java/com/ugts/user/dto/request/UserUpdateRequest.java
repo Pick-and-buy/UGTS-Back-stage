@@ -1,25 +1,22 @@
-package com.ugts.user.dto.response;
+package com.ugts.user.dto.request;
 
-import java.time.LocalDate;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ugts.user.validator.DobConstraint;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    String id;
+public class UserUpdateRequest {
     String username;
-    String avatar;
     String lastName;
     String firstName;
     String email;
-    String phoneNumber;
+
+    @DobConstraint(min = 14, message = "INVALID_DOB")
     LocalDate dob;
-    Set<RoleResponse> roles;
 }

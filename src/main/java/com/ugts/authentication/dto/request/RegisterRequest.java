@@ -18,7 +18,7 @@ public class RegisterRequest {
     Long id;
 
     @Size(min = 4, message = "USERNAME_INVALID")
-    String username;
+    private String username;
 
     // the password must contain:
     // at least 8 characters
