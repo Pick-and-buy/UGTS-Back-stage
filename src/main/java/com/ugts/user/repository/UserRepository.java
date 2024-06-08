@@ -2,6 +2,8 @@ package com.ugts.user.repository;
 
 import java.util.Optional;
 
+import com.ugts.user.dto.request.UserUpdateRequest;
+import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
