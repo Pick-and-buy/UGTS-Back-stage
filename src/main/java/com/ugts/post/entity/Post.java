@@ -33,10 +33,10 @@ public class Post {
     Set<Comment> comments = new HashSet<>();
 
     @ManyToMany(mappedBy = "likedPosts")
-    Set<User> likedByUsers = new HashSet<>();
+    Set<User> likedUsers = new HashSet<>();
 
     @ManyToMany(mappedBy = "viewedPosts")
-    Set<User> viewedByUsers = new HashSet<>();
+    Set<User> viewedUsers = new HashSet<>();
 
     String title;
     String description;

@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, String> {
     //TODO: use this 3 function
-    @Query("SELECT p FROM Post p JOIN p.likedByUsers u WHERE u.id = :userId")
+    @Query("SELECT p FROM Post p JOIN p.likedUsers u WHERE u.id = :userId")
     List<Post> findPostsLikedByUser(@Param("userId") String userId);
 
-    @Query("SELECT p FROM Post p JOIN p.viewedByUsers u WHERE u.id = :userId")
+    @Query("SELECT p FROM Post p JOIN p.viewedUsers u WHERE u.id = :userId")
     List<Post> findPostsViewedByUser(@Param("userId") String userId);
 
     @Query("SELECT p FROM Post p JOIN p.purchasedUser u WHERE u.id = :userId")
