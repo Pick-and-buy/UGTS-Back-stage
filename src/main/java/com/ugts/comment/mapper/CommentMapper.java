@@ -18,8 +18,9 @@ public class CommentMapper {
         CommentResponseDto commentResponseDto = new CommentResponseDto();
         commentResponseDto.setId(comment.getId());
         commentResponseDto.setCommentContent(comment.getCommentContent());
-        commentResponseDto.setUserId(
+        commentResponseDto.setUsername(
                 Optional.ofNullable(comment.getUser()).map(User::getUsername).orElse(null));
+        commentResponseDto.setUserId(comment.getUser().getId());
         commentResponseDto.setPostId(Objects.requireNonNull(
                 Optional.ofNullable(comment.getPost()).map(Post::getId).orElse(null)));
         return commentResponseDto;

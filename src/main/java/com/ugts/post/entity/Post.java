@@ -26,8 +26,17 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    User purchasedUser;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Comment> comments = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedPosts")
+    Set<User> likedUsers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "viewedPosts")
+    Set<User> viewedUsers = new HashSet<>();
 
     String title;
     String description;

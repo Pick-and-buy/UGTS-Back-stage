@@ -4,6 +4,7 @@ import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Getter
@@ -13,7 +14,8 @@ import lombok.*;
 @NoArgsConstructor
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @UuidGenerator
     private String id;
 
     @Column(name = "comment_content")

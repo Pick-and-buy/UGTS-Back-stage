@@ -29,7 +29,6 @@ public class Product {
     @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
-
     double price;
     String color;
     String size;
