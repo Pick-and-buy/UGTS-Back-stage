@@ -106,11 +106,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         List<Post> likedPosts = postRepository.findPostsLikedByUser(user.getId());
         return likedPosts.stream().map(postMapper::postToPostResponse).toList();
+    }
       
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
     @Override
-    public UserResponse updateUserInfo(String userId, UserUpdateRequest request){
+    public UserResponse updateUserInfo(String userId, UserUpdateRequest request) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
