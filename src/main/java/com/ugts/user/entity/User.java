@@ -25,7 +25,7 @@ public class User {
     String id;
 
     String username;
-
+    String avatar;
     String password;
     String lastName;
     String firstName;
