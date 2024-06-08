@@ -96,7 +96,7 @@ public class PostServiceImpl implements PostService {
         var newPost = postRepository.save(post);
 
         // upload product image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadFilesToGCS(files, post.getId());
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(files, post.getId());
 
         // add product image for each URL
         for (String fileUrl : fileUrls) {

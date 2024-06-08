@@ -1,8 +1,6 @@
 package com.ugts.brand.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,13 +12,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Brand {
+public class BrandLogo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String name;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    Brand brand;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    Set<BrandLogo> brandLogos = new HashSet<>();
+    String logoUrl;
 }
