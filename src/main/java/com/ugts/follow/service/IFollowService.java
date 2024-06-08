@@ -1,10 +1,9 @@
 package com.ugts.follow.service;
 
+import java.util.List;
+
 import com.ugts.follow.dto.FollowRequestDto;
 import com.ugts.user.dto.response.UserResponse;
-
-
-import java.util.List;
 
 public interface IFollowService {
     void followUser(FollowRequestDto requestDto);

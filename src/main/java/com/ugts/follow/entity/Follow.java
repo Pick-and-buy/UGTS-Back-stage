@@ -4,7 +4,9 @@ import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,5 +22,4 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "following_id")
     private User following;
-
 }

@@ -1,8 +1,9 @@
 package com.ugts.homepage.controller;
 
+import java.util.List;
+
 import com.ugts.dto.ApiResponse;
 import com.ugts.homepage.service.IHomepageService;
-import com.ugts.homepage.service.impl.HomepageServiceImpl;
 import com.ugts.post.dto.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController

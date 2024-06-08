@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
 
     private final PostMapper postMapper;
-  
+
     GoogleCloudStorageService googleCloudStorageService;
 
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
@@ -73,9 +73,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public void likePost(LikeRequestDto likeRequestDto) {
-        User user = userRepository.findById(likeRequestDto.getUserId())
+        User user = userRepository
+                .findById(likeRequestDto.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Post post = postRepository.findById(likeRequestDto.getPostId())
+        Post post = postRepository
+                .findById(likeRequestDto.getPostId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
 
         if (user.getLikedPosts().contains(post)) {
@@ -87,9 +89,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unlikePost(LikeRequestDto likeRequestDto) {
-        User user = userRepository.findById(likeRequestDto.getUserId())
+        User user = userRepository
+                .findById(likeRequestDto.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Post post = postRepository.findById(likeRequestDto.getPostId())
+        Post post = postRepository
+                .findById(likeRequestDto.getPostId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
 
         if (!user.getLikedPosts().contains(post)) {
@@ -97,23 +101,20 @@ public class UserServiceImpl implements UserService {
         }
         user.getLikedPosts().remove(post);
         userRepository.save(user);
-
     }
 
     @Override
     public List<PostResponse> getLikedPosts(String userId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         List<Post> likedPosts = postRepository.findPostsLikedByUser(user.getId());
         return likedPosts.stream().map(postMapper::postToPostResponse).toList();
     }
-      
+
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
     @Override
     public UserResponse updateUserInfo(String userId, UserUpdateRequest request) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -128,8 +129,7 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAnyRole('USER')")
     @Override
     public UserResponse updateUserAvatar(String userId, MultipartFile file) throws IOException {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         String avatarUrl = googleCloudStorageService.uploadUserAvatarToGCS(file, userId);
         user.setAvatar(avatarUrl);

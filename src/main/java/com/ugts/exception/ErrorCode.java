@@ -53,17 +53,16 @@ public enum ErrorCode {
     BRAND_EXISTED(1001, "Brand has already existed!", HttpStatus.BAD_REQUEST),
     BRAND_NOT_EXISTED(1002, "Brand not exist!", HttpStatus.BAD_REQUEST),
 
-
-    //POST
+    // POST
     POST_NOT_EXISTED(1003, "Post not exist!", HttpStatus.BAD_REQUEST),
     POST_ALREADY_LIKED(1004, "Post has already liked!", HttpStatus.BAD_REQUEST),
     POST_ALREADY_UNLIKED(1005, "Post has already unliked!", HttpStatus.BAD_REQUEST),
-                         
+
     // Post
     POST_NOT_FOUND(1001, "Post not found", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(1001, "Product not exist", HttpStatus.BAD_REQUEST),
 
-    // Comment
+// Comment
 ;
     int code;
     String message;

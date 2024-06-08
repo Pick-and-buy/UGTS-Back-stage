@@ -14,7 +14,7 @@ import org.hibernate.annotations.UuidGenerator;
 @NoArgsConstructor
 public class Comment {
     @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @GeneratedValue(strategy = GenerationType.AUTO)
     @UuidGenerator
     private String id;
 

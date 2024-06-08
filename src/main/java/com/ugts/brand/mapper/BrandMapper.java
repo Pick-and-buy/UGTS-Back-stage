@@ -1,5 +1,7 @@
 package com.ugts.brand.mapper;
 
+import java.util.Set;
+
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.Brand;
@@ -9,17 +11,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
-import java.util.Set;
-
 @Mapper(componentModel = "spring")
 public interface BrandMapper {
     Brand toBrand(BrandRequest request);
 
-
     @Mappings({
-            @Mapping(source = "id", target = "id"),
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "brandLogos", target = "logoUrl", qualifiedByName = "mapBrandLogosToLogoUrl")
+        @Mapping(source = "id", target = "id"),
+        @Mapping(source = "name", target = "name"),
+        @Mapping(source = "brandLogos", target = "logoUrl", qualifiedByName = "mapBrandLogosToLogoUrl")
     })
     BrandResponse toBrandResponse(Brand brand);
 

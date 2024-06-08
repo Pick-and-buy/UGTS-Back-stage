@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
-import com.ugts.brand.entity.Brand;
 import com.ugts.brand.entity.BrandLogo;
 import com.ugts.brand.mapper.BrandMapper;
 import com.ugts.brand.repository.BrandRepository;

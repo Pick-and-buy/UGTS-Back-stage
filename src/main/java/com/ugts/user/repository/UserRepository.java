@@ -3,8 +3,6 @@ package com.ugts.user.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.ugts.user.dto.request.UserUpdateRequest;
-import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByUsername(String username);
 
-//    User findById(String userId);
+    //    User findById(String userId);
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
@@ -39,14 +37,14 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("UPDATE User u SET u.password = ?2 WHERE u.id = ?1")
     void changePassword(String userId, String newPassword);
 
-//    @Query("SELECT u FROM User u JOIN u.likedPosts p WHERE p.id = :postId")
-//    List<User> findUsersByLikedPost(@Param("postId") String postId);
-//
-//    @Query("SELECT u FROM User u JOIN u.viewedPosts p WHERE p.id = :postId")
-//    List<User> findUsersByViewedPost(@Param("postId") String postId);
+    //    @Query("SELECT u FROM User u JOIN u.likedPosts p WHERE p.id = :postId")
+    //    List<User> findUsersByLikedPost(@Param("postId") String postId);
+    //
+    //    @Query("SELECT u FROM User u JOIN u.viewedPosts p WHERE p.id = :postId")
+    //    List<User> findUsersByViewedPost(@Param("postId") String postId);
 
-//    @Query("SELECT u FROM User u JOIN u.purchasedPosts p WHERE p.id = :postId")
-//    List<User> findUsersByPurchasedPost(@Param("postId") String postId);
+    //    @Query("SELECT u FROM User u JOIN u.purchasedPosts p WHERE p.id = :postId")
+    //    List<User> findUsersByPurchasedPost(@Param("postId") String postId);
 
     @Query("SELECT u.following FROM User u WHERE u.id = :userId")
     List<User> findFollowingUsers(@Param("userId") String userId);

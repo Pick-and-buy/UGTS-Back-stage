@@ -1,15 +1,14 @@
 package com.ugts.homepage.service;
 // SlopeOneRecommender.java
 
+import java.util.*;
+
 import com.ugts.post.entity.Post;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class SlopeOneRecommender {
@@ -71,7 +70,8 @@ public class SlopeOneRecommender {
         for (Long j : userRatings.keySet()) {
             for (Long k : diffMatrix.keySet()) {
                 try {
-                    double newValue = (diffMatrix.get(k).get(j) + userRatings.get(j)) * freqMatrix.get(k).get(j);
+                    double newValue = (diffMatrix.get(k).get(j) + userRatings.get(j))
+                            * freqMatrix.get(k).get(j);
                     predictions.put(k, predictions.get(k) + newValue);
                     frequencies.put(k, frequencies.get(k) + freqMatrix.get(k).get(j));
                 } catch (NullPointerException e) {
@@ -92,12 +92,9 @@ public class SlopeOneRecommender {
 
     private Map<Long, Double> getUserRatings(User user) {
         Map<Long, Double> ratings = new HashMap<>();
-        user.getLikedPosts()
-                .forEach(post -> ratings.put(Long.valueOf(post.getId()), 1.0));
-        user.getPurchasedPosts()
-                .forEach(post -> ratings.put(Long.valueOf(post.getId()), 2.0));
-        user.getViewedPosts()
-                .forEach(post -> ratings.put(Long.valueOf(post.getId()), 0.5));
+        user.getLikedPosts().forEach(post -> ratings.put(Long.valueOf(post.getId()), 1.0));
+        user.getPurchasedPosts().forEach(post -> ratings.put(Long.valueOf(post.getId()), 2.0));
+        user.getViewedPosts().forEach(post -> ratings.put(Long.valueOf(post.getId()), 0.5));
         return ratings;
     }
 
@@ -109,11 +106,9 @@ public class SlopeOneRecommender {
         List<Post> recommendations = new ArrayList<>();
         predictedRatings.entrySet().stream()
                 .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
-                .limit(10) //size recommendation list
-                .forEach(entry -> recommendations
-                        .add(postRepository
-                                .findById(String.valueOf(entry.getKey()))
-                                .orElse(null)));
+                .limit(10) // size recommendation list
+                .forEach(entry -> recommendations.add(
+                        postRepository.findById(String.valueOf(entry.getKey())).orElse(null)));
 
         return recommendations;
     }
