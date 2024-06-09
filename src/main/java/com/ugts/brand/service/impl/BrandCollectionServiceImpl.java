@@ -44,6 +44,10 @@ public class BrandCollectionServiceImpl implements BrandCollectionService {
         var brand = brandRepository.findByName(request.getBrandRequest().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
+        if (brandCollectionRepository.existsByBrandAndCollectionName(brand, request.getCollectionName())) {
+            throw new AppException(ErrorCode.BRAND_COLLECTION_EXISTED);
+        }
+
         var brandCollection = BrandCollection.builder()
                 .brand(brand)
                 .collectionName(request.getCollectionName())

@@ -53,6 +53,9 @@ public enum ErrorCode {
     BRAND_EXISTED(1001, "Brand has already existed!", HttpStatus.BAD_REQUEST),
     BRAND_NOT_EXISTED(1002, "Brand not exist!", HttpStatus.BAD_REQUEST),
 
+    // Brand Collection
+    BRAND_COLLECTION_EXISTED(1001, "Brand collection has already existed!", HttpStatus.BAD_REQUEST),
+
     // POST
     POST_NOT_EXISTED(1003, "Post not exist!", HttpStatus.BAD_REQUEST),
     POST_ALREADY_LIKED(1004, "Post has already liked!", HttpStatus.BAD_REQUEST),

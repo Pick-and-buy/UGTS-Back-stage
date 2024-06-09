@@ -15,7 +15,6 @@ public interface BrandCollectionMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "brandCollectionImages.id"),
-            @Mapping(source = "collectionName", target = "collectionName"),
             @Mapping(source = "brandCollectionImages",
                     target = "brandCollectionImages.collectionImageUrl",
                     qualifiedByName = "mapBrandCollectionImagesToLogoUrl")
