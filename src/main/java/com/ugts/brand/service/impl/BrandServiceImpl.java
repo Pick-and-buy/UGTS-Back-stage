@@ -73,7 +73,6 @@ public class BrandServiceImpl implements BrandService {
                 .toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public BrandResponse getBrandByName(String name) {
         // check existed
