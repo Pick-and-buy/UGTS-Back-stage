@@ -39,6 +39,7 @@ public class BrandCollection {
 
     String designer;
 
+    @Column(length = 1000)
     String description;
 
     Date createdAt;
