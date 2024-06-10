@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.entity.Brand;
 import com.ugts.brand.entity.BrandCollection;
 import com.ugts.brand.entity.BrandLine;
+import com.ugts.brand.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -38,6 +39,9 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     BrandCollection brandCollection;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    Category category;
+
     double price;
     String color;
     String size;
@@ -47,5 +51,9 @@ public class Product {
     String dateCode;
     String serialNumber;
     String purchasedPlace;
+
+    @Column(length = 500)
+    String story;
+
     Boolean isVerify;
 }

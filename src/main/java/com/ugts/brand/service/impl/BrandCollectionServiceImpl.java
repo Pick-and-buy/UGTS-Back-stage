@@ -1,5 +1,10 @@
 package com.ugts.brand.service.impl;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
 import com.ugts.brand.dto.request.BrandCollectionRequest;
 import com.ugts.brand.dto.response.BrandCollectionResponse;
 import com.ugts.brand.entity.BrandCollection;
@@ -19,11 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -40,8 +40,10 @@ public class BrandCollectionServiceImpl implements BrandCollectionService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
-    public BrandCollectionResponse createBrandCollection(BrandCollectionRequest request, MultipartFile[] files) throws IOException {
-        var brand = brandRepository.findByName(request.getBrandRequest().getName())
+    public BrandCollectionResponse createBrandCollection(BrandCollectionRequest request, MultipartFile[] files)
+            throws IOException {
+        var brand = brandRepository
+                .findByName(request.getBrandRequest().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         if (brandCollectionRepository.existsByBrandAndCollectionName(brand, request.getCollectionName())) {
@@ -65,8 +67,8 @@ public class BrandCollectionServiceImpl implements BrandCollectionService {
         var newBrandCollection = brandCollectionRepository.save(brandCollection);
 
         // upload brand collection image to GCS
-        List<String> fileUrls = googleCloudStorageService
-                .uploadBrandCollectionImagesToGCS(files, newBrandCollection.getId());
+        List<String> fileUrls =
+                googleCloudStorageService.uploadBrandCollectionImagesToGCS(files, newBrandCollection.getId());
 
         // add brand collection image for each URL
         for (String fileUrl : fileUrls) {

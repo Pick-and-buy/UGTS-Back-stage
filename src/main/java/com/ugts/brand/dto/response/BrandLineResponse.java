@@ -2,7 +2,8 @@ package com.ugts.brand.dto.response;
 
 import java.util.Date;
 
-import com.ugts.brand.entity.BrandCollectionImage;
+import com.ugts.brand.entity.BrandLineImage;
+import com.ugts.brand.entity.Category;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,17 +12,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BrandCollectionResponse {
+public class BrandLineResponse {
     BrandResponse brand;
-    String collectionName;
-    String season;
-    String year;
-    String theme;
-    String releaseDate;
-    String endDate;
-    String designer;
+    Category category;
+    String lineName;
     String description;
+    String launchDate;
+    String signatureFeatures;
+    String priceRange;
+    Boolean availableStatus;
     Date createdAt;
     Date updatedAt;
-    BrandCollectionImage brandCollectionImages;
+    BrandLineImage brandLineImage;
 }

@@ -1,4 +1,4 @@
-package com.ugts.brand.dto.request;
+package com.ugts.brand.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandRequest {
+public class CategoryResponse {
+    private String id;
     private String name;
 }
