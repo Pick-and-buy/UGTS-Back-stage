@@ -79,7 +79,6 @@ public class BrandLineServiceImpl implements BrandLineService {
                     .build();
             brandLine.getBrandLineImages().add(brandLineImage);
         }
-        brandLineRepository.save(brandLine);
 
         return brandLineMapper.toBrandLineResponse(brandLineRepository.save(newBrandLine));
     }
@@ -92,7 +91,10 @@ public class BrandLineServiceImpl implements BrandLineService {
     }
 
     @Override
-    public BrandLineResponse getBrandCollectionByCollectionName(String brandLineName) {
-        return null;
+    public BrandLineResponse getBrandLineByLineName(String brandLineName) {
+        var brandLine = brandLineRepository.findByLineName(brandLineName)
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_COLLECTION_NOT_EXISTED));
+        return brandLineMapper.toBrandLineResponse(brandLine);
     }
+
 }

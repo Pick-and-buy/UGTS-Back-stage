@@ -9,12 +9,10 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandLineResponse {
-    Brand brand;
     Category category;
     String lineName;
     String description;

@@ -12,5 +12,5 @@ public interface BrandLineService {
 
     List<BrandLineResponse> getBrandLines();
 
-    BrandLineResponse getBrandCollectionByCollectionName(String brandLineName);
+    BrandLineResponse getBrandLineByLineName(String brandLineName);
 }

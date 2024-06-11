@@ -14,8 +14,6 @@ import org.mapstruct.Named;
 public interface BrandCollectionMapper {
 
     @Mappings({
-        @Mapping(source = "brand", target = "brand"),
-        @Mapping(source = "id", target = "brandCollectionImages.id"),
         @Mapping(
                 source = "brandCollectionImages",
                 target = "brandCollectionImages.collectionImageUrl",

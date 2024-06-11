@@ -40,4 +40,13 @@ public class BrandLineController {
                 .result(result)
                 .build();
     }
+
+    @GetMapping("/line-name")
+    public ApiResponse<BrandLineResponse> getBrandLineByLineName(@RequestParam String brandLineName) {
+        var result = brandLineService.getBrandLineByLineName(brandLineName);
+        return ApiResponse.<BrandLineResponse>builder()
+                .message("Get brand line by line name success")
+                .result(result)
+                .build();
+    }
 }
