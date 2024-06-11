@@ -13,8 +13,6 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface BrandLineMapper {
     @Mappings({
-        @Mapping(source = "brand", target = "brand"),
-        @Mapping(source = "id", target = "brandLineImage.id"),
         @Mapping(
                 source = "brandLineImages",
                 target = "brandLineImage.lineImageUrl",

@@ -12,7 +12,6 @@ import com.ugts.brand.entity.BrandLineImage;
 import com.ugts.brand.mapper.BrandLineMapper;
 import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
-import com.ugts.brand.repository.CategoryRepository;
 import com.ugts.brand.service.BrandLineService;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
@@ -37,8 +36,6 @@ public class BrandLineServiceImpl implements BrandLineService {
     GoogleCloudStorageService googleCloudStorageService;
 
     BrandLineMapper brandLineMapper;
-
-    CategoryRepository categoryRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
@@ -89,7 +86,9 @@ public class BrandLineServiceImpl implements BrandLineService {
 
     @Override
     public List<BrandLineResponse> getBrandLines() {
-        return List.of();
+        return brandLineRepository.findAll().stream()
+                .map(brandLineMapper::toBrandLineResponse)
+                .toList();
     }
 
     @Override
