@@ -25,12 +25,9 @@ public class BrandLine {
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    Category category;
-
     String lineName;
 
+    @Column(length = 500)
     String description;
 
     String launchDate;

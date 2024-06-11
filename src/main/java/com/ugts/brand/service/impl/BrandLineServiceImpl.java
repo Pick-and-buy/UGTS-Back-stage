@@ -12,6 +12,7 @@ import com.ugts.brand.entity.BrandLineImage;
 import com.ugts.brand.mapper.BrandLineMapper;
 import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
+import com.ugts.brand.repository.CategoryRepository;
 import com.ugts.brand.service.BrandLineService;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
@@ -37,6 +38,8 @@ public class BrandLineServiceImpl implements BrandLineService {
 
     BrandLineMapper brandLineMapper;
 
+    CategoryRepository categoryRepository;
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
@@ -56,7 +59,7 @@ public class BrandLineServiceImpl implements BrandLineService {
                 .launchDate(request.getLaunchDate())
                 .signatureFeatures(request.getSignatureFeatures())
                 .priceRange(request.getPriceRange())
-                .availableStatus(request.getAvailableStatus())
+                .availableStatus(true)
                 .createdAt(new Date())
                 .updatedAt(new Date())
                 .build();

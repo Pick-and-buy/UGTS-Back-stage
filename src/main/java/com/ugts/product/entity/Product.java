@@ -33,20 +33,28 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     BrandLine brandLine;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     BrandCollection brandCollection;
 
     @ManyToOne(fetch = FetchType.LAZY)
     Category category;
 
     double price;
-    String color;
+    String exteriorColor;
+    String interiorColor;
     String size;
-    String condition;
+    String width;
+    String height;
+    String length;
+    String drop;
+    String fit;
+    String referenceCode;
+    String manufactureYear;
     String material;
+    String condition;
     String accessories;
     String dateCode;
     String serialNumber;
