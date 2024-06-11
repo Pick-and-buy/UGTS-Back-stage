@@ -3,12 +3,13 @@ package com.ugts.post.repository;
 import java.util.List;
 
 import com.ugts.post.entity.Post;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 public interface PostRepository extends JpaRepository<Post, String> {
-    // TODO: use this 3 function
     @Query("SELECT p FROM Post p JOIN p.likedUsers u WHERE u.id = :userId")
     List<Post> findPostsLikedByUser(@Param("userId") String userId);
 

@@ -1,6 +1,8 @@
 package com.ugts.user.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 import com.ugts.post.dto.response.PostResponse;
@@ -20,7 +22,7 @@ public class UserResponse {
     String firstName;
     String email;
     String phoneNumber;
-    LocalDate dob;
+    Date dob;
     Set<RoleResponse> roles;
     Set<PostResponse> createdPosts;
 }

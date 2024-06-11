@@ -1,6 +1,8 @@
 package com.ugts.user.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +35,7 @@ public class User {
     String firstName;
     String email;
     String phoneNumber;
-    LocalDate dob;
+    Date dob;
 
     @ManyToMany
     Set<Role> roles;

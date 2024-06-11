@@ -7,11 +7,13 @@ import com.ugts.dto.ApiResponse;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.request.UpdatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
-import com.ugts.post.service.PostService;
+import com.ugts.post.entity.Post;
+import com.ugts.post.service.IPostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostController {
 
-    PostService postService;
-
+    private final IPostService postService;
     @PostMapping
     public ApiResponse<PostResponse> createPost(
             @RequestPart CreatePostRequest request, @RequestPart("productImage") MultipartFile[] productImages)
@@ -36,7 +37,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ApiResponse<List<PostResponse>> getAllPosts() {
+    public ApiResponse<List<PostResponse>> getAllPosts() throws IOException {
         var result = postService.getAllPosts();
         return ApiResponse.<List<PostResponse>>builder()
                 .message("Get All Post Success")
@@ -70,4 +71,25 @@ public class PostController {
                 .result(result)
                 .build();
     }
+
+    @GetMapping("/search/{keyword}")
+    public ApiResponse<List<PostResponse>> searchPostsByTitle(@PathVariable String keyword) throws IOException {
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(postService.searchPostsByTitle(keyword))
+                .build();
+    }
+
+    @GetMapping("/status/{status}")
+    public ApiResponse<List<PostResponse>> searchByStatus(@PathVariable boolean status) throws IOException {
+            return ApiResponse.<List<PostResponse>>builder()
+                    .result(postService.searchPostsByStatus(status))
+                    .build();
+    }
+
+//    @DeleteMapping
+//    public ApiResponse<Void> deletePost(@RequestBody Post post ){
+//        postService.delete(post);
+//        return ApiResponse.<Void>builder()
+//                .build(); //  ApiResponse.<List<PostResponse>>
+//    }
 }
