@@ -30,7 +30,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();
 
-    @JsonIgnore
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
@@ -40,6 +40,7 @@ public class Product {
     @ManyToOne(cascade = CascadeType.ALL)
     BrandCollection brandCollection;
 
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     Category category;
 

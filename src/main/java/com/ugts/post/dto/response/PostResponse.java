@@ -3,8 +3,6 @@ package com.ugts.post.dto.response;
 import java.util.Date;
 
 import com.ugts.product.entity.Product;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

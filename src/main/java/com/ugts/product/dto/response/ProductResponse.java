@@ -6,7 +6,6 @@ import com.ugts.brand.entity.BrandLine;
 import com.ugts.brand.entity.Category;
 import com.ugts.product.entity.ProductImage;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 

@@ -92,9 +92,9 @@ public class BrandLineServiceImpl implements BrandLineService {
 
     @Override
     public BrandLineResponse getBrandLineByLineName(String brandLineName) {
-        var brandLine = brandLineRepository.findByLineName(brandLineName)
+        var brandLine = brandLineRepository
+                .findByLineName(brandLineName)
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_COLLECTION_NOT_EXISTED));
         return brandLineMapper.toBrandLineResponse(brandLine);
     }
-
 }
