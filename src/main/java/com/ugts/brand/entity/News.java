@@ -1,10 +1,10 @@
 package com.ugts.brand.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Story {
+public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;

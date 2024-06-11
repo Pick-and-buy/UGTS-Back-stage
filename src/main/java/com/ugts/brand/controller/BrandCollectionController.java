@@ -1,5 +1,7 @@
 package com.ugts.brand.controller;
 
+import java.io.IOException;
+
 import com.ugts.brand.dto.request.BrandCollectionRequest;
 import com.ugts.brand.dto.response.BrandCollectionResponse;
 import com.ugts.brand.service.BrandCollectionService;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/brand-collections")
@@ -26,8 +26,8 @@ public class BrandCollectionController {
     @PostMapping
     public ApiResponse<BrandCollectionResponse> createBrandCollection(
             @RequestPart BrandCollectionRequest request,
-            @RequestPart("brandCollectionImages") MultipartFile[] brandCollectionImages
-    ) throws IOException {
+            @RequestPart("brandCollectionImages") MultipartFile[] brandCollectionImages)
+            throws IOException {
         var result = brandCollectionService.createBrandCollection(request, brandCollectionImages);
         return ApiResponse.<BrandCollectionResponse>builder()
                 .message("Create new brand collection success")

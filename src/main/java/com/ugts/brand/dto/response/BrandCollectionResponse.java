@@ -1,14 +1,12 @@
 package com.ugts.brand.dto.response;
 
-import com.ugts.brand.entity.Brand;
+import java.util.Date;
+
 import com.ugts.brand.entity.BrandCollectionImage;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
