@@ -55,6 +55,7 @@ public enum ErrorCode {
 
     // Brand line
     BRAND_LINE_NOT_EXISTED(1001, "Brand line not exist!", HttpStatus.BAD_REQUEST),
+    BRAND_Line_ALREADY_EXISTED(1002, "Brand line has already existed!", HttpStatus.BAD_REQUEST),
 
     // Brand Collection
     BRAND_COLLECTION_NOT_EXISTED(1001, "Brand collection not exist!", HttpStatus.BAD_REQUEST),

@@ -17,12 +17,12 @@ public interface BrandCollectionMapper {
         @Mapping(
                 source = "brandCollectionImages",
                 target = "brandCollectionImages.collectionImageUrl",
-                qualifiedByName = "mapBrandCollectionImagesToLogoUrl")
+                qualifiedByName = "mapBrandCollectionImagesToImageUrl")
     })
     BrandCollectionResponse toBrandCollectionResponse(BrandCollection brandCollection);
 
-    @Named("mapBrandCollectionImagesToLogoUrl")
-    default String mapBrandCollectionImagesToLogoUrl(Set<BrandCollectionImage> brandCollectionImages) {
+    @Named("mapBrandCollectionImagesToImageUrl")
+    default String mapBrandCollectionImagesToImageUrl(Set<BrandCollectionImage> brandCollectionImages) {
         if (brandCollectionImages != null && !brandCollectionImages.isEmpty()) {
             return brandCollectionImages.iterator().next().getCollectionImageUrl();
         }

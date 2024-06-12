@@ -1,6 +1,7 @@
 package com.ugts.brand.dto.response;
 
 import java.util.Date;
+import java.util.Set;
 
 import com.ugts.brand.entity.BrandLineImage;
 import com.ugts.brand.entity.Category;
@@ -12,7 +13,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandLineResponse {
-    Category category;
+    Long id;
+    Set<Category> categories;
     String lineName;
     String description;
     String launchDate;
@@ -21,5 +23,5 @@ public class BrandLineResponse {
     Boolean availableStatus;
     Date createdAt;
     Date updatedAt;
-    BrandLineImage brandLineImage;
+    Set<BrandLineImage> brandLineImages;
 }

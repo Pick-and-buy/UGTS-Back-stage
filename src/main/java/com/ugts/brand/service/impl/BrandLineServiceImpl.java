@@ -46,7 +46,7 @@ public class BrandLineServiceImpl implements BrandLineService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         if (brandLineRepository.existsByBrandAndLineName(brand, request.getLineName())) {
-            throw new AppException(ErrorCode.BRAND_COLLECTION_EXISTED);
+            throw new AppException(ErrorCode.BRAND_Line_ALREADY_EXISTED);
         }
 
         var brandLine = BrandLine.builder()
@@ -64,7 +64,7 @@ public class BrandLineServiceImpl implements BrandLineService {
         var newBrandLine = brandLineRepository.save(brandLine);
 
         // upload brand line image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadBrandLineImagesToGCS(files, newBrandLine.getId());
+        List<String> fileUrls = googleCloudStorageService.uploadBrandLineImagesToGCS(files, brandLine.getId());
 
         // add brand line image for each URL
         for (String fileUrl : fileUrls) {
@@ -74,11 +74,13 @@ public class BrandLineServiceImpl implements BrandLineService {
             }
             // add brand line images to brand line
             var brandLineImage = BrandLineImage.builder()
-                    .brandLine(newBrandLine)
+                    .brandLine(brandLine)
                     .lineImageUrl(fileUrl)
                     .build();
             brandLine.getBrandLineImages().add(brandLineImage);
         }
+
+        brandLineRepository.save(brandLine);
 
         return brandLineMapper.toBrandLineResponse(brandLineRepository.save(newBrandLine));
     }
@@ -96,5 +98,15 @@ public class BrandLineServiceImpl implements BrandLineService {
                 .findByLineName(brandLineName)
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_COLLECTION_NOT_EXISTED));
         return brandLineMapper.toBrandLineResponse(brandLine);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    @Override
+    public void deleteBrandLine(String brandLineName) {
+        var brandLine = brandLineRepository
+                .findByLineName(brandLineName)
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+        brandLineRepository.delete(brandLine);
     }
 }

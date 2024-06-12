@@ -49,4 +49,9 @@ public class BrandLineController {
                 .result(result)
                 .build();
     }
+
+    @DeleteMapping
+    public void deleteBrandLine(@RequestParam String brandLineName) {
+        brandLineService.deleteBrandLine(brandLineName);
+    }
 }

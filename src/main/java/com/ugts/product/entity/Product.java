@@ -3,7 +3,6 @@ package com.ugts.product.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.entity.Brand;
 import com.ugts.brand.entity.BrandCollection;
