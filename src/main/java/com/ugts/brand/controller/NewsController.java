@@ -1,5 +1,7 @@
 package com.ugts.brand.controller;
 
+import java.util.List;
+
 import com.ugts.brand.dto.request.NewsRequest;
 import com.ugts.brand.dto.response.NewsResponse;
 import com.ugts.brand.service.NewsService;
@@ -7,11 +9,7 @@ import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

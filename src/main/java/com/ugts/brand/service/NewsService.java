@@ -1,9 +1,9 @@
 package com.ugts.brand.service;
 
+import java.util.List;
+
 import com.ugts.brand.dto.request.NewsRequest;
 import com.ugts.brand.dto.response.NewsResponse;
-
-import java.util.List;
 
 public interface NewsService {
     NewsResponse createNews(NewsRequest request);

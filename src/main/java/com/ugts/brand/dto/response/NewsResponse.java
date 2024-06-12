@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewsResponse {
-     String id;
-     String title;
-     String content;
+    String id;
+    String title;
+    String content;
     BrandLine brandLine;
 }

@@ -1,5 +1,7 @@
 package com.ugts.brand.dto.request;
 
+import java.util.List;
+
 import com.ugts.brand.dto.response.NewsResponse;
 import com.ugts.brand.entity.News;
 import com.ugts.brand.mapper.NewsMapper;
@@ -14,12 +16,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-public class NewsServiceImpl implements NewsService{
+public class NewsServiceImpl implements NewsService {
 
     BrandLineRepository brandLineRepository;
 
@@ -31,7 +31,8 @@ public class NewsServiceImpl implements NewsService{
     @Transactional
     @Override
     public NewsResponse createNews(NewsRequest request) {
-        var brandLine = brandLineRepository.findByLineName(request.getBrandLine().getLineName())
+        var brandLine = brandLineRepository
+                .findByLineName(request.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         var news = News.builder()
@@ -45,9 +46,7 @@ public class NewsServiceImpl implements NewsService{
 
     @Override
     public List<NewsResponse> getAllNews() {
-        return newsRepository.findAll().stream()
-                .map(newsMapper::toNewsResponse)
-                .toList();
+        return newsRepository.findAll().stream().map(newsMapper::toNewsResponse).toList();
     }
 
     @Override
@@ -62,7 +61,8 @@ public class NewsServiceImpl implements NewsService{
     public NewsResponse updateNews(NewsRequest request, String newsId) {
         var news = newsRepository.findById(newsId).orElseThrow(() -> new AppException(ErrorCode.NEWS_NOT_EXISTED));
 
-        var brandLine = brandLineRepository.findByLineName(request.getBrandLine().getLineName())
+        var brandLine = brandLineRepository
+                .findByLineName(request.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         news.setBrandLine(brandLine);
