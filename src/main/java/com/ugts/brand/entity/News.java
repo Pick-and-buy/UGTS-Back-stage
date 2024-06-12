@@ -18,14 +18,15 @@ public class News {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     BrandCollection brandCollection;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     BrandLine brandLine;
 
     String title;
 
+    @Column(length = 500)
     String content;
 
     Date createdAt;

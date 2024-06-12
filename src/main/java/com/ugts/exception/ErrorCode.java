@@ -76,6 +76,9 @@ public enum ErrorCode {
     POST_NOT_FOUND(1001, "Post not found", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(1001, "Product not exist", HttpStatus.BAD_REQUEST),
 
+    // NEWS
+    NEWS_NOT_EXISTED(1001, "News not exist", HttpStatus.BAD_REQUEST),
+
 // Comment
 ;
     int code;
