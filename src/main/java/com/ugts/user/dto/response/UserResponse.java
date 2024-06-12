@@ -1,7 +1,5 @@
 package com.ugts.user.dto.response;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 

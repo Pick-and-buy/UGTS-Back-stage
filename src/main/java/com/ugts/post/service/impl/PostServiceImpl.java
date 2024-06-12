@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.ugts.brand.repository.BrandCollectionRepository;
 import com.ugts.brand.repository.BrandLineRepository;
@@ -29,15 +31,11 @@ import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 @Service
 @RequiredArgsConstructor
@@ -130,7 +128,7 @@ public class PostServiceImpl implements IPostService {
 
         // save new post into database
         var newPost = postRepository.save(post);
-        //adding new document
+        // adding new document
         postSearchRepository.createOrUpdateDocument(post);
 
         // upload product image to GCS
@@ -192,7 +190,7 @@ public class PostServiceImpl implements IPostService {
         product.setStory(request.getProduct().getStory());
 
         var updatedProduct = productRepository.save(product);
-        //TODO: update post in elastic document
+        // TODO: update post in elastic document
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
@@ -218,34 +216,17 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> searchPostsByTitle(String keyword) throws IOException {
-        SearchRequest request = SearchRequest.of(s -> s
-                .index("posts")
-                .query(q -> q
-                        .match(t -> t
-                                .field("title")
-                                .query(keyword)
-                        )
-                )
-        );
+        SearchRequest request = SearchRequest.of(
+                s -> s.index("posts").query(q -> q.match(t -> t.field("title").query(keyword))));
 
         return getPostResponses(request);
     }
 
     @Override
     public List<PostResponse> searchPostsByStatus(boolean status) throws IOException {
-        SearchRequest request = SearchRequest.of(s -> s
-                .index("posts")
-                .query(q -> q
-                        .bool(b -> b
-                                .must(m -> m
-                                        .term(t -> t
-                                                .field("isAvailable")
-                                                .value(status)
-                                        )
-                                )
-                        )
-                )
-        );
+        SearchRequest request = SearchRequest.of(s -> s.index("posts")
+                .query(q -> q.bool(
+                        b -> b.must(m -> m.term(t -> t.field("isAvailable").value(status))))));
 
         return getPostResponses(request);
     }

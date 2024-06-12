@@ -44,7 +44,6 @@ public enum ErrorCode {
     USER_ALREADY_FOLLOWED(1015, "User already followed", HttpStatus.BAD_REQUEST),
     USER_NOT_FOLLOWED(1016, "User not followed", HttpStatus.BAD_REQUEST),
 
-
     // OTP
     INVALID_OTP(1001, "Invalid OTP", HttpStatus.BAD_REQUEST),
     OTP_EXPIRED(1002, "OTP has expired", HttpStatus.BAD_REQUEST),

@@ -1,10 +1,7 @@
 package com.ugts.user.dto.request;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.ugts.user.validator.DobConstraint;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,6 +16,6 @@ public class UserUpdateRequest {
     String firstName;
     String email;
 
-//    @DobConstraint(min = 14, message = "INVALID_DOB")
+    //    @DobConstraint(min = 14, message = "INVALID_DOB")
     Date dob;
 }
