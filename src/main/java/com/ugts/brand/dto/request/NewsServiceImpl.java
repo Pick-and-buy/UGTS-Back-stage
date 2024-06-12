@@ -45,7 +45,9 @@ public class NewsServiceImpl implements NewsService{
 
     @Override
     public List<NewsResponse> getAllNews() {
-        return List.of();
+        return newsRepository.findAll().stream()
+                .map(newsMapper::toNewsResponse)
+                .toList();
     }
 
     @Override

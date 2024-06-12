@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/brands/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/news/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)

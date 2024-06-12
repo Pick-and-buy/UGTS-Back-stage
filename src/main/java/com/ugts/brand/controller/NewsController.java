@@ -7,10 +7,9 @@ import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +24,15 @@ public class NewsController {
         var result = newsService.createNews(request);
         return ApiResponse.<NewsResponse>builder()
                 .message("Create news success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<NewsResponse>> getAllNews() {
+        var result = newsService.getAllNews();
+        return ApiResponse.<List<NewsResponse>>builder()
+                .message("Get all news success")
                 .result(result)
                 .build();
     }
