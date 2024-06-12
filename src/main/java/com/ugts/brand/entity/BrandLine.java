@@ -1,13 +1,14 @@
 package com.ugts.brand.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -25,8 +26,12 @@ public class BrandLine {
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
+    @OneToMany(mappedBy = "brandLine", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<Category> categories = new HashSet<>();
+
     String lineName;
 
+    @Column(length = 500)
     String description;
 
     String launchDate;
