@@ -52,7 +52,8 @@ public class NewsServiceImpl implements NewsService{
 
     @Override
     public NewsResponse getNewsById(String newsId) {
-        return null;
+        var news = newsRepository.findById(newsId).orElseThrow(() -> new AppException(ErrorCode.NEWS_NOT_EXISTED));
+        return newsMapper.toNewsResponse(news);
     }
 
     @Override

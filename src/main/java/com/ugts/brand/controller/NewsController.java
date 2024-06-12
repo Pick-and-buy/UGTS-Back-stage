@@ -36,4 +36,13 @@ public class NewsController {
                 .result(result)
                 .build();
     }
+
+    @GetMapping("/{newsId}")
+    public ApiResponse<NewsResponse> getNewsById(@PathVariable String newsId) {
+        var result = newsService.getNewsById(newsId);
+        return ApiResponse.<NewsResponse>builder()
+                .message("Get news success")
+                .result(result)
+                .build();
+    }
 }
