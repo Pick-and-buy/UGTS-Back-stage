@@ -56,4 +56,9 @@ public class NewsController {
                 .result(result)
                 .build();
     }
+
+    @DeleteMapping
+    public void deleteNews(@RequestParam String newsId) {
+        newsService.deleteNews(newsId);
+    }
 }

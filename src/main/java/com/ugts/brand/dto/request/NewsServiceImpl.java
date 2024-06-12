@@ -72,8 +72,10 @@ public class NewsServiceImpl implements NewsService{
         return newsMapper.toNewsResponse(newsRepository.save(news));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
     public void deleteNews(String newsId) {
-
+        newsRepository.deleteById(newsId);
     }
 }
