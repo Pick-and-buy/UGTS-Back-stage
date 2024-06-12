@@ -23,4 +23,10 @@ public class Brand {
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<BrandLogo> brandLogos = new HashSet<>();
+
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<BrandCollection> brandCollections = new HashSet<>();
+
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<BrandLine> brandLines = new HashSet<>();
 }
