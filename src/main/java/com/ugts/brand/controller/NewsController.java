@@ -7,6 +7,8 @@ import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +44,15 @@ public class NewsController {
         var result = newsService.getNewsById(newsId);
         return ApiResponse.<NewsResponse>builder()
                 .message("Get news success")
+                .result(result)
+                .build();
+    }
+
+    @PutMapping
+    public ApiResponse<NewsResponse> updateNews(@RequestBody NewsRequest request, @RequestParam String newsId) {
+        var result = newsService.updateNews(request, newsId);
+        return ApiResponse.<NewsResponse>builder()
+                .message("Update news with id " + newsId + " success")
                 .result(result)
                 .build();
     }

@@ -56,8 +56,24 @@ public class NewsServiceImpl implements NewsService{
         return newsMapper.toNewsResponse(news);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     @Override
-    public NewsRequest updateNews(NewsRequest request, String newsId) {
-        return null;
+    public NewsResponse updateNews(NewsRequest request, String newsId) {
+        var news = newsRepository.findById(newsId).orElseThrow(() -> new AppException(ErrorCode.NEWS_NOT_EXISTED));
+
+        var brandLine = brandLineRepository.findByLineName(request.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        news.setBrandLine(brandLine);
+        news.setTitle(request.getTitle());
+        news.setContent(request.getContent());
+
+        return newsMapper.toNewsResponse(newsRepository.save(news));
+    }
+
+    @Override
+    public void deleteNews(String newsId) {
+
     }
 }

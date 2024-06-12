@@ -12,6 +12,7 @@ public interface NewsService {
 
     NewsResponse getNewsById(String newsId);
 
-    NewsRequest updateNews(NewsRequest request, String newsId);
+    NewsResponse updateNews(NewsRequest request, String newsId);
 
+    void deleteNews(String newsId);
 }
