@@ -34,7 +34,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT)
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/brand-lines/**")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/brands/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/news/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

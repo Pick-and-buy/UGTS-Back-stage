@@ -76,4 +76,18 @@ public class GoogleCloudStorageService {
         String userAvatarsFolder = "user-avatars/" + userId;
         return uploadFileToGCS(avatar, userAvatarsFolder);
     }
+
+    // Upload brand collection images to GCP
+    public List<String> uploadBrandCollectionImagesToGCS(MultipartFile[] brandCollectionImages, Long brandCollectionId)
+            throws IOException {
+        String productImagesFolder = "brand-collection-images/" + brandCollectionId;
+        return uploadFilesToGCS(brandCollectionImages, productImagesFolder);
+    }
+
+    // Upload brand line images to GCP
+    public List<String> uploadBrandLineImagesToGCS(MultipartFile[] brandLineImages, Long brandLineId)
+            throws IOException {
+        String productImagesFolder = "brand-line-images/" + brandLineId;
+        return uploadFilesToGCS(brandLineImages, productImagesFolder);
+    }
 }

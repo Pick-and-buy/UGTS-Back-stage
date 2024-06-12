@@ -7,7 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.ugts.brand.repository.BrandCollectionRepository;
+import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
+import com.ugts.brand.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
@@ -55,6 +58,12 @@ public class PostServiceImpl implements IPostService {
 
     UserRepository userRepository;
 
+    CategoryRepository categoryRepository;
+
+    BrandLineRepository brandLineRepository;
+
+    BrandCollectionRepository brandCollectionRepository;
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -64,19 +73,37 @@ public class PostServiceImpl implements IPostService {
                 .findByName(postRequest.getBrand().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
+        var brandLine = brandLineRepository
+                .findByLineName(postRequest.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         // create product process
         var product = Product.builder()
                 .name(postRequest.getProduct().getName())
                 .brand(brand)
+                .brandLine(brandLine)
+                .category(category)
                 .price(postRequest.getProduct().getPrice())
-                .color(postRequest.getProduct().getColor())
+                .interiorColor(postRequest.getProduct().getInteriorColor())
+                .exteriorColor(postRequest.getProduct().getExteriorColor())
                 .size(postRequest.getProduct().getSize())
-                .condition(postRequest.getProduct().getCondition())
+                .width(postRequest.getProduct().getWidth())
+                .height(postRequest.getProduct().getHeight())
+                .length(postRequest.getProduct().getLength())
+                .drop(postRequest.getProduct().getDrop())
+                .fit(postRequest.getProduct().getFit())
+                .referenceCode(postRequest.getProduct().getReferenceCode())
+                .manufactureYear(postRequest.getProduct().getManufactureYear())
                 .material(postRequest.getProduct().getMaterial())
+                .condition(postRequest.getProduct().getCondition())
                 .accessories(postRequest.getProduct().getAccessories())
                 .dateCode(postRequest.getProduct().getDateCode())
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
+                .story(postRequest.getProduct().getStory())
                 .isVerify(false)
                 .build();
 
@@ -146,14 +173,23 @@ public class PostServiceImpl implements IPostService {
 
         product.setName(request.getProduct().getName());
         product.setPrice(request.getProduct().getPrice());
-        product.setColor(request.getProduct().getColor());
+        product.setInteriorColor(request.getProduct().getInteriorColor());
+        product.setExteriorColor(request.getProduct().getExteriorColor());
         product.setSize(request.getProduct().getSize());
-        product.setCondition(request.getProduct().getCondition());
+        product.setWidth(request.getProduct().getWidth());
+        product.setHeight(request.getProduct().getHeight());
+        product.setLength(request.getProduct().getLength());
+        product.setDrop(request.getProduct().getDrop());
+        product.setFit(request.getProduct().getFit());
+        product.setReferenceCode(request.getProduct().getReferenceCode());
+        product.setManufactureYear(request.getProduct().getManufactureYear());
         product.setMaterial(request.getProduct().getMaterial());
+        product.setCondition(request.getProduct().getCondition());
         product.setAccessories(request.getProduct().getAccessories());
         product.setDateCode(request.getProduct().getDateCode());
         product.setSerialNumber(request.getProduct().getSerialNumber());
         product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+        product.setStory(request.getProduct().getStory());
 
         var updatedProduct = productRepository.save(product);
         //TODO: update post in elastic document

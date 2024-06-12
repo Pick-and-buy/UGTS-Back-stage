@@ -1,8 +1,6 @@
 package com.ugts.brand.dto.response;
 
-import java.util.Set;
-
-import com.ugts.brand.entity.BrandLogo;
+import com.ugts.brand.entity.BrandLine;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandResponse {
+public class CategoryResponse {
     private String id;
-    private String name;
-    Set<BrandLogo> brandLogos;
+    private String categoryName;
+    private BrandLine brandLine;
 }
