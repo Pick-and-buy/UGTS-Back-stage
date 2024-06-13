@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostController {
 
-    private final IPostService postService;
+    IPostService postService;
 
     @PostMapping
     public ApiResponse<PostResponse> createPost(

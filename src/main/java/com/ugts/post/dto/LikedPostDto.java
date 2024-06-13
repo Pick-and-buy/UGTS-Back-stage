@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class LikedPostDto {
     String id;
+    String title;
+    Boolean isAvailable;
 }

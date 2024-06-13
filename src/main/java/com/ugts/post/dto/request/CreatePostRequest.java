@@ -16,7 +16,6 @@ public class CreatePostRequest {
     String title;
     String description;
     Boolean isAvailable;
-
     Brand brand;
     BrandLine brandLine;
     Category category;
