@@ -1,5 +1,6 @@
 package com.ugts.product.dto.response;
 
+import com.ugts.brand.dto.GeneralBrandInformationDto;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.BrandCollection;
 import com.ugts.brand.entity.BrandLine;
@@ -15,13 +16,12 @@ public class ProductResponse {
     String id;
     String name;
     ProductImage productImage;
-    BrandResponse brand;
+    GeneralBrandInformationDto brand;
     BrandLine brandLine;
     BrandCollection brandCollection;
     Category category;
     double price;
-    String exteriorColor;
-    String interiorColor;
+    String color;
     String size;
     String width;
     String height;
@@ -30,13 +30,13 @@ public class ProductResponse {
     String fit;
     String referenceCode;
     String manufactureYear;
-    String material;
+    String exteriorMaterial;
+    String interiorMaterial;
     String condition;
     String accessories;
     String dateCode;
     String serialNumber;
     String purchasedPlace;
     String story;
-
     Boolean isVerify;
 }

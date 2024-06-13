@@ -64,7 +64,11 @@ public class PostServiceImpl implements IPostService {
     @PreAuthorize("hasRole('USER')")
     public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
         // Validate the CreatePostRequest object
-        if (postRequest == null || postRequest.getBrand() == null || postRequest.getBrandLine() == null || postRequest.getCategory() == null || postRequest.getProduct() == null) {
+        if (postRequest == null
+                || postRequest.getBrand() == null
+                || postRequest.getBrandLine() == null
+                || postRequest.getCategory() == null
+                || postRequest.getProduct() == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
 
