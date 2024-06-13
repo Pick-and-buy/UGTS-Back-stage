@@ -26,6 +26,8 @@ public class Product {
 
     String name;
 
+    String thumbnail;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();
 
@@ -44,8 +46,7 @@ public class Product {
     Category category;
 
     double price;
-    String exteriorColor;
-    String interiorColor;
+    String color;
     String size;
     String width;
     String height;
@@ -54,7 +55,8 @@ public class Product {
     String fit;
     String referenceCode;
     String manufactureYear;
-    String material;
+    String exteriorMaterial;
+    String interiorMaterial;
     String condition;
     String accessories;
     String dateCode;

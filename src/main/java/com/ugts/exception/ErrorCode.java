@@ -71,6 +71,7 @@ public enum ErrorCode {
     POST_NOT_EXISTED(1003, "Post not exist!", HttpStatus.BAD_REQUEST),
     POST_ALREADY_LIKED(1004, "Post has already liked!", HttpStatus.BAD_REQUEST),
     POST_ALREADY_UNLIKED(1005, "Post has already unliked!", HttpStatus.BAD_REQUEST),
+    INVALID_INPUT(1006, "Input can not be null", HttpStatus.BAD_REQUEST),
 
     // Post
     POST_NOT_FOUND(1001, "Post not found", HttpStatus.BAD_REQUEST),

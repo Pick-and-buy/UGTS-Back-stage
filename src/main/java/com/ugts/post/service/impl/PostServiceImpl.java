@@ -9,7 +9,6 @@ import java.util.List;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import com.ugts.brand.repository.BrandCollectionRepository;
 import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brand.repository.CategoryRepository;
@@ -60,12 +59,15 @@ public class PostServiceImpl implements IPostService {
 
     BrandLineRepository brandLineRepository;
 
-    BrandCollectionRepository brandCollectionRepository;
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
+        // Validate the CreatePostRequest object
+        if (postRequest == null || postRequest.getBrand() == null || postRequest.getBrandLine() == null || postRequest.getCategory() == null || postRequest.getProduct() == null) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
@@ -85,17 +87,15 @@ public class PostServiceImpl implements IPostService {
                 .brandLine(brandLine)
                 .category(category)
                 .price(postRequest.getProduct().getPrice())
-                .interiorColor(postRequest.getProduct().getInteriorColor())
-                .exteriorColor(postRequest.getProduct().getExteriorColor())
+                .color(postRequest.getProduct().getColor())
                 .size(postRequest.getProduct().getSize())
                 .width(postRequest.getProduct().getWidth())
                 .height(postRequest.getProduct().getHeight())
                 .length(postRequest.getProduct().getLength())
-                .drop(postRequest.getProduct().getDrop())
-                .fit(postRequest.getProduct().getFit())
                 .referenceCode(postRequest.getProduct().getReferenceCode())
                 .manufactureYear(postRequest.getProduct().getManufactureYear())
-                .material(postRequest.getProduct().getMaterial())
+                .interiorMaterial(postRequest.getProduct().getInteriorMaterial())
+                .exteriorMaterial(postRequest.getProduct().getExteriorMaterial())
                 .condition(postRequest.getProduct().getCondition())
                 .accessories(postRequest.getProduct().getAccessories())
                 .dateCode(postRequest.getProduct().getDateCode())
@@ -171,8 +171,7 @@ public class PostServiceImpl implements IPostService {
 
         product.setName(request.getProduct().getName());
         product.setPrice(request.getProduct().getPrice());
-        product.setInteriorColor(request.getProduct().getInteriorColor());
-        product.setExteriorColor(request.getProduct().getExteriorColor());
+        product.setColor(request.getProduct().getColor());
         product.setSize(request.getProduct().getSize());
         product.setWidth(request.getProduct().getWidth());
         product.setHeight(request.getProduct().getHeight());
@@ -181,7 +180,8 @@ public class PostServiceImpl implements IPostService {
         product.setFit(request.getProduct().getFit());
         product.setReferenceCode(request.getProduct().getReferenceCode());
         product.setManufactureYear(request.getProduct().getManufactureYear());
-        product.setMaterial(request.getProduct().getMaterial());
+        product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
+        product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setCondition(request.getProduct().getCondition());
         product.setAccessories(request.getProduct().getAccessories());
         product.setDateCode(request.getProduct().getDateCode());
