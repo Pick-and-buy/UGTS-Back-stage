@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.product.dto.response.ProductResponse;
-import com.ugts.product.entity.Product;
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AccessLevel;
 import lombok.Getter;

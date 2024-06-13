@@ -1,7 +1,6 @@
 package com.ugts.product.dto.response;
 
 import com.ugts.brand.dto.GeneralBrandInformationDto;
-import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.entity.BrandCollection;
 import com.ugts.brand.entity.BrandLine;
 import com.ugts.brand.entity.Category;
