@@ -20,5 +20,4 @@ public class GeneralUserInformationDto {
     String phoneNumber;
     String firstName;
     String lastName;
-    Set<LikedPostDto> likedPosts;
 }

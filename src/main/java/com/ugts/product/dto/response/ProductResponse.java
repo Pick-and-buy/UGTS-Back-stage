@@ -1,10 +1,11 @@
 package com.ugts.product.dto.response;
 
+import java.util.Set;
+
 import com.ugts.brand.dto.GeneralBrandInformationDto;
+import com.ugts.brand.dto.GeneralBrandLineInformationDto;
 import com.ugts.brand.entity.BrandCollection;
-import com.ugts.brand.entity.BrandLine;
 import com.ugts.brand.entity.Category;
-import com.ugts.product.entity.ProductImage;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -14,9 +15,10 @@ import lombok.experimental.FieldDefaults;
 public class ProductResponse {
     String id;
     String name;
-    ProductImage productImage;
+    String thumbnail;
+    Set<ProductImageResponse> images;
     GeneralBrandInformationDto brand;
-    BrandLine brandLine;
+    GeneralBrandLineInformationDto brandLine;
     BrandCollection brandCollection;
     Category category;
     double price;

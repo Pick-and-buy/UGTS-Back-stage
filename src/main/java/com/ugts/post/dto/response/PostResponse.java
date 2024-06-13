@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ugts.comment.GeneralCommentInformationDto;
+import com.ugts.comment.dto.GeneralCommentInformationDto;
 import com.ugts.product.dto.response.ProductResponse;
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AccessLevel;

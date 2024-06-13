@@ -1,4 +1,4 @@
-package com.ugts.comment;
+package com.ugts.comment.dto;
 
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AccessLevel;
