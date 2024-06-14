@@ -72,9 +72,18 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTED);
         }
 
+        var brandLine = request.getBrandLine();
+        if (brandLine == null || brandLine.getLineName() == null) {
+            throw new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED);
+        }
+
+        var existingBrandLine = brandLineRepository.findByLineName(brandLine.getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
         var category = categoryRepository.findByCategoryName(categoryName)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
+        category.setBrandLine(existingBrandLine);
         category.setCategoryName(request.getCategoryName());
         return categoryMapper.categoryToCategoryResponse(categoryRepository.save(category));
     }
