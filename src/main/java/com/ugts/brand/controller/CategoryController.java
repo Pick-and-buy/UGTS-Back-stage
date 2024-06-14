@@ -62,4 +62,23 @@ public class CategoryController {
                 .result(result)
                 .build();
     }
+
+    /**
+     * Update a category based on the provided request and category name.
+     *
+     * @param  request      The CategoryRequest object containing the updated category information
+     * @param  categoryName The name of the category to update
+     * @return              ApiResponse containing the updated CategoryResponse object
+     */
+    @PutMapping
+    public ApiResponse<CategoryResponse> updateCategory(
+            @RequestBody CategoryRequest request,
+            @RequestParam String categoryName
+    ) {
+        var result = categoryService.updateCategory(request, categoryName);
+        return ApiResponse.<CategoryResponse>builder()
+                .message("Update category success")
+                .result(result)
+                .build();
+    }
 }

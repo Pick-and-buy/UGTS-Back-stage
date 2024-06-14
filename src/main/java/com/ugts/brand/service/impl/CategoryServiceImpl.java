@@ -63,8 +63,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse updateCategory(CategoryRequest request) {
-        return null;
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public CategoryResponse updateCategory(CategoryRequest request, String categoryName) {
+        var existingCategory = categoryRepository.findByCategoryName(request.getCategoryName());
+
+        if (existingCategory.isPresent() && !existingCategory.get().getCategoryName().equals(categoryName)) {
+            throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTED);
+        }
+
+        var category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
+        category.setCategoryName(request.getCategoryName());
+        return categoryMapper.categoryToCategoryResponse(categoryRepository.save(category));
     }
 
     @Override
