@@ -26,7 +26,7 @@ public class Product {
 
     String name;
 
-//    String thumbnail;
+    //    String thumbnail;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();

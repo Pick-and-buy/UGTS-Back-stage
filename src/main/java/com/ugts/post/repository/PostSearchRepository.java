@@ -12,17 +12,20 @@ import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.ugts.post.entity.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostSearchRepository {
     //    List<Post> findByTitle(String title);
 
     public static final String POSTS = "posts";
 
-    @Autowired
-    private ElasticsearchClient elasticsearchClient;
+    ElasticsearchClient elasticsearchClient;
 
     public String createOrUpdateDocument(Post post) throws IOException {
         IndexResponse response =
@@ -46,9 +49,7 @@ public class PostSearchRepository {
         SearchResponse<Post> response = elasticsearchClient.search(request, Post.class);
 
         List<Post> posts = new ArrayList<>();
-        response.hits().hits().forEach(object -> {
-            posts.add(object.source());
-        });
+        response.hits().hits().forEach(object -> posts.add(object.source()));
         return posts;
     }
 
@@ -56,11 +57,9 @@ public class PostSearchRepository {
         DeleteRequest deleteRequest = DeleteRequest.of(d -> d.index(POSTS).id(postId));
         DeleteResponse response = elasticsearchClient.delete(deleteRequest);
 
-        return new StringBuffer(
-                        response.result().name().equalsIgnoreCase("NOT_FOUND")
-                                ? "Document not found with id" + postId
-                                : "Document has been deleted")
-                .toString();
+        return (response.result().name().equalsIgnoreCase("NOT_FOUND")
+                ? "Document not found with id" + postId
+                : "Document has been deleted");
     }
 
     public String bulkSave(List<Post> posts) throws IOException {
@@ -77,7 +76,6 @@ public class PostSearchRepository {
     }
 
     public SearchResponse<Post> search(SearchRequest request, Class<Post> postClass) throws IOException {
-        SearchResponse<Post> response = elasticsearchClient.search(request, postClass);
-        return response;
+        return elasticsearchClient.search(request, postClass);
     }
 }

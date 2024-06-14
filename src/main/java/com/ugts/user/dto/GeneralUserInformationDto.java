@@ -1,8 +1,5 @@
 package com.ugts.user.dto;
 
-import java.util.Set;
-
-import com.ugts.post.dto.LikedPostDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
