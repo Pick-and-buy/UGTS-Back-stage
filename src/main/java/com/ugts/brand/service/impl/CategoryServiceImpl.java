@@ -80,5 +80,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(String categoryName) {}
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCategory(String categoryName) {
+        categoryRepository.deleteByCategoryName(categoryName);
+    }
 }
