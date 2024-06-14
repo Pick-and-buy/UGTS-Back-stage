@@ -49,12 +49,49 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getCategories() {
-        return List.of();
+    public List<CategoryResponse> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(categoryMapper::categoryToCategoryResponse)
+                .toList();
     }
 
     @Override
     public CategoryResponse getCategoryByCategoryName(String categoryName) {
-        return null;
+        var category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        return categoryMapper.categoryToCategoryResponse(category);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public CategoryResponse updateCategory(CategoryRequest request, String categoryName) {
+        var existingCategory = categoryRepository.findByCategoryName(request.getCategoryName());
+
+        if (existingCategory.isPresent() && !existingCategory.get().getCategoryName().equals(categoryName)) {
+            throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTED);
+        }
+
+        var brandLine = request.getBrandLine();
+        if (brandLine == null || brandLine.getLineName() == null) {
+            throw new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED);
+        }
+
+        var existingBrandLine = brandLineRepository.findByLineName(brandLine.getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
+        category.setBrandLine(existingBrandLine);
+        category.setCategoryName(request.getCategoryName());
+        return categoryMapper.categoryToCategoryResponse(categoryRepository.save(category));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCategory(String categoryName) {
+        categoryRepository.deleteByCategoryName(categoryName);
     }
 }

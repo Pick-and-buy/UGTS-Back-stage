@@ -1,15 +1,18 @@
 package com.ugts.brand.dto.response;
 
-import com.ugts.brand.entity.BrandLine;
+import com.ugts.brand.dto.GeneralBrandLineInformationDto;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE )
 public class CategoryResponse {
-    private String id;
-    private String categoryName;
-    private BrandLine brandLine;
+    String id;
+    String categoryName;
+    BrandLineCategoryResponseDto brandLine;
 }
