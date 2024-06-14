@@ -49,12 +49,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getCategories() {
-        return List.of();
+    public List<CategoryResponse> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(categoryMapper::categoryToCategoryResponse)
+                .toList();
     }
 
     @Override
     public CategoryResponse getCategoryByCategoryName(String categoryName) {
         return null;
     }
+
+    @Override
+    public CategoryResponse updateCategory(CategoryRequest request) {
+        return null;
+    }
+
+    @Override
+    public void deleteCategory(String categoryName) {}
 }
