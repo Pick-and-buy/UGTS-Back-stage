@@ -57,7 +57,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getCategoryByCategoryName(String categoryName) {
-        return null;
+        var category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        return categoryMapper.categoryToCategoryResponse(category);
     }
 
     @Override

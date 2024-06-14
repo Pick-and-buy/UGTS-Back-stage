@@ -47,4 +47,19 @@ public class CategoryController {
                 .result(result)
                 .build();
     }
+
+    /**
+     * Retrieves a category by its name and returns it in an ApiResponse.
+     *
+     * @param  categoryName    the name of the category to retrieve
+     * @return                ApiResponse containing the retrieved CategoryResponse object
+     */
+    @GetMapping("/category-name")
+    public ApiResponse<CategoryResponse> getCategoryByCategoryName(@RequestParam String categoryName) {
+        var result = categoryService.getCategoryByCategoryName(categoryName);
+        return ApiResponse.<CategoryResponse>builder()
+                .message("Get category success")
+                .result(result)
+                .build();
+    }
 }
