@@ -53,7 +53,7 @@ public class PostController {
                 .build();
     }
 
-    @GetMapping(value = "/{postId}", consumes = "application/x-www-form-urlencoded")
+    @GetMapping(value = "/{postId}")
     public ApiResponse<PostResponse> getPostById(@PathVariable String postId) {
         var result = postService.getPostById(postId);
         return ApiResponse.<PostResponse>builder()
