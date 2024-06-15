@@ -100,7 +100,7 @@ public class PostServiceImpl implements IPostService {
                 .manufactureYear(postRequest.getProduct().getManufactureYear())
                 .interiorMaterial(postRequest.getProduct().getInteriorMaterial())
                 .exteriorMaterial(postRequest.getProduct().getExteriorMaterial())
-                .condition(postRequest.getProduct().getCondition())
+                .condition(postRequest.getCondition())
                 .accessories(postRequest.getProduct().getAccessories())
                 .dateCode(postRequest.getProduct().getDateCode())
                 .serialNumber(postRequest.getProduct().getSerialNumber())
@@ -180,8 +180,6 @@ public class PostServiceImpl implements IPostService {
         product.setWidth(request.getProduct().getWidth());
         product.setHeight(request.getProduct().getHeight());
         product.setLength(request.getProduct().getLength());
-        product.setDrop(request.getProduct().getDrop());
-        product.setFit(request.getProduct().getFit());
         product.setReferenceCode(request.getProduct().getReferenceCode());
         product.setManufactureYear(request.getProduct().getManufactureYear());
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());

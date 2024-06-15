@@ -51,13 +51,14 @@ public class Product {
     String width;
     String height;
     String length;
-    String drop;
-    String fit;
     String referenceCode;
     String manufactureYear;
     String exteriorMaterial;
     String interiorMaterial;
-    String condition;
+
+    @Enumerated(EnumType.STRING)
+    Condition condition;
+
     String accessories;
     String dateCode;
     String serialNumber;
