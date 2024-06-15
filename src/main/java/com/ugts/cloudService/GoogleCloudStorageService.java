@@ -90,4 +90,10 @@ public class GoogleCloudStorageService {
         String productImagesFolder = "brand-line-images/" + brandLineId;
         return uploadFilesToGCS(brandLineImages, productImagesFolder);
     }
+
+    // Upload user avatar to GCP
+    public String uploadNewsBannerToGCS(MultipartFile banner, String newsId) throws IOException {
+        String newsBannerFolder = "news-banner/" + newsId;
+        return uploadFileToGCS(banner, newsBannerFolder);
+    }
 }

@@ -1,5 +1,6 @@
 package com.ugts.brand.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ugts.brand.dto.request.NewsRequest;
@@ -10,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +22,9 @@ public class NewsController {
     NewsService newsService;
 
     @PostMapping
-    public ApiResponse<NewsResponse> createNews(@RequestBody NewsRequest request) {
-        var result = newsService.createNews(request);
+    public ApiResponse<NewsResponse> createNews(@RequestPart NewsRequest request, @RequestPart MultipartFile banner)
+            throws IOException {
+        var result = newsService.createNews(request, banner);
         return ApiResponse.<NewsResponse>builder()
                 .message("Create news success")
                 .result(result)
@@ -47,8 +50,10 @@ public class NewsController {
     }
 
     @PutMapping
-    public ApiResponse<NewsResponse> updateNews(@RequestBody NewsRequest request, @RequestParam String newsId) {
-        var result = newsService.updateNews(request, newsId);
+    public ApiResponse<NewsResponse> updateNews(
+            @RequestPart NewsRequest request, @RequestParam String newsId, @RequestPart MultipartFile banner)
+            throws IOException {
+        var result = newsService.updateNews(request, newsId, banner);
         return ApiResponse.<NewsResponse>builder()
                 .message("Update news with id " + newsId + " success")
                 .result(result)

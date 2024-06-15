@@ -10,6 +10,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class NewsRequest {
     BrandLine brandLine;
+    String banner;
     String title;
     String content;
+    String subTitle1;
+    String subContent1;
+    String subTitle2;
+    String subContent2;
+    String subTitle3;
+    String subContent3;
 }
