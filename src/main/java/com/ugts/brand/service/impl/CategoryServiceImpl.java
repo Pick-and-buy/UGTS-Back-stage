@@ -57,7 +57,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getCategoryByCategoryName(String categoryName) {
-        var category = categoryRepository.findByCategoryName(categoryName)
+        var category = categoryRepository
+                .findByCategoryName(categoryName)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         return categoryMapper.categoryToCategoryResponse(category);
     }
@@ -68,7 +69,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(CategoryRequest request, String categoryName) {
         var existingCategory = categoryRepository.findByCategoryName(request.getCategoryName());
 
-        if (existingCategory.isPresent() && !existingCategory.get().getCategoryName().equals(categoryName)) {
+        if (existingCategory.isPresent()
+                && !existingCategory.get().getCategoryName().equals(categoryName)) {
             throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTED);
         }
 
@@ -77,10 +79,12 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED);
         }
 
-        var existingBrandLine = brandLineRepository.findByLineName(brandLine.getLineName())
+        var existingBrandLine = brandLineRepository
+                .findByLineName(brandLine.getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
-        var category = categoryRepository.findByCategoryName(categoryName)
+        var category = categoryRepository
+                .findByCategoryName(categoryName)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
         category.setBrandLine(existingBrandLine);

@@ -72,9 +72,7 @@ public class CategoryController {
      */
     @PutMapping
     public ApiResponse<CategoryResponse> updateCategory(
-            @RequestBody CategoryRequest request,
-            @RequestParam String categoryName
-    ) {
+            @RequestBody CategoryRequest request, @RequestParam String categoryName) {
         var result = categoryService.updateCategory(request, categoryName);
         return ApiResponse.<CategoryResponse>builder()
                 .message("Update category success")
@@ -91,8 +89,6 @@ public class CategoryController {
     @DeleteMapping
     public ApiResponse<String> deleteCategory(@RequestParam String categoryName) {
         categoryService.deleteCategory(categoryName);
-        return ApiResponse.<String>builder()
-                .message("Delete category success")
-                .build();
+        return ApiResponse.<String>builder().message("Delete category success").build();
     }
 }

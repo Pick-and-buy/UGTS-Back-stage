@@ -1,6 +1,5 @@
 package com.ugts.brand.dto.response;
 
-import com.ugts.brand.dto.GeneralBrandLineInformationDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE )
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryResponse {
     String id;
     String categoryName;
