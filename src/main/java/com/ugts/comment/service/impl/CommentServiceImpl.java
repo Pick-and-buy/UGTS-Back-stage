@@ -1,5 +1,6 @@
 package com.ugts.comment.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import com.ugts.post.entity.Post;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +38,15 @@ public class CommentServiceImpl implements ICommentService {
             // TODO: create comment, check if any bad words
             User user = userRepository
                     .findById(requestDto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
             Post post = postRepository
                     .findById(requestDto.getPostId())
-                    .orElseThrow(() -> new RuntimeException("Post not found"));
-
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+            if (Objects.equals(requestDto.getCommentContent(), "") ||
+                    Objects.isNull(requestDto.getUserId()) ||
+                    Objects.isNull(requestDto.getPostId())) {
+                throw new IllegalArgumentException("Comment request must have non-empty content, userId, and postId");
+            }
             Comment saveComment = commentMapper.toComment(requestDto, user, post);
             String filteredContent = commentValidationService.filterBadWords(requestDto.getCommentContent());
             saveComment.setCommentContent(filteredContent);
@@ -55,6 +61,9 @@ public class CommentServiceImpl implements ICommentService {
 
     @Override
     public List<CommentResponseDto> getCommentsByPostId(String postId) {
+        if (postId == null) {
+            return new ArrayList<>();
+        }
         return commentRepository.findByPostId(postId).stream()
                 .map(commentMapper::toCommentResponse)
                 .collect(Collectors.toList());
