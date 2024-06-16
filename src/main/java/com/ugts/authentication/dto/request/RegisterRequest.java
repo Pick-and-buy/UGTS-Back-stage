@@ -1,6 +1,7 @@
 package com.ugts.authentication.dto.request;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import com.ugts.user.validator.DobConstraint;
 import jakarta.validation.constraints.Email;
@@ -46,6 +47,6 @@ public class RegisterRequest {
     @Size(min = 10, max = 10, message = "PHONE_NUMBER_INVALID")
     String phoneNumber;
 
-    @DobConstraint(min = 14, message = "INVALID_DOB")
-    LocalDate dob;
+//    @DobConstraint(min = 14, message = "INVALID_DOB")
+    Date dob;
 }

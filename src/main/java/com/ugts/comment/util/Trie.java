@@ -28,18 +28,6 @@ public class Trie {
         }
     }
 
-    public boolean containsBadWord(String word) {
-        TrieNode current = root;
-        for (char ch : word.toCharArray()) {
-            TrieNode node = current.getChildren().get(ch);
-            if (node == null) {
-                return false;
-            }
-            current = node;
-        }
-        return current.isEndOfWord();
-    }
-
     public void buildTrie(List<String> words) {
         for (String word : words) {
             insert(word);
