@@ -8,16 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.elasticsearch.client.RestClient;
 
 @Configuration
-public class ElasticSearchConfiguration  {
+public class ElasticSearchConfiguration {
     @Bean
     public RestClient getRestClient() {
-        return RestClient.builder(
-                new HttpHost("localhost", 9200)).build();
+        return RestClient.builder(new HttpHost("localhost", 9200)).build();
     }
 
     @Bean
@@ -29,9 +28,8 @@ public class ElasticSearchConfiguration  {
         return new RestClientTransport(getRestClient(), new JacksonJsonpMapper());
     }
 
-
     @Bean
-    public ElasticsearchClient getElasticsearchClient(){
+    public ElasticsearchClient getElasticsearchClient() {
         return new ElasticsearchClient(getElasticsearchTransport());
     }
 }

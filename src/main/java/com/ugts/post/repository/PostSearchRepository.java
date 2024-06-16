@@ -1,5 +1,10 @@
 package com.ugts.post.repository;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
@@ -7,73 +12,63 @@ import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.ugts.post.entity.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 @Repository
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostSearchRepository {
-//    List<Post> findByTitle(String title);
+    //    List<Post> findByTitle(String title);
 
     public static final String POSTS = "posts";
 
-    @Autowired
-    private ElasticsearchClient elasticsearchClient;
+    ElasticsearchClient elasticsearchClient;
 
     public String createOrUpdateDocument(Post post) throws IOException {
-        IndexResponse response= elasticsearchClient.index(i->i
-                .index(POSTS)
-                .id(post.getId())
-                .document(post));
+        IndexResponse response =
+                elasticsearchClient.index(i -> i.index(POSTS).id(post.getId()).document(post));
 
-        Map<String,String> responseMessages = Map.of(
-                "Created","Document has been created",
-                "Updated", "Document has been updated"
-        );
+        Map<String, String> responseMessages = Map.of(
+                "Created", "Document has been created",
+                "Updated", "Document has been updated");
 
-        return responseMessages.getOrDefault(response.result().name(),"Error has occurred");
-
+        return responseMessages.getOrDefault(response.result().name(), "Error has occurred");
     }
 
     public Post findDocById(String postId) throws IOException {
-        return elasticsearchClient.get(g->g.index(POSTS).id(postId),Post.class).source();
+        return elasticsearchClient
+                .get(g -> g.index(POSTS).id(postId), Post.class)
+                .source();
     }
 
     public List<Post> findAll() throws IOException {
-        SearchRequest request = SearchRequest.of(s->s.index(POSTS));
-        SearchResponse<Post> response = elasticsearchClient.search(request,Post.class);
+        SearchRequest request = SearchRequest.of(s -> s.index(POSTS));
+        SearchResponse<Post> response = elasticsearchClient.search(request, Post.class);
 
         List<Post> posts = new ArrayList<>();
-        response.hits().hits().forEach(object->{
-            posts.add(object.source());
-
-        });
+        response.hits().hits().forEach(object -> posts.add(object.source()));
         return posts;
-
     }
 
     public String deleteDocById(String postId) throws IOException {
-        DeleteRequest deleteRequest = DeleteRequest.of(d->d.index(POSTS).id(postId));
-        DeleteResponse response =elasticsearchClient.delete(deleteRequest);
+        DeleteRequest deleteRequest = DeleteRequest.of(d -> d.index(POSTS).id(postId));
+        DeleteResponse response = elasticsearchClient.delete(deleteRequest);
 
-        return new StringBuffer(response.result().name().equalsIgnoreCase("NOT_FOUND")
-                ?"Document not found with id"+postId:"Document has been deleted").toString();
+        return (response.result().name().equalsIgnoreCase("NOT_FOUND")
+                ? "Document not found with id" + postId
+                : "Document has been deleted");
     }
 
     public String bulkSave(List<Post> posts) throws IOException {
         BulkRequest.Builder br = new BulkRequest.Builder();
-        posts.forEach(post->br.operations(operation->
-                operation.index(i->i
-                        .index(POSTS)
-                        .id(post.getId())
-                        .document(post))));
+        posts.forEach(post -> br.operations(operation ->
+                operation.index(i -> i.index(POSTS).id(post.getId()).document(post))));
 
-        BulkResponse response =elasticsearchClient.bulk(br.build());
-        if(response.errors()){
+        BulkResponse response = elasticsearchClient.bulk(br.build());
+        if (response.errors()) {
             return "Bulk has errors";
         } else {
             return "Bulk save success";

@@ -3,8 +3,12 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.*;
 
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
+import com.ugts.brand.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
@@ -23,7 +27,6 @@ import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -54,24 +57,44 @@ public class PostServiceImpl implements IPostService {
 
     UserRepository userRepository;
 
+    CategoryRepository categoryRepository;
+
+    BrandLineRepository brandLineRepository;
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
+        // Validate the CreatePostRequest object
+        if (postRequest == null
+                || postRequest.getBrand() == null
+                || postRequest.getBrandLine() == null
+                || postRequest.getCategory() == null
+                || postRequest.getProduct() == null) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
+        var brandLine = brandLineRepository
+                .findByLineName(postRequest.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         // create product process
         var product = Product.builder()
                 .name(postRequest.getProduct().getName())
                 .brand(brand)
+                .brandLine(brandLine)
+                .category(category)
                 .price(postRequest.getProduct().getPrice())
                 .color(postRequest.getProduct().getColor())
                 .size(postRequest.getProduct().getSize())
-                .condition(postRequest.getProduct().getCondition())
-                .material(postRequest.getProduct().getMaterial())
                 .width(postRequest.getProduct().getWidth())
                 .height(postRequest.getProduct().getHeight())
                 .length(postRequest.getProduct().getLength())
@@ -84,6 +107,7 @@ public class PostServiceImpl implements IPostService {
                 .dateCode(postRequest.getProduct().getDateCode())
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
+                .story(postRequest.getProduct().getStory())
                 .isVerify(false)
                 .build();
 
@@ -164,14 +188,13 @@ public class PostServiceImpl implements IPostService {
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
         product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setCondition(request.getProduct().getCondition());
-        product.setMaterial(request.getProduct().getMaterial());
         product.setAccessories(request.getProduct().getAccessories());
         product.setDateCode(request.getProduct().getDateCode());
         product.setSerialNumber(request.getProduct().getSerialNumber());
         product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+        product.setStory(request.getProduct().getStory());
 
         var updatedProduct = productRepository.save(product);
-
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
@@ -224,7 +247,6 @@ public class PostServiceImpl implements IPostService {
 //                .from(0)
 //                .size(10)
         );
-
         return getPostResponses(request);
     }
 
@@ -256,7 +278,6 @@ public class PostServiceImpl implements IPostService {
         if (id == null || id.isEmpty() || fields == null || fields.isEmpty()) {
             throw new IllegalArgumentException("ID and fields must not be null or empty");
         }
-
         if (postSearchRepository.findDocById(id) != null) {
             UpdateRequest<Object, Map<String, Object>> request = UpdateRequest.of(u -> u
                     .index("posts")
