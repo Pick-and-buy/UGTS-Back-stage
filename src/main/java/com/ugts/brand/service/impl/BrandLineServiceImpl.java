@@ -109,4 +109,12 @@ public class BrandLineServiceImpl implements BrandLineService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
         brandLineRepository.delete(brandLine);
     }
+
+    @Override
+    public List<BrandLineResponse> getBrandLineByBrandName(String brandName) {
+        return brandLineRepository
+                .findBrandLinesByBrandName(brandName).stream()
+                .map(brandLineMapper::toBrandLineResponse)
+                .toList();
+    }
 }

@@ -50,6 +50,15 @@ public class BrandLineController {
                 .build();
     }
 
+    @GetMapping("/brand-name")
+    public ApiResponse<List<BrandLineResponse>> getBrandLineByBrandName(@RequestParam String brandName) {
+        var result = brandLineService.getBrandLineByBrandName(brandName);
+        return ApiResponse.<List<BrandLineResponse>>builder()
+                .message("Get brand line by brand name success")
+                .result(result)
+                .build();
+    }
+
     @DeleteMapping
     public void deleteBrandLine(@RequestParam String brandLineName) {
         brandLineService.deleteBrandLine(brandLineName);
