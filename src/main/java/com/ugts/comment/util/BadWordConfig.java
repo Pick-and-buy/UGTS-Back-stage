@@ -487,8 +487,4 @@ public class BadWordConfig {
             "bà cha mày",
             "cmn",
             "cmnl");
-
-    public List<String> getBadWords() {
-        return badWords;
-    }
 }

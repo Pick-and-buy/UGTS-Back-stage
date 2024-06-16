@@ -33,8 +33,18 @@ public class Product {
     double price;
     String color;
     String size;
-    String condition;
     String material;
+    String width;
+    String height;
+    String length;
+    String referenceCode;
+    String manufactureYear;
+    String exteriorMaterial;
+    String interiorMaterial;
+
+    @Enumerated(EnumType.STRING)
+    Condition condition;
+
     String accessories;
     String dateCode;
     String serialNumber;

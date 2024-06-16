@@ -81,7 +81,26 @@ public class PostSearchRepository {
     }
 
     public SearchResponse<Post> search(SearchRequest request, Class<Post> postClass) throws IOException {
-        SearchResponse<Post> response = elasticsearchClient.search(request, postClass);
-        return response;
+        try {
+            if (request != null && postClass != null) {
+                return elasticsearchClient.search(request, postClass);
+            }
+            throw new IllegalArgumentException("Invalid input: request and postClass must not be null");
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
     }
+
+    public void update(UpdateRequest request, Class<Post> postClass) throws IOException {
+        if (request != null) {
+            try {
+                elasticsearchClient.update(request, postClass);
+            } catch (IOException e) {
+                System.err.println("An error occurred during document update: " + e.getMessage());
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid UpdateRequest provided");
+        }
+    }
+
 }

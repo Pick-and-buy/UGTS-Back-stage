@@ -14,7 +14,7 @@ public interface IPostService {
 
     List<PostResponse> getAllPosts() throws IOException;
 
-    PostResponse updatePost(String id, UpdatePostRequest postRequest);
+    PostResponse updatePost(String id, UpdatePostRequest postRequest) throws IOException;
 
     PostResponse getPostById(String postId);
 
