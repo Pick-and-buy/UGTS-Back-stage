@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -40,7 +41,7 @@ class AuthenticationControllerTest {
 
     @BeforeEach
     public void initData() {
-        LocalDate dob = LocalDate.of(2000, 1, 1);
+        Date dob = new Date(2000, 1, 1);
 
         request = RegisterRequest.builder()
                 .username("test02")

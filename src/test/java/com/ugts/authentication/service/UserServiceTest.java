@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,7 +77,7 @@ class UserServiceTest {
             havingValue = "org.postgresql.Driver")
     @BeforeEach
     public void initData() {
-        LocalDate dob = LocalDate.of(2000, 1, 1);
+        Date dob = new Date(2000, 1, 1);
 
         request = RegisterRequest.builder()
                 .username("test02")
@@ -170,8 +171,8 @@ class UserServiceTest {
 
     @Test
     void register_InvalidDob_fail() {
-        request.setDob(LocalDate.of(2020, 3, 3));
-        user.setDob(LocalDate.of(2020, 3, 3));
+        request.setDob(new Date(2020, 3, 3));
+        user.setDob(new Date(2020, 3, 3));
         when(userRepository.existsByPhoneNumber(anyString())).thenReturn(false);
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
@@ -235,7 +236,7 @@ class UserServiceTest {
         request.setLastName("Quang");
         request.setEmail("test04@gmail.com");
         request.setPassword("Tien02122002@");
-        request.setDob(LocalDate.of(2002, 3, 3));
+        request.setDob(new Date(2002, 3, 3));
         request.setPhoneNumber("0563016455");
         user = new User();
         user.setUsername("test04");
@@ -243,7 +244,7 @@ class UserServiceTest {
         user.setLastName("Quang");
         user.setEmail("test04@gmail.com");
         user.setPassword("Tien02122002@");
-        user.setDob(LocalDate.of(2002, 3, 3));
+        user.setDob(new Date(2002, 3, 3));
         user.setPhoneNumber("0563016455");
         // WHEN
         when(userRepository.existsByPhoneNumber(anyString())).thenReturn(false);
@@ -267,7 +268,7 @@ class UserServiceTest {
         request.setLastName("QA");
         request.setEmail("test04@gmail.com");
         request.setPassword("Tien02122002@");
-        request.setDob(LocalDate.of(2002, 3, 3));
+        request.setDob(new Date(2002, 3, 3));
         request.setPhoneNumber("0563016455");
         user = new User();
         user.setUsername("test04");
@@ -275,7 +276,7 @@ class UserServiceTest {
         user.setLastName("QA");
         user.setEmail("test04@gmail.com");
         user.setPassword("Tien02122002@");
-        user.setDob(LocalDate.of(2002, 3, 3));
+        user.setDob(new Date(2002, 3, 3));
         user.setPhoneNumber("0563016455");
         // WHEN
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
