@@ -91,4 +91,13 @@ public class CategoryController {
         categoryService.deleteCategory(categoryName);
         return ApiResponse.<String>builder().message("Delete category success").build();
     }
+
+    @GetMapping("/line-name")
+    public ApiResponse<List<CategoryResponse>> getAllCategoriesByBrandLine(@RequestParam String brandLineName) {
+        var result = categoryService.getCategoriesByBrandLineName(brandLineName);
+        return ApiResponse.<List<CategoryResponse>>builder()
+                .message("Get all categories by brand line success")
+                .result(result)
+                .build();
+    }
 }

@@ -98,4 +98,15 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(String categoryName) {
         categoryRepository.deleteByCategoryName(categoryName);
     }
+
+    @Override
+    public List<CategoryResponse> getCategoriesByBrandLineName(String brandLineName) {
+        var brandLine = brandLineRepository
+                .findByLineName(brandLineName)
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        return categoryRepository.findByLineName(brandLine.getLineName()).stream()
+                .map(categoryMapper::categoryToCategoryResponse)
+                .toList();
+    }
 }
