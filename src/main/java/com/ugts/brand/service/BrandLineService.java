@@ -15,4 +15,6 @@ public interface BrandLineService {
     BrandLineResponse getBrandLineByLineName(String brandLineName);
 
     void deleteBrandLine(String brandLineName);
+
+    List<BrandLineResponse> getBrandLineByBrandName(String brandName);
 }
