@@ -8,6 +8,7 @@ import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.service.BrandService;
 import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,9 @@ public class BrandController {
 
     @PostMapping()
     public ApiResponse<BrandResponse> createBrand(
-            @RequestPart BrandRequest request, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
+            @NonNull @RequestPart BrandRequest request,
+            @NonNull @RequestPart("brandLogo") MultipartFile[] brandLogo
+    ) throws IOException {
         var newBrand = brandService.createBrand(request, brandLogo);
         return ApiResponse.<BrandResponse>builder().result(newBrand).build();
     }
@@ -37,15 +40,15 @@ public class BrandController {
     }
 
     @GetMapping("/{name}")
-    public ApiResponse<BrandResponse> getBrandByName(@PathVariable String name) {
+    public ApiResponse<BrandResponse> getBrandByName(@NonNull @PathVariable String name) {
         return ApiResponse.<BrandResponse>builder()
                 .result(brandService.getBrandByName(name))
                 .build();
     }
 
-    @DeleteMapping("/{name}")
-    public void deleteBrand(@PathVariable String name) {
-        brandService.deleteBrand(name);
+    @DeleteMapping("/name")
+    public void deleteBrand(@RequestParam String brandName) {
+        brandService.deleteBrand(brandName);
     }
 
     @PutMapping("/{name}")
