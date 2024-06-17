@@ -43,6 +43,7 @@ public enum ErrorCode {
     INVALID_OLD_PASSWORD(1014, "Invalid old password", HttpStatus.BAD_REQUEST),
     USER_ALREADY_FOLLOWED(1015, "User already followed", HttpStatus.BAD_REQUEST),
     USER_NOT_FOLLOWED(1016, "User not followed", HttpStatus.BAD_REQUEST),
+    CANNOT_UNFOLLOW_YOURSELF(1017, "Cannot unfollow yourself", HttpStatus.BAD_REQUEST),
 
     // OTP
     INVALID_OTP(1001, "Invalid OTP", HttpStatus.BAD_REQUEST),
