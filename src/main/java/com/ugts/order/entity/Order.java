@@ -14,13 +14,14 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "`order`")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     User user;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
