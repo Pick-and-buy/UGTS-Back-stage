@@ -35,6 +35,10 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     @Override
     public BrandResponse createBrand(BrandRequest request, MultipartFile[] files) throws IOException {
+        // check if brand name is null
+        if (request.getName() == null || request.getName().isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
         // check existed
         if (brandRepository.findByName(request.getName()).isPresent()) {
             throw new AppException(ErrorCode.BRAND_EXISTED);
@@ -91,6 +95,11 @@ public class BrandServiceImpl implements BrandService {
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     public BrandResponse updateBrand(String name, BrandRequest request) {
+        // check if brand name already exists
+        if (brandRepository.findByName(request.getName()).isPresent()) {
+            throw new AppException(ErrorCode.BRAND_EXISTED);
+        }
+
         // update brand
         var brand = brandRepository
                 .findByName(name)
