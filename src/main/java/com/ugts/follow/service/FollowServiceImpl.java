@@ -26,12 +26,17 @@ public class FollowServiceImpl implements IFollowService {
     @Override
     @Transactional
     public void followUser(FollowRequestDto followRequestDto) {
-        if (followRequestDto == null || followRequestDto.getUserId() == null || followRequestDto.getTargetUserId() == null) {
+        if (followRequestDto == null
+                || followRequestDto.getUserId() == null
+                || followRequestDto.getTargetUserId() == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
-        User user = userRepository.findById(followRequestDto.getUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User followUser =
-                userRepository.findById(followRequestDto.getTargetUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository
+                .findById(followRequestDto.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User followUser = userRepository
+                .findById(followRequestDto.getTargetUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (isFollowing(user, followUser)) {
             throw new AppException(ErrorCode.USER_ALREADY_FOLLOWED);
         }
@@ -52,9 +57,12 @@ public class FollowServiceImpl implements IFollowService {
         if (followRequestDto.getUserId() == null || followRequestDto.getTargetUserId() == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
-        User user = userRepository.findById(followRequestDto.getUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        User following =
-                userRepository.findById(followRequestDto.getTargetUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository
+                .findById(followRequestDto.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User following = userRepository
+                .findById(followRequestDto.getTargetUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (user.getId().equals(following.getId())) {
             throw new AppException(ErrorCode.CANNOT_UNFOLLOW_YOURSELF);
         }

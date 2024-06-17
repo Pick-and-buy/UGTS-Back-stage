@@ -23,6 +23,7 @@ public class ElasticSearchConfiguration {
     public ObjectMapper getObjectMapper() {
         return JsonMapper.builder().addModule(new JavaTimeModule()).build();
     }
+
     @Bean
     public ElasticsearchTransport getElasticsearchTransport() {
         return new RestClientTransport(getRestClient(), new JacksonJsonpMapper());

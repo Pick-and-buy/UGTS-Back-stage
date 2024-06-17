@@ -1,6 +1,5 @@
 package com.ugts.authentication.dto.request;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import com.ugts.user.validator.DobConstraint;
@@ -19,7 +18,7 @@ public class RegisterRequest {
     Long id;
 
     @Size(min = 4, message = "USERNAME_INVALID")
-    private String username;
+    String username;
 
     // the password must contain:
     // at least 8 characters
@@ -39,14 +38,14 @@ public class RegisterRequest {
     @Size(min = 3, message = "FIRST_NAME_INVALID")
     String firstName;
 
-    // the email (RFC5322) does not contain:
-    // (|) and (') characters
+    //     the email (RFC5322) does not contain:
+    //     (|) and (') characters
     @Email(message = "EMAIL_INVALID", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     String email;
 
     @Size(min = 10, max = 10, message = "PHONE_NUMBER_INVALID")
     String phoneNumber;
 
-//    @DobConstraint(min = 14, message = "INVALID_DOB")
+    @DobConstraint(min = 14, message = "INVALID_DOB")
     Date dob;
 }

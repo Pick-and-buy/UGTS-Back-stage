@@ -42,9 +42,9 @@ public class CommentServiceImpl implements ICommentService {
             Post post = postRepository
                     .findById(requestDto.getPostId())
                     .orElseThrow(() -> new EntityNotFoundException("Post not found"));
-            if (Objects.equals(requestDto.getCommentContent(), "") ||
-                    Objects.isNull(requestDto.getUserId()) ||
-                    Objects.isNull(requestDto.getPostId())) {
+            if (Objects.equals(requestDto.getCommentContent(), "")
+                    || Objects.isNull(requestDto.getUserId())
+                    || Objects.isNull(requestDto.getPostId())) {
                 throw new IllegalArgumentException("Comment request must have non-empty content, userId, and postId");
             }
             Comment saveComment = commentMapper.toComment(requestDto, user, post);

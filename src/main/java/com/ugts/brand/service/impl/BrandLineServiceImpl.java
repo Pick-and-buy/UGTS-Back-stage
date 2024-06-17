@@ -115,8 +115,7 @@ public class BrandLineServiceImpl implements BrandLineService {
         if (brandName == null || brandName.isEmpty()) {
             throw new IllegalArgumentException("Brand name cannot be null or empty");
         }
-        return brandLineRepository
-                .findBrandLinesByBrandName(brandName).stream()
+        return brandLineRepository.findBrandLinesByBrandName(brandName).stream()
                 .map(brandLineMapper::toBrandLineResponse)
                 .toList();
     }

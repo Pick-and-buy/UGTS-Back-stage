@@ -3,6 +3,7 @@ package com.ugts.post.dto.response;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.comment.dto.GeneralCommentInformationDto;
 import com.ugts.product.dto.response.ProductResponse;
@@ -23,8 +24,13 @@ public class PostResponse {
     String title;
     String description;
     Boolean isAvailable;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     Date createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     Date updatedAt;
+
     ProductResponse product;
     Set<GeneralCommentInformationDto> comments;
 }
