@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BrandResponse {
     private String id;
-    private String brandName;
+    private String name;
     Set<BrandLogo> brandLogos;
 }

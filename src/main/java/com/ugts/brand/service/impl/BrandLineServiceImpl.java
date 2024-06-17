@@ -42,7 +42,7 @@ public class BrandLineServiceImpl implements BrandLineService {
     @Override
     public BrandLineResponse createBrandLine(BrandLineRequest request, MultipartFile[] files) throws IOException {
         var brand = brandRepository
-                .findByName(request.getBrandRequest().getBrandName())
+                .findByName(request.getBrandRequest().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         if (brandLineRepository.existsByBrandAndLineName(brand, request.getLineName())) {
