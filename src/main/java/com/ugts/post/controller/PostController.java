@@ -45,7 +45,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ApiResponse<PostResponse> updatePost(@PathVariable String postId, @RequestBody UpdatePostRequest request) {
+    public ApiResponse<PostResponse> updatePost(@PathVariable String postId, @RequestBody UpdatePostRequest request)
+            throws IOException {
         var result = postService.updatePost(postId, request);
         return ApiResponse.<PostResponse>builder()
                 .message("Update Success")

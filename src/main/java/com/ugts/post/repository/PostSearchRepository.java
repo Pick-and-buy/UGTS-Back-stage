@@ -97,5 +97,4 @@ public class PostSearchRepository {
             throw new IllegalArgumentException("Invalid UpdateRequest provided");
         }
     }
-
 }
