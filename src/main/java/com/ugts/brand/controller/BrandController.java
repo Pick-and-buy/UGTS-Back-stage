@@ -51,11 +51,11 @@ public class BrandController {
         brandService.deleteBrand(brandName);
     }
 
-    @PutMapping("/{name}")
-    public ApiResponse<BrandResponse> updateBrand(@PathVariable String name, @RequestBody BrandRequest request) {
+    @PutMapping("/name")
+    public ApiResponse<BrandResponse> updateBrand(@RequestParam String brandName, @RequestBody BrandRequest request) {
         return ApiResponse.<BrandResponse>builder()
-                .message("Update Success")
-                .result(brandService.updateBrand(name, request))
+                .message("Update Brand Success")
+                .result(brandService.updateBrand(brandName, request))
                 .build();
     }
 }

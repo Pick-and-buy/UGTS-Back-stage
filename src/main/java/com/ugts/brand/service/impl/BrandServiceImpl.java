@@ -36,11 +36,11 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public BrandResponse createBrand(BrandRequest request, MultipartFile[] files) throws IOException {
         // check if brand name is null
-        if (request.getName() == null || request.getName().isEmpty()) {
+        if (request.getBrandName() == null || request.getBrandName().isEmpty()) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
         // check existed
-        if (brandRepository.findByName(request.getName()).isPresent()) {
+        if (brandRepository.findByName(request.getBrandName()).isPresent()) {
             throw new AppException(ErrorCode.BRAND_EXISTED);
         }
 
@@ -95,11 +95,16 @@ public class BrandServiceImpl implements BrandService {
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     public BrandResponse updateBrand(String name, BrandRequest request) {
+        // check if brand name already exists
+        if (brandRepository.findByName(request.getBrandName()).isPresent()) {
+            throw new AppException(ErrorCode.BRAND_EXISTED);
+        }
+
         // update brand
         var brand = brandRepository
                 .findByName(name)
                 .map(existingBrand -> {
-                    existingBrand.setName(request.getName());
+                    existingBrand.setName(request.getBrandName());
                     return brandRepository.save(existingBrand);
                 })
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));

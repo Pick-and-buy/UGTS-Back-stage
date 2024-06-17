@@ -43,7 +43,7 @@ public class BrandCollectionServiceImpl implements BrandCollectionService {
     public BrandCollectionResponse createBrandCollection(BrandCollectionRequest request, MultipartFile[] files)
             throws IOException {
         var brand = brandRepository
-                .findByName(request.getBrandRequest().getName())
+                .findByName(request.getBrandRequest().getBrandName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         if (brandCollectionRepository.existsByBrandAndCollectionName(brand, request.getCollectionName())) {
