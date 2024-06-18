@@ -207,8 +207,7 @@
          when(brandRepository.findByName(anyString())).thenReturn(Optional.empty());
          when(brandMapper.toBrand(any(BrandRequest.class))).thenReturn(brand);
          when(brandRepository.save(any(Brand.class))).thenReturn(brand);
-         when(googleCloudStorageService.uploadBrandLogosToGCS(any(MultipartFile[].class), anyString()))
-                 .thenReturn(List.of("url1", "url2"));
+         when(googleCloudStorageService.uploadBrandLogosToGCS(any(MultipartFile[].class), anyString())).thenReturn(List.of("url1", "url2"));
 
          BrandLogo brandLogo1 = BrandLogo.builder().brand(brand).logoUrl("url1").build();
          BrandLogo brandLogo2 = BrandLogo.builder().brand(brand).logoUrl("url2").build();
@@ -236,17 +235,17 @@
          assertEquals(ErrorCode.BRAND_EXISTED, exception.getErrorCode());
      }
 
-//     @Test
-//     void createBrand_InvalidBrandName_fail() {
-//         BrandRequest request = new BrandRequest();
-//         request.setName(null);
-//
-//         MultipartFile[] files = {};
-//
-//         AppException exception = assertThrows(AppException.class, () -> brandService.createBrand(request, files));
-//
-//         assertEquals(ErrorCode.valueOf(" "), exception.getErrorCode());
-//     }
+     @Test
+     void createBrand_InvalidBrandName_fail() {
+         BrandRequest request = new BrandRequest();
+         request.setName(null);
+
+         MultipartFile[] files = {};
+
+         AppException exception = assertThrows(AppException.class, () -> brandService.createBrand(request, files));
+
+         assertEquals(ErrorCode.INVALID_INPUT,exception.getErrorCode());
+     }
 
      @Test
      void createBrand_FileUpload_fail() throws IOException {
@@ -297,13 +296,10 @@
      }
      @Test
      void getAllBrands_NoBrands() {
-         // Mock data
          when(brandRepository.findAll()).thenReturn(Collections.emptyList());
 
-         // Call the service method
          List<BrandResponse> actualResponses = brandService.getAllBrands();
 
-         // Verify
          assertEquals(0, actualResponses.size());
 
          verify(brandRepository, times(1)).findAll();
@@ -405,28 +401,25 @@
          verify(brandRepository, times(0)).findByName(request.getName());
          verify(brandRepository, times(0)).save(any(Brand.class));
      }
-//     @Test
-//     void updateBrand_BrandNameAlreadyExists_fail() {
-//         String brandName = "abc";
-//         BrandRequest request = new BrandRequest();
-//         request.setName("Gucci");
-//
-//         Brand existingBrand = new Brand();
-//         existingBrand.setName(brandName);
-//         Brand existingBrand2 = new Brand();
-//         existingBrand2.setName(request.getName());
-//
-//         when(brandRepository.findByName(brandName)).thenReturn(Optional.of(existingBrand));
-//         when(brandRepository.findByName(request.getName())).thenReturn(Optional.of(existingBrand2));
-//
-//         AppException exception = assertThrows(AppException.class, () -> brandService.updateBrand(brandName, request));
-//
-//         assertEquals(ErrorCode.BRAND_EXISTED, exception.getErrorCode());
-//
-//         verify(brandRepository, times(1)).findByName(brandName);
-//         verify(brandRepository, times(1)).findByName(request.getName());
-//         verify(brandRepository, times(0)).save(any(Brand.class));
-//     }
+     @Test
+     void updateBrand_BrandNameAlreadyExists_fail() {
+         String brandName = "abc";
+         BrandRequest request = new BrandRequest();
+         request.setName("Gucci");
+
+         Brand existingBrand = new Brand();
+         existingBrand.setName(brandName);
+         Brand existingBrand2 = new Brand();
+         existingBrand2.setName(request.getName());
+
+         when(brandRepository.findByName(brandName)).thenReturn(Optional.of(existingBrand));
+         when(brandRepository.findByName(request.getName())).thenReturn(Optional.of(existingBrand2));
+
+         AppException exception = assertThrows(AppException.class, () -> brandService.updateBrand(brandName, request));
+
+         assertEquals(ErrorCode.BRAND_EXISTED, exception.getErrorCode());
+
+     }
 
 
  }
