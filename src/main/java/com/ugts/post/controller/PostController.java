@@ -72,6 +72,15 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/user")
+    public ApiResponse<List<PostResponse>> getPostsByUserId(@RequestParam String id) {
+        var result = postService.getPostByUserId(id);
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
     @GetMapping("/search/{keyword}")
     public ApiResponse<List<PostResponse>> searchPostsByTitle(@PathVariable String keyword) throws IOException {
         return ApiResponse.<List<PostResponse>>builder()

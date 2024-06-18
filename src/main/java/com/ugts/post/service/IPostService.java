@@ -22,4 +22,6 @@ public interface IPostService {
     List<PostResponse> searchPostsByTitle(String title) throws IOException;
 
     List<PostResponse> searchPostsByStatus(boolean status) throws IOException;
+
+    List<PostResponse> getPostByUserId(String userId);
 }

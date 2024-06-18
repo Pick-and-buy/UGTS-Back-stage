@@ -254,6 +254,15 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
+    @Override
+    public List<PostResponse> getPostByUserId(String userId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return postRepository.findPostsByUserId(user.getId()).stream()
+                .map(postMapper::postToPostResponse)
+                .toList();
+    }
+
     public void updatePost(String id, Map<String, Object> fields) throws IOException {
         if (id == null || id.isEmpty() || fields == null || fields.isEmpty()) {
             throw new IllegalArgumentException("ID and fields must not be null or empty");
