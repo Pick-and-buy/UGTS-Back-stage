@@ -157,7 +157,7 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> getAllPosts() throws IOException {
-        List<Post> posts = postSearchRepository.findAll();
+        List<Post> posts = postRepository.findAll();
         return postMapper.getAllPosts(posts);
     }
 

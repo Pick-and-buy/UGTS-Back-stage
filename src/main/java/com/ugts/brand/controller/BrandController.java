@@ -25,7 +25,7 @@ public class BrandController {
 
     @PostMapping()
     public ApiResponse<BrandResponse> createBrand(
-            @NonNull @RequestPart BrandRequest request, @NonNull @RequestPart("brandLogo") MultipartFile[] brandLogo)
+            @RequestPart BrandRequest request, @RequestPart("brandLogo") MultipartFile[] brandLogo)
             throws IOException {
         var newBrand = brandService.createBrand(request, brandLogo);
         return ApiResponse.<BrandResponse>builder().result(newBrand).build();
