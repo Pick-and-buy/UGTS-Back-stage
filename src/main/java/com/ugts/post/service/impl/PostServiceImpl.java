@@ -156,7 +156,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostResponse> getAllPosts() throws IOException {
+    public List<PostResponse> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return postMapper.getAllPosts(posts);
     }
@@ -256,11 +256,17 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> getPostByUserId(String userId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return postRepository.findPostsByUserId(user.getId()).stream()
                 .map(postMapper::postToPostResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public void deletePost(String postId) {
+        postRepository.deleteById(postId);
     }
 
     public void updatePost(String id, Map<String, Object> fields) throws IOException {

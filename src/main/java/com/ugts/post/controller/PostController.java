@@ -36,7 +36,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ApiResponse<List<PostResponse>> getAllPosts() throws IOException {
+    public ApiResponse<List<PostResponse>> getAllPosts() {
         var result = postService.getAllPosts();
         return ApiResponse.<List<PostResponse>>builder()
                 .message("Get All Post Success")
@@ -95,10 +95,9 @@ public class PostController {
                 .build();
     }
 
-    //    @DeleteMapping
-    //    public ApiResponse<Void> deletePost(@RequestBody Post post ){
-    //        postService.delete(post);
-    //        return ApiResponse.<Void>builder()
-    //                .build(); //  ApiResponse.<List<PostResponse>>
-    //    }
+    @DeleteMapping
+    public ApiResponse<Void> deletePost(@RequestParam String postId) {
+        postService.deletePost(postId);
+        return ApiResponse.<Void>builder().message("Delete success").build();
+    }
 }

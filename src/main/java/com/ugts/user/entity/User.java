@@ -27,6 +27,7 @@ public class User {
 
     @Column(unique = true)
     String username;
+
     String avatar;
     String password;
     String lastName;
@@ -37,6 +38,7 @@ public class User {
 
     @Column(unique = true)
     String phoneNumber;
+
     Date dob;
 
     @ManyToMany

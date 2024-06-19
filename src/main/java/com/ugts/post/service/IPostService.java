@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IPostService {
     PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException;
 
-    List<PostResponse> getAllPosts() throws IOException;
+    List<PostResponse> getAllPosts();
 
     PostResponse updatePost(String id, UpdatePostRequest postRequest) throws IOException;
 
@@ -24,4 +24,6 @@ public interface IPostService {
     List<PostResponse> searchPostsByStatus(boolean status) throws IOException;
 
     List<PostResponse> getPostByUserId(String userId);
+
+    void deletePost(String postId);
 }
