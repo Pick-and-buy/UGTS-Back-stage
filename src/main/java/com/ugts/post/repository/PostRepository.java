@@ -25,4 +25,9 @@ public interface PostRepository extends JpaRepository<Post, String> {
 
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId")
     List<Post> findPostsByUserId(String userId);
+
+    //search with title or description
+    @Query("SELECT p FROM Post p WHERE lower(p.title) LIKE lower(concat('%', :keyword, '%'))"
+            + "OR lower(p.description) LIKE lower(concat('%', :keyword, '%'))")
+    List<Post> findByTitleContainingKeyword(@Param("keyword") String keyword);
 }

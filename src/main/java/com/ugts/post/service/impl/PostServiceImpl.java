@@ -28,6 +28,7 @@ import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class PostServiceImpl implements IPostService {
 
     PostRepository postRepository;
@@ -231,13 +233,14 @@ public class PostServiceImpl implements IPostService {
         if (keyword == null || keyword.isEmpty()) {
             throw new IllegalArgumentException("Keyword must not be null or empty");
         }
-        SearchRequest request = SearchRequest.of(
-                s -> s.index(indexName).query(q -> q.match(t -> t.field("title").query(keyword)))
-                // Implement pagination if need
-                //                .from(0)
-                //                .size(10)
-                );
-        return getPostResponses(request);
+//        SearchRequest request = SearchRequest.of(
+//                s -> s.index(indexName).query(q -> q.match(t -> t.field("title").query(keyword)))
+//                // Implement pagination if need
+//                //                .from(0)
+//                //                .size(10)
+//                );
+//        return getPostResponses(request);
+        return postMapper.getAllPosts(postRepository.findByTitleContainingKeyword(keyword));
     }
 
     @Override
@@ -249,7 +252,7 @@ public class PostServiceImpl implements IPostService {
                             m.term(t -> t.field("isAvailable").value(status).boost(1.0f))))));
             return getPostResponses(request);
         } catch (IOException e) {
-            System.err.println("An error occurred during searchPostsByStatus: " + e.getMessage());
+            log.error("An error occurred during searchPostsByStatus: {}", e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -274,10 +277,10 @@ public class PostServiceImpl implements IPostService {
             try {
                 postSearchRepository.update(request, Post.class);
             } catch (IOException e) {
-                System.err.println("An error occurred during document update: " + e.getMessage());
+                log.error("An error occurred during document update: {}", e.getMessage());
             }
         } else {
-            System.out.println("Document with id " + id + " does not exist.");
+            log.error("Document with id {} does not exist.", id);
         }
     }
 
