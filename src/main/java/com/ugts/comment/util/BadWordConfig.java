@@ -19,6 +19,8 @@ public class BadWordConfig {
 
     private List<String> badWords = Arrays.asList(
             "địt",
+            "du ma",
+            "duma",
             "parky",
             "paky",
             "namki",
