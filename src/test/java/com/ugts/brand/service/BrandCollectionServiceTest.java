@@ -76,7 +76,7 @@ public class BrandCollectionServiceTest {
         files = new MultipartFile[0];
     }
     @Test
-    void createBrandCollection_success() throws IOException, IOException {
+    void createBrandCollection_success() throws IOException {
         when(brandRepository.findByName(anyString())).thenReturn(Optional.of(brand));
         when(brandCollectionRepository.existsByBrandAndCollectionName(any(Brand.class), anyString())).thenReturn(false);
         when(brandCollectionRepository.save(any(BrandCollection.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -88,7 +88,6 @@ public class BrandCollectionServiceTest {
         assertNotNull(response);
         verify(brandRepository).findByName(anyString());
         verify(brandCollectionRepository).existsByBrandAndCollectionName(any(Brand.class), anyString());
-        verify(googleCloudStorageService).uploadBrandCollectionImagesToGCS(any(MultipartFile[].class), anyLong());
         verify(brandCollectionMapper).toBrandCollectionResponse(any(BrandCollection.class));
     }
 
@@ -125,25 +124,5 @@ public class BrandCollectionServiceTest {
         verify(googleCloudStorageService, never()).uploadBrandCollectionImagesToGCS(any(MultipartFile[].class), anyLong());
         verify(brandCollectionMapper, never()).toBrandCollectionResponse(any(BrandCollection.class));
     }
-//    @Test
-//    void createBrandCollection_imageUploadFails() throws IOException {
-//        when(brandRepository.findByName(anyString())).thenReturn(Optional.of(brand));
-//        when(brandCollectionRepository.existsByBrandAndCollectionName(any(Brand.class), anyString())).thenReturn(false);
-//        when(brandCollectionRepository.save(any(BrandCollection.class))).thenAnswer(i -> i.getArguments()[0]);
-//        when(googleCloudStorageService.uploadBrandCollectionImagesToGCS(any(MultipartFile[].class), anyLong())).thenThrow(new IOException("Upload failed"));
-//
-//        IOException exception = assertThrows(IOException.class, () -> {
-//            brandCollectionService.createBrandCollection(request, files);
-//        });
-//
-//        assertEquals("Upload failed", exception.getMessage());
-//        verify(brandRepository).findByName(anyString());
-//        verify(brandCollectionRepository).existsByBrandAndCollectionName(any(Brand.class), anyString());
-//        verify(brandCollectionRepository).save(any(BrandCollection.class));
-//        verify(googleCloudStorageService).uploadBrandCollectionImagesToGCS(any(MultipartFile[].class), anyLong());
-//        verify(brandCollectionMapper, never()).toBrandCollectionResponse(any(BrandCollection.class));
-//    }
-
-
 
 }
