@@ -1,5 +1,6 @@
 package com.ugts.comment.mapper;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class CommentMapper {
         commentResponseDto.setUserId(comment.getUser().getId());
         commentResponseDto.setPostId(Objects.requireNonNull(
                 Optional.ofNullable(comment.getPost()).map(Post::getId).orElse(null)));
+        commentResponseDto.setCreateAt(comment.getCreateAt());
+        commentResponseDto.setUserImageUrl(comment.getUserImageUrl());
         return commentResponseDto;
     }
 
@@ -31,6 +34,8 @@ public class CommentMapper {
         comment.setCommentContent(commentRequestDto.getCommentContent());
         comment.setUser(user);
         comment.setPost(post);
+        comment.setCreateAt(new Date());
+        comment.setUserImageUrl(user.getAvatar());
         return comment;
     }
 }
