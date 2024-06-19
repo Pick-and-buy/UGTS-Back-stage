@@ -246,15 +246,11 @@ public class PostServiceImpl implements IPostService {
     @Override
     public List<PostResponse> searchPostsByStatus(boolean status) throws IOException {
         String indexName = "posts";
-        try {
-            SearchRequest request = SearchRequest.of(s -> s.index(indexName)
-                    .query(q -> q.bool(b -> b.must(m ->
-                            m.term(t -> t.field("isAvailable").value(status).boost(1.0f))))));
-            return getPostResponses(request);
-        } catch (IOException e) {
-            log.error("An error occurred during searchPostsByStatus: {}", e.getMessage());
-            return Collections.emptyList();
-        }
+        //            SearchRequest request = SearchRequest.of(s -> s.index(indexName)
+//                    .query(q -> q.bool(b -> b.must(m ->
+//                            m.term(t -> t.field("isAvailable").value(status).boost(1.0f))))));
+//            return getPostResponses(request);
+        return postMapper.getAllPosts(postRepository.findPostsByIsAvailable(status));
     }
 
     @Override
