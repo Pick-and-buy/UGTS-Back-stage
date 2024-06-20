@@ -21,7 +21,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Document(indexName = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -42,12 +41,10 @@ public class Post {
     @ManyToMany(mappedBy = "viewedPosts")
     Set<User> viewedUsers = new HashSet<>();
 
-    @Field(type = FieldType.Text)
     String title;
 
     String description;
 
-    @Field(type = FieldType.Boolean)
     Boolean isAvailable;
 
     @OneToOne

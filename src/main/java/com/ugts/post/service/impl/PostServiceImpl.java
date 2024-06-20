@@ -3,10 +3,6 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.*;
 
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.UpdateRequest;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brand.repository.CategoryRepository;
@@ -19,7 +15,6 @@ import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.post.repository.PostSearchRepository;
 import com.ugts.post.service.IPostService;
 import com.ugts.product.entity.Product;
 import com.ugts.product.entity.ProductImage;
@@ -44,8 +39,6 @@ public class PostServiceImpl implements IPostService {
     PostRepository postRepository;
 
     ProductRepository productRepository;
-
-    PostSearchRepository postSearchRepository;
 
     BrandRepository brandRepository;
 
@@ -132,8 +125,6 @@ public class PostServiceImpl implements IPostService {
 
         // save new post into database
         var newPost = postRepository.save(post);
-        // adding new elastic document
-        postSearchRepository.createOrUpdateDocument(post);
 
         // upload product image to GCS
         List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(files, post.getId());
@@ -200,16 +191,6 @@ public class PostServiceImpl implements IPostService {
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
-        // TODO: update post in elastic document
-        Map<String, Object> fields = new HashMap<>();
-        if (request.getTitle() != null) {
-            fields.put("title", request.getTitle());
-        }
-        // TODO : update status of post bellow
-        //        if () {
-        //            fields.put("status", post.setIsAvailable(true));
-        //        }
-        updatePost(post.getId(), fields);
 
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
@@ -229,27 +210,14 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> searchPostsByTitle(String keyword) throws IOException {
-        String indexName = "posts";
         if (keyword == null || keyword.isEmpty()) {
             throw new IllegalArgumentException("Keyword must not be null or empty");
         }
-//        SearchRequest request = SearchRequest.of(
-//                s -> s.index(indexName).query(q -> q.match(t -> t.field("title").query(keyword)))
-//                // Implement pagination if need
-//                //                .from(0)
-//                //                .size(10)
-//                );
-//        return getPostResponses(request);
         return postMapper.getAllPosts(postRepository.findByTitleContainingKeyword(keyword));
     }
 
     @Override
     public List<PostResponse> searchPostsByStatus(boolean status) throws IOException {
-        String indexName = "posts";
-        //            SearchRequest request = SearchRequest.of(s -> s.index(indexName)
-//                    .query(q -> q.bool(b -> b.must(m ->
-//                            m.term(t -> t.field("isAvailable").value(status).boost(1.0f))))));
-//            return getPostResponses(request);
         return postMapper.getAllPosts(postRepository.findPostsByIsAvailable(status));
     }
 
@@ -266,32 +234,5 @@ public class PostServiceImpl implements IPostService {
     @PreAuthorize("hasRole('USER')")
     public void deletePost(String postId) {
         postRepository.deleteById(postId);
-    }
-
-    public void updatePost(String id, Map<String, Object> fields) throws IOException {
-        if (id == null || id.isEmpty() || fields == null || fields.isEmpty()) {
-            throw new IllegalArgumentException("ID and fields must not be null or empty");
-        }
-        if (postSearchRepository.findDocById(id) != null) {
-            UpdateRequest<Object, Map<String, Object>> request =
-                    UpdateRequest.of(u -> u.index("posts").id(id).doc(fields));
-
-            try {
-                postSearchRepository.update(request, Post.class);
-            } catch (IOException e) {
-                log.error("An error occurred during document update: {}", e.getMessage());
-            }
-        } else {
-            log.error("Document with id {} does not exist.", id);
-        }
-    }
-
-    private List<PostResponse> getPostResponses(SearchRequest request) throws IOException {
-        SearchResponse<Post> response = postSearchRepository.search(request, Post.class);
-        List<Post> posts = new ArrayList<>();
-        for (Hit<Post> hit : response.hits().hits()) {
-            posts.add(hit.source());
-        }
-        return postMapper.getAllPosts(posts);
     }
 }
