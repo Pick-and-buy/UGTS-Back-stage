@@ -35,10 +35,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandLine brandLine;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandCollection brandCollection;
 
     @JsonIgnoreProperties("hibernateLazyInitializer")

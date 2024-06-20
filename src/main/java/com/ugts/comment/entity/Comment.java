@@ -1,10 +1,13 @@
 package com.ugts.comment.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -26,4 +29,9 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     Post post;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    Date createAt;
+
+    private String userImageUrl;
 }
