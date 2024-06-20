@@ -19,4 +19,11 @@ public class NewsRequest {
     String subContent2;
     String subTitle3;
     String subContent3;
+    String subContent4;
+    String subContent5;
+    String subContent6;
+    String subContent7;
+    String subContent8;
+    String subContent9;
+    String subContent10;
 }

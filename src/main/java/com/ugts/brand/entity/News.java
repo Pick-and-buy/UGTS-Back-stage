@@ -28,6 +28,10 @@ public class News {
 
     String title;
 
+    Date createdAt;
+
+    Date updatedAt;
+
     @Column(length = 5000)
     String content;
 
@@ -46,7 +50,24 @@ public class News {
     @Column(length = 5000)
     String subContent3;
 
-    Date createdAt;
+    @Column(length = 5000)
+    String subContent4;
 
-    Date updatedAt;
+    @Column(length = 5000)
+    String subContent5;
+
+    @Column(length = 5000)
+    String subContent6;
+
+    @Column(length = 5000)
+    String subContent7;
+
+    @Column(length = 5000)
+    String subContent8;
+
+    @Column(length = 5000)
+    String subContent9;
+
+    @Column(length = 5000)
+    String subContent10;
 }
