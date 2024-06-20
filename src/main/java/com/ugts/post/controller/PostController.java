@@ -1,8 +1,10 @@
 package com.ugts.post.controller;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ugts.dto.ApiResponse;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.request.UpdatePostRequest;
@@ -27,9 +29,12 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart CreatePostRequest request, @RequestPart("productImage") MultipartFile[] productImages)
+            @RequestPart CreatePostRequest postRequestJson, @RequestPart("productImage") MultipartFile[] productImages)
             throws IOException {
-        var result = postService.createPost(request, productImages);
+        ObjectMapper objectMapper = new ObjectMapper();
+        CreatePostRequest postRequest = objectMapper.readValue((DataInput) postRequestJson, CreatePostRequest.class);
+
+        var result = postService.createPost(postRequest, productImages);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)

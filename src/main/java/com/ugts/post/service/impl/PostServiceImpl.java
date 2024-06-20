@@ -7,8 +7,6 @@ import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.UpdateRequest;
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ugts.brand.dto.request.NewsRequest;
 import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brand.repository.CategoryRepository;
@@ -74,43 +72,40 @@ public class PostServiceImpl implements IPostService {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        CreatePostRequest newRequest = objectMapper.convertValue(postRequest, CreatePostRequest.class);
-
         // check brand existed
         var brand = brandRepository
-                .findByName(newRequest.getBrand().getName())
+                .findByName(postRequest.getBrand().getName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
 
         var brandLine = brandLineRepository
-                .findByLineName(newRequest.getBrandLine().getLineName())
+                .findByLineName(postRequest.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         var category = categoryRepository
-                .findByCategoryName(newRequest.getCategory().getCategoryName())
+                .findByCategoryName(postRequest.getCategory().getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         // create product process
         var product = Product.builder()
-                .name(newRequest.getProduct().getName())
+                .name(postRequest.getProduct().getName())
                 .brand(brand)
                 .brandLine(brandLine)
                 .category(category)
-                .price(newRequest.getProduct().getPrice())
-                .color(newRequest.getProduct().getColor())
-                .size(newRequest.getProduct().getSize())
-                .width(newRequest.getProduct().getWidth())
-                .height(newRequest.getProduct().getHeight())
-                .length(newRequest.getProduct().getLength())
-                .referenceCode(newRequest.getProduct().getReferenceCode())
-                .manufactureYear(newRequest.getProduct().getManufactureYear())
-                .interiorMaterial(newRequest.getProduct().getInteriorMaterial())
-                .exteriorMaterial(newRequest.getProduct().getExteriorMaterial())
-                .condition(newRequest.getCondition())
-                .accessories(newRequest.getProduct().getAccessories())
-                .dateCode(newRequest.getProduct().getDateCode())
+                .price(postRequest.getProduct().getPrice())
+                .color(postRequest.getProduct().getColor())
+                .size(postRequest.getProduct().getSize())
+                .width(postRequest.getProduct().getWidth())
+                .height(postRequest.getProduct().getHeight())
+                .length(postRequest.getProduct().getLength())
+                .referenceCode(postRequest.getProduct().getReferenceCode())
+                .manufactureYear(postRequest.getProduct().getManufactureYear())
+                .interiorMaterial(postRequest.getProduct().getInteriorMaterial())
+                .exteriorMaterial(postRequest.getProduct().getExteriorMaterial())
+                .condition(postRequest.getCondition())
+                .accessories(postRequest.getProduct().getAccessories())
+                .dateCode(postRequest.getProduct().getDateCode())
                 .serialNumber(postRequest.getProduct().getSerialNumber())
-                .purchasedPlace(newRequest.getProduct().getPurchasedPlace())
-                .story(newRequest.getProduct().getStory())
+                .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
+                .story(postRequest.getProduct().getStory())
                 .isVerify(false)
                 .build();
 
@@ -127,8 +122,8 @@ public class PostServiceImpl implements IPostService {
         // create post process
         var post = Post.builder()
                 .user(user)
-                .title(newRequest.getTitle())
-                .description(newRequest.getDescription())
+                .title(postRequest.getTitle())
+                .description(postRequest.getDescription())
                 .isAvailable(true)
                 .createdAt(new Date())
                 .updatedAt(new Date())
