@@ -1,6 +1,5 @@
 package com.ugts.post.controller;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,15 +25,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
 
     IPostService postService;
+    ObjectMapper objectMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart CreatePostRequest postRequestJson, @RequestPart("productImage") MultipartFile[] productImages)
-            throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CreatePostRequest postRequest = objectMapper.readValue((DataInput) postRequestJson, CreatePostRequest.class);
+            @RequestPart("request") String requestJson,
+            @RequestPart("productImage") MultipartFile[] productImages) throws IOException {
 
-        var result = postService.createPost(postRequest, productImages);
+        // Chuyển đổi JSON string thành đối tượng CreatePostRequest
+        CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
+
+        var result = postService.createPost(request, productImages);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)
