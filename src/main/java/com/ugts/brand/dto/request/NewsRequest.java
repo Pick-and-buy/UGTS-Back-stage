@@ -15,14 +15,14 @@ public class NewsRequest {
     String content;
     String subTitle1;
     String subContent1;
-    String subTitle2;
     String subContent2;
-    String subTitle3;
     String subContent3;
     String subContent4;
+    String subTitle2;
     String subContent5;
     String subContent6;
     String subContent7;
+    String subTitle3;
     String subContent8;
     String subContent9;
     String subContent10;
