@@ -191,7 +191,6 @@ public class PostServiceImpl implements IPostService {
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
-
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }
@@ -234,5 +233,11 @@ public class PostServiceImpl implements IPostService {
     @PreAuthorize("hasRole('USER')")
     public void deletePost(String postId) {
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public List<PostResponse> getPostByBrandLine(String brandLineName) {
+        var posts = postRepository.findAllByBrandLine(brandLineName);
+        return postMapper.getAllPosts(posts);
     }
 }

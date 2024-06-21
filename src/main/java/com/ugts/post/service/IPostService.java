@@ -26,4 +26,6 @@ public interface IPostService {
     List<PostResponse> getPostByUserId(String userId);
 
     void deletePost(String postId);
+
+    List<PostResponse> getPostByBrandLine(String brandLineName);
 }

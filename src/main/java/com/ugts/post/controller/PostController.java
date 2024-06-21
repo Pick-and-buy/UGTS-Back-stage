@@ -29,8 +29,8 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart("request") String requestJson,
-            @RequestPart("productImage") MultipartFile[] productImages) throws IOException {
+            @RequestPart("request") String requestJson, @RequestPart("productImage") MultipartFile[] productImages)
+            throws IOException {
 
         // Chuyển đổi JSON string thành đối tượng CreatePostRequest
         CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
@@ -106,5 +106,14 @@ public class PostController {
     public ApiResponse<Void> deletePost(@RequestParam String postId) {
         postService.deletePost(postId);
         return ApiResponse.<Void>builder().message("Delete success").build();
+    }
+
+    @GetMapping("/brandLine")
+    public ApiResponse<List<PostResponse>> getPostsByBrandLine(@RequestParam String brandLineName) {
+        var result = postService.getPostByBrandLine(brandLineName);
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
     }
 }
