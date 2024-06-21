@@ -38,4 +38,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
     List<Post> findByStatus(@Param("status") boolean status);
 
     List<Post> findPostsByIsAvailable(boolean status);
+
+    @Query("SELECT p FROM Post p JOIN p.product pr JOIN pr.brandLine bl WHERE bl.lineName = :brandLineName")
+    List<Post> findAllByBrandLine(String brandLineName);
 }

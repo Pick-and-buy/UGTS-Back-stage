@@ -235,4 +235,10 @@ public class PostServiceImpl implements IPostService {
     public void deletePost(String postId) {
         postRepository.deleteById(postId);
     }
+
+    @Override
+    public List<PostResponse> getPostByBrandLine(String brandLineName) {
+        var posts = postRepository.findAllByBrandLine(brandLineName);
+        return postMapper.getAllPosts(posts);
+    }
 }

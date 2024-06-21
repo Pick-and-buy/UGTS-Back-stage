@@ -107,4 +107,13 @@ public class PostController {
         postService.deletePost(postId);
         return ApiResponse.<Void>builder().message("Delete success").build();
     }
+
+    @GetMapping("/brandLine")
+    public ApiResponse<List<PostResponse>> getPostsByBrandLine(@RequestParam String brandLineName) {
+        var result = postService.getPostByBrandLine(brandLineName);
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
 }
