@@ -6,9 +6,8 @@ import com.ugts.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
-//@Repository("postRepository")
+// @Repository("postRepository")
 public interface PostRepository extends JpaRepository<Post, String> {
     @Query("SELECT p FROM Post p JOIN p.likedUsers u WHERE u.id = :userId")
     List<Post> findPostsLikedByUser(@Param("userId") String userId);

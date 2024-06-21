@@ -29,8 +29,8 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart("request") String requestJson,
-            @RequestPart("productImage") MultipartFile[] productImages) throws IOException {
+            @RequestPart("request") String requestJson, @RequestPart("productImage") MultipartFile[] productImages)
+            throws IOException {
 
         // Chuyển đổi JSON string thành đối tượng CreatePostRequest
         CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);

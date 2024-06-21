@@ -191,7 +191,6 @@ public class PostServiceImpl implements IPostService {
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
-
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }
