@@ -3,6 +3,7 @@ package com.ugts.post.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ugts.dto.ApiResponse;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.request.UpdatePostRequest;
@@ -12,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +25,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
 
     IPostService postService;
+    ObjectMapper objectMapper;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart CreatePostRequest request, @RequestPart("productImage") MultipartFile[] productImages)
-            throws IOException {
+            @RequestPart("request") String requestJson,
+            @RequestPart("productImage") MultipartFile[] productImages) throws IOException {
+
+        // Chuyển đổi JSON string thành đối tượng CreatePostRequest
+        CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
+
         var result = postService.createPost(request, productImages);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")

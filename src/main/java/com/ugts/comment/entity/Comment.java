@@ -1,13 +1,13 @@
 package com.ugts.comment.entity;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-
-import java.util.Date;
 
 @Entity
 @Getter

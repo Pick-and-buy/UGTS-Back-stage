@@ -28,12 +28,12 @@ public interface PostRepository extends JpaRepository<Post, String> {
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId")
     List<Post> findPostsByUserId(String userId);
 
-    //search with title or description
+    // search with title or description
     @Query("SELECT p FROM Post p WHERE lower(p.title) LIKE lower(concat('%', :keyword, '%'))"
             + "OR lower(p.description) LIKE lower(concat('%', :keyword, '%'))")
     List<Post> findByTitleContainingKeyword(@Param("keyword") String keyword);
 
-    //search with status by sql query
+    // search with status by sql query
     @Query("SELECT p FROM Post p WHERE p.isAvailable = :status")
     List<Post> findByStatus(@Param("status") boolean status);
 
