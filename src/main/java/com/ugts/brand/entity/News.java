@@ -18,10 +18,10 @@ public class News {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandCollection brandCollection;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandLine brandLine;
 
     String banner;

@@ -47,10 +47,17 @@ public class NewsServiceImpl implements NewsService {
                 .brandLine(brandLine)
                 .subTitle1(request.getSubTitle1())
                 .subContent1(request.getSubContent1())
-                .subTitle2(request.getSubTitle2())
                 .subContent2(request.getSubContent2())
-                .subTitle3(request.getSubTitle3())
                 .subContent3(request.getSubContent3())
+                .subContent4(request.getSubContent4())
+                .subTitle2(request.getSubTitle2())
+                .subContent5(request.getSubContent5())
+                .subContent6(request.getSubContent6())
+                .subContent7(request.getSubContent7())
+                .subTitle3(request.getSubTitle3())
+                .subContent8(request.getSubContent8())
+                .subContent9(request.getSubContent9())
+                .subContent10(request.getSubContent10())
                 .build();
 
         String newsBannerUrl = googleCloudStorageService.uploadNewsBannerToGCS(file, news.getId());
@@ -89,10 +96,17 @@ public class NewsServiceImpl implements NewsService {
         news.setContent(request.getContent());
         news.setSubTitle1(request.getSubTitle1());
         news.setSubContent1(request.getSubContent1());
-        news.setSubTitle2(request.getSubTitle2());
         news.setSubContent2(request.getSubContent2());
-        news.setSubTitle3(request.getSubTitle3());
         news.setSubContent3(request.getSubContent3());
+        news.setSubContent4(request.getSubContent4());
+        news.setSubTitle2(request.getSubTitle2());
+        news.setSubContent5(request.getSubContent5());
+        news.setSubContent6(request.getSubContent6());
+        news.setSubContent7(request.getSubContent7());
+        news.setSubTitle3(request.getSubTitle3());
+        news.setSubContent8(request.getSubContent8());
+        news.setSubContent9(request.getSubContent9());
+        news.setSubContent10(request.getSubContent10());
 
         return newsMapper.toNewsResponse(newsRepository.save(news));
     }

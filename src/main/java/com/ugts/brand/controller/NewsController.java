@@ -3,6 +3,7 @@ package com.ugts.brand.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ugts.brand.dto.request.NewsRequest;
 import com.ugts.brand.dto.response.NewsResponse;
 import com.ugts.brand.service.NewsService;
@@ -10,6 +11,7 @@ import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +23,15 @@ public class NewsController {
 
     NewsService newsService;
 
-    @PostMapping
-    public ApiResponse<NewsResponse> createNews(@RequestPart NewsRequest request, @RequestPart MultipartFile banner)
+    ObjectMapper objectMapper;
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<NewsResponse> createNews(
+            @RequestPart("request") String createRequestJson, @RequestPart("banner") MultipartFile banner)
             throws IOException {
+
+        NewsRequest request = objectMapper.readValue(createRequestJson, NewsRequest.class);
+
         var result = newsService.createNews(request, banner);
         return ApiResponse.<NewsResponse>builder()
                 .message("Create news success")
@@ -49,10 +57,13 @@ public class NewsController {
                 .build();
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<NewsResponse> updateNews(
-            @RequestPart NewsRequest request, @RequestParam String newsId, @RequestPart MultipartFile banner)
+            @RequestPart("request") String updateNewsRequest, @RequestParam String newsId, @RequestPart("banner") MultipartFile banner)
             throws IOException {
+
+        NewsRequest request = objectMapper.readValue(updateNewsRequest, NewsRequest.class);
+
         var result = newsService.updateNews(request, newsId, banner);
         return ApiResponse.<NewsResponse>builder()
                 .message("Update news with id " + newsId + " success")
