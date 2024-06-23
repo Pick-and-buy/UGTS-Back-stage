@@ -1,4 +1,4 @@
-package com.ugts.order.entity;
+package com.ugts.order.enums;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

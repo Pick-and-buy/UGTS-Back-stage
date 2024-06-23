@@ -1,12 +1,14 @@
 package com.ugts.order.entity;
 
-import java.util.Date;
-
+import com.ugts.order.enums.OrderStatus;
 import com.ugts.product.entity.Product;
+import com.ugts.transaction.entity.Transaction;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,8 +32,9 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     OrderDetails orderDetails;
 
-    Date orderDate;
-
     @Enumerated(EnumType.STRING)
     OrderStatus status;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
+    List<Transaction> transactions;
 }
