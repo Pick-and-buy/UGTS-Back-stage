@@ -12,8 +12,10 @@ import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
@@ -69,7 +71,6 @@ public class CategoryServiceTest {
         assertEquals("Mini Bags", response.getCategoryName());
         verify(brandLineRepository).findByLineName("Marmont");
         verify(categoryRepository).existsByCategoryNameAndBrandLine("Mini Bags", brandLine);
-        verify(categoryRepository).save(category);
         verify(categoryMapper).categoryToCategoryResponse(category);
     }
 
@@ -103,7 +104,7 @@ public class CategoryServiceTest {
 
 
     @Test
-    void getCategoryByCategoryName_ShouldReturnCategory_WhenCategoryExists() {
+    void getCategoryByCategoryName_success() {
         when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(category));
         when(categoryMapper.categoryToCategoryResponse(any(Category.class))).thenReturn(categoryResponse);
 
@@ -121,8 +122,126 @@ public class CategoryServiceTest {
 
         AppException exception = assertThrows(AppException.class, () -> categoryService.getCategoryByCategoryName("Mini Bags"));
 
-     //   assertEquals(ErrorCode.CATEGORY_NOT_FOUND, exception.getErrorCode());
+        assertEquals(ErrorCode.CATEGORY_NOT_EXISTED, exception.getErrorCode());
         verify(categoryRepository).findByCategoryName("Mini Bags");
         verify(categoryMapper, never()).categoryToCategoryResponse(any(Category.class));
+    }
+    @Test
+    void updateCategory_success() {
+        String categoryName = "Mini Bags";
+        CategoryRequest request = new CategoryRequest();
+        request.setCategoryName("Deco");
+
+        BrandLine brandLine = new BrandLine();
+        brandLine.setLineName("Marmont");
+        request.setBrandLine(brandLine);
+
+        Category existingCategory = new Category();
+        existingCategory.setCategoryName(categoryName);
+
+        BrandLine existingBrandLine = new BrandLine();
+        existingBrandLine.setLineName("Marmont");
+
+        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.of(existingCategory));
+        when(brandLineRepository.findByLineName("Marmont")).thenReturn(Optional.of(existingBrandLine));
+
+        Category updatedCategory = new Category();
+        updatedCategory.setCategoryName(request.getCategoryName());
+        updatedCategory.setBrandLine(existingBrandLine);
+
+        when(categoryRepository.save(any())).thenReturn(updatedCategory);
+
+        when(categoryMapper.categoryToCategoryResponse(updatedCategory)).thenReturn(new CategoryResponse());
+
+        CategoryResponse response = categoryService.updateCategory(request, categoryName);
+
+        assertNotNull(response);
+        assertEquals(existingCategory.getCategoryName(), updatedCategory.getCategoryName());
+        verify(categoryRepository, times(1)).findByCategoryName(categoryName);
+        verify(brandLineRepository, times(1)).findByLineName(request.getBrandLine().getLineName());
+        verify(categoryRepository, times(1)).save(any(Category.class));
+
+    }
+
+    @Test
+    void updateCategory_CategoryAlreadyExistsForAnotherBrandLine_fail() {
+        String categoryName = "Mini Bags";
+        CategoryRequest request = new CategoryRequest();
+        request.setCategoryName("tote Bags");
+        BrandLine brandLine = new BrandLine();
+        brandLine.setLineName("Marmont");
+        Category existingCategory = new Category();
+        existingCategory.setCategoryName("Tote Bags");
+        existingCategory.setBrandLine(new BrandLine());
+
+        when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(existingCategory));
+        when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
+
+        AppException exception = assertThrows(AppException.class, () -> {
+            categoryService.updateCategory(request, categoryName);
+        });
+
+        assertEquals(ErrorCode.CATEGORY_ALREADY_EXISTED, exception.getErrorCode());
+        verify(categoryRepository, times(1)).findByCategoryName(anyString());
+    }
+
+    @Test
+    void updateCategory_BrandLineNotFound_fail() {
+        String categoryName = "Mini Bags";
+        CategoryRequest request = new CategoryRequest();
+        request.setCategoryName("Deco");
+
+        BrandLine brandLine = new BrandLine();
+        brandLine.setLineName("Falls");
+
+        request.setBrandLine(brandLine);
+
+        Category existingCategory = new Category();
+        existingCategory.setCategoryName(categoryName);
+
+        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.of(existingCategory));
+        when(brandLineRepository.findByLineName("Falls")).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> categoryService.updateCategory(request, categoryName));
+        assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
+    }
+
+    @Test
+    void deleteCategory_success() {
+        String categoryName = "Mini Bags";
+
+        categoryService.deleteCategory(categoryName);
+
+        verify(categoryRepository, times(1)).deleteByCategoryName(anyString());
+    }
+
+    @Test
+    void getCategoriesByBrandLineName_success() {
+        // Arrange
+        String brandLineName = "Marmont";
+        BrandLine brandLine = new BrandLine();
+        brandLine.setLineName(brandLineName);
+
+        when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
+        when(categoryRepository.findByLineName(anyString())).thenReturn(List.of(new Category()));
+        when(categoryMapper.categoryToCategoryResponse(any(Category.class))).thenReturn(new CategoryResponse());
+
+        List<CategoryResponse> responses = categoryService.getCategoriesByBrandLineName(brandLineName);
+
+        assertNotNull(responses);
+        assertFalse(responses.isEmpty());
+        verify(brandLineRepository, times(1)).findByLineName(anyString());
+        verify(categoryRepository, times(1)).findByLineName(anyString());
+        verify(categoryMapper, atLeastOnce()).categoryToCategoryResponse(any(Category.class));
+    }
+
+    @Test
+    public void getCategoriesByBrandLineName_BrandLineNotExists_fail() {
+        String brandLineName = "Deco";
+
+        when(brandLineRepository.findByLineName(brandLineName)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> categoryService.getCategoriesByBrandLineName(brandLineName));
+        assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
     }
 }
