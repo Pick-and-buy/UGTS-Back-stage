@@ -49,7 +49,7 @@ public class NewServiceTest {
     private MultipartFile file;
 
     @Test
-    public void testCreateNews() throws IOException {
+    public void createNews_success() throws IOException {
         NewsRequest request = new NewsRequest();
         request.setTitle("Test Title");
         request.setContent("Test Content");
