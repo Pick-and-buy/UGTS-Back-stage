@@ -1,9 +1,7 @@
 package com.ugts.order.dto.request;
 
 import java.util.Date;
-import java.util.List;
 
-import com.ugts.order.entity.OrderDetails;
 import com.ugts.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +18,4 @@ public class CreateOrderRequest {
     Date deliveryDate;
     Date receivedDate;
     Post post;
-    List<OrderDetails> orderDetails;
 }

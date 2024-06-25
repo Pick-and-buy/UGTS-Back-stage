@@ -33,5 +33,5 @@ public class Order {
     List<OrderDetails> orderDetails = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
-    List<Transaction> transactions;
+    List<Transaction> transactions = new ArrayList<>();
 }

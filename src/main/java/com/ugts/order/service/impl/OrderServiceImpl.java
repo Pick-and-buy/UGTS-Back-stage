@@ -51,14 +51,15 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
 
         var orderDetails = OrderDetails.builder()
-                .price(orderRequest.getPost().getProduct().getPrice())
+                .price(post.getProduct().getPrice())
                 .quantity(1)
                 .isFeedBack(false)
                 .firstName(buyer.getFirstName())
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
-                .address(buyer.getAddress().toString())
+                // TODO: handle user address
+                //                .address(buyer.getAddress().toString())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)
@@ -74,6 +75,9 @@ public class OrderServiceImpl implements OrderService {
                 .post(post)
                 .orderDetails(List.of(orderDetails))
                 .build();
+
+        orderDetails.setOrder(order);
+        order.getOrderDetails().add(orderDetails);
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
