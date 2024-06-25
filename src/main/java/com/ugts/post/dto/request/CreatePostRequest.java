@@ -1,8 +1,8 @@
 package com.ugts.post.dto.request;
 
 import com.ugts.brand.entity.Brand;
-import com.ugts.brand.entity.BrandLine;
-import com.ugts.brand.entity.Category;
+import com.ugts.brandLine.entity.BrandLine;
+import com.ugts.category.entity.Category;
 import com.ugts.product.entity.Condition;
 import com.ugts.product.entity.Product;
 import lombok.*;
