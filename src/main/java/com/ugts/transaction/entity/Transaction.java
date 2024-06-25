@@ -1,14 +1,13 @@
 package com.ugts.transaction.entity;
 
+import java.util.Date;
+
 import com.ugts.order.entity.Order;
-import com.ugts.order.entity.OrderDetails;
 import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -22,9 +21,8 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    @GeneratedValue(strategy = GenerationType.UUID)
     String billNo;
-
-    String transNo;
 
     String bankCode;
 
@@ -47,7 +45,7 @@ public class Transaction {
     Date createDate;
 
     @Enumerated(EnumType.STRING)
-    TransactionStatus status;
+    TransactionStatus transactionStatus;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     User user;

@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brandLine.dto.request.BrandLineRequest;
 import com.ugts.brandLine.dto.response.BrandLineResponse;
 import com.ugts.brandLine.entity.BrandLine;
 import com.ugts.brandLine.entity.BrandLineImage;
 import com.ugts.brandLine.mapper.BrandLineMapper;
 import com.ugts.brandLine.repository.BrandLineRepository;
-import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brandLine.service.BrandLineService;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;

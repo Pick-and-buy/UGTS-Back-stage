@@ -2,9 +2,9 @@ package com.ugts.category.controller;
 
 import java.util.List;
 
-import com.ugts.category.service.CategoryService;
 import com.ugts.category.dto.request.CategoryRequest;
 import com.ugts.category.dto.response.CategoryResponse;
+import com.ugts.category.service.CategoryService;
 import com.ugts.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

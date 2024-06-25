@@ -1,14 +1,14 @@
 package com.ugts.order.entity;
 
-import com.ugts.order.enums.OrderStatus;
-import com.ugts.product.entity.Product;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ugts.post.entity.Post;
 import com.ugts.transaction.entity.Transaction;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -24,16 +24,13 @@ public class Order {
     String id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    User user;
+    User buyer;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    Product product;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Post post;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    OrderDetails orderDetails;
-
-    @Enumerated(EnumType.STRING)
-    OrderStatus status;
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<OrderDetails> orderDetails = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     List<Transaction> transactions;

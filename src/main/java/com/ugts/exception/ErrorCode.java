@@ -81,6 +81,9 @@ public enum ErrorCode {
     // NEWS
     NEWS_NOT_EXISTED(1001, "News not exist", HttpStatus.BAD_REQUEST),
 
+    // ORDERS
+    ORDER_NOT_FOUND(1001, "Order not found", HttpStatus.BAD_REQUEST),
+
 // Comment
 ;
     int code;

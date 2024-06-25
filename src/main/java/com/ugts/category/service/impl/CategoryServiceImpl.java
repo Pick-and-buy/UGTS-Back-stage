@@ -2,11 +2,11 @@ package com.ugts.category.service.impl;
 
 import java.util.List;
 
+import com.ugts.brandLine.repository.BrandLineRepository;
 import com.ugts.category.dto.request.CategoryRequest;
 import com.ugts.category.dto.response.CategoryResponse;
 import com.ugts.category.entity.Category;
 import com.ugts.category.mapper.CategoryMapper;
-import com.ugts.brandLine.repository.BrandLineRepository;
 import com.ugts.category.repository.CategoryRepository;
 import com.ugts.category.service.CategoryService;
 import com.ugts.exception.AppException;

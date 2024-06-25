@@ -1,12 +1,12 @@
 package com.ugts.order.entity;
 
-import com.ugts.transaction.entity.Transaction;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ugts.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,25 +20,44 @@ public class OrderDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    Order order;
-
     double price;
 
-    String shippingAddress;
+    int quantity = 1;
+
+    boolean isFeedBack = false;
+
+    String firstName;
+
+    String lastName;
+
+    String email;
+
+    String phoneNumber;
+
+    String address;
 
     @Column(nullable = false, length = 50)
     String paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    OrderStatus status;
 
     Boolean isPaid = false;
 
     Boolean isRefund;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date orderDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date packageDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date deliveryDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date receivedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    Order order;
 }
