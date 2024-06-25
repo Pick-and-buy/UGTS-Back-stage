@@ -1,5 +1,12 @@
 package com.ugts.follow.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.follow.dto.FollowRequestDto;
@@ -14,13 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FollowServiceTest {
@@ -37,10 +37,10 @@ public class FollowServiceTest {
     @Mock
     private UserMapper userMapper;
 
-
     @Test
     void followUser_success() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
         User user = new User();
         user.setId("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7");
         User followUser = new User();
@@ -53,11 +53,12 @@ public class FollowServiceTest {
         followService.followUser(followRequestDto);
 
         verify(followRepository).save(any(Follow.class));
-
     }
+
     @Test
     void followUser_whenUserAlreadyFollowed_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
         User user = new User();
         User followUser = new User();
         when(userRepository.findById(followRequestDto.getUserId())).thenReturn(Optional.of(user));
@@ -68,9 +69,11 @@ public class FollowServiceTest {
 
         assertEquals(ErrorCode.USER_ALREADY_FOLLOWED, exception.getErrorCode());
     }
+
     @Test
     void followUser_whenTargetUserDoesNotExist_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec2147c");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec2147c");
         User user = new User();
         when(userRepository.findById(followRequestDto.getUserId())).thenReturn(Optional.of(user));
         when(userRepository.findById(followRequestDto.getTargetUserId())).thenReturn(Optional.empty());
@@ -82,7 +85,8 @@ public class FollowServiceTest {
 
     @Test
     void followUser_whenUserNotExist_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("165fb1ba-621d-4035-b8be-508ec22147c", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("165fb1ba-621d-4035-b8be-508ec22147c", "165fb1ba-621d-4035-b8be-508ec22147c9");
         when(userRepository.findById(followRequestDto.getUserId())).thenReturn(Optional.empty());
 
         AppException exception = assertThrows(AppException.class, () -> followService.followUser(followRequestDto));
@@ -92,7 +96,8 @@ public class FollowServiceTest {
 
     @Test
     void testUnfollowUserSuccess() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
         User user = new User();
         user.setId("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7");
         User followUser = new User();
@@ -109,9 +114,11 @@ public class FollowServiceTest {
 
         verify(followRepository).delete(follow);
     }
+
     @Test
     void unfollowUser_UserNotFound_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
 
         when(userRepository.findById("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7")).thenReturn(Optional.empty());
 
@@ -121,7 +128,8 @@ public class FollowServiceTest {
 
     @Test
     void unfollowUser_TargetUserNotFound_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
         User user = new User();
         user.setId("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7");
 
@@ -129,12 +137,13 @@ public class FollowServiceTest {
         when(userRepository.findById("165fb1ba-621d-4035-b8be-508ec22147c9")).thenReturn(Optional.empty());
 
         AppException exception = assertThrows(AppException.class, () -> followService.unfollowUser(followRequestDto));
-         assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
+        assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
     }
 
     @Test
     void unfollowUserNotFollowing_fail() {
-        FollowRequestDto followRequestDto = new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
+        FollowRequestDto followRequestDto =
+                new FollowRequestDto("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7", "165fb1ba-621d-4035-b8be-508ec22147c9");
         User user = new User();
         user.setId("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7");
         User followUser = new User();
@@ -174,7 +183,8 @@ public class FollowServiceTest {
     void getFollowing_UserNotFound_fail() {
         when(userRepository.findById("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7")).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> followService.getFollowing("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7"));
+        AppException exception = assertThrows(
+                AppException.class, () -> followService.getFollowing("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7"));
         assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
     }
 
@@ -191,6 +201,7 @@ public class FollowServiceTest {
         assertNotNull(responses);
         assertTrue(responses.isEmpty());
     }
+
     @Test
     void getFollowers_Success() {
         User user = new User();
@@ -217,7 +228,8 @@ public class FollowServiceTest {
     void getFollowers_UserNotFound_fail() {
         when(userRepository.findById("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7")).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> followService.getFollowers("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7"));
+        AppException exception = assertThrows(
+                AppException.class, () -> followService.getFollowers("1bac99aa-4bf0-479b-bd8a-19e9f2b32ce7"));
         assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
     }
 
@@ -234,5 +246,4 @@ public class FollowServiceTest {
         assertNotNull(responses);
         assertTrue(responses.isEmpty());
     }
-
 }

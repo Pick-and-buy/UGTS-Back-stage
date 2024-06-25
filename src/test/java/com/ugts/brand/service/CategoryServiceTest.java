@@ -1,5 +1,13 @@
 package com.ugts.brand.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import com.ugts.brand.dto.request.CategoryRequest;
 import com.ugts.brand.dto.response.CategoryResponse;
 import com.ugts.brand.entity.BrandLine;
@@ -12,20 +20,10 @@ import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -54,14 +52,19 @@ public class CategoryServiceTest {
         categoryRequest = new CategoryRequest();
         categoryRequest.setCategoryName("Mini Bags");
         categoryRequest.setBrandLine(brandLine);
-        category = Category.builder().categoryName("Mini Bags").brandLine(brandLine).build();
+        category = Category.builder()
+                .categoryName("Mini Bags")
+                .brandLine(brandLine)
+                .build();
         categoryResponse = new CategoryResponse();
         categoryResponse.setCategoryName("Mini Bags");
     }
+
     @Test
     void createCategory_success() {
         when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
-        when(categoryRepository.existsByCategoryNameAndBrandLine(anyString(), any(BrandLine.class))).thenReturn(false);
+        when(categoryRepository.existsByCategoryNameAndBrandLine(anyString(), any(BrandLine.class)))
+                .thenReturn(false);
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
         when(categoryMapper.categoryToCategoryResponse(any(Category.class))).thenReturn(categoryResponse);
 
@@ -78,7 +81,8 @@ public class CategoryServiceTest {
     void createCategory_WhenBrandLineNotFound_fail() {
         when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> categoryService.createCategory(categoryRequest));
+        AppException exception =
+                assertThrows(AppException.class, () -> categoryService.createCategory(categoryRequest));
 
         assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
         verify(brandLineRepository).findByLineName("Marmont");
@@ -90,9 +94,11 @@ public class CategoryServiceTest {
     @Test
     void createCategory_WhenCategoryAlreadyExists_fail() {
         when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
-        when(categoryRepository.existsByCategoryNameAndBrandLine(anyString(), any(BrandLine.class))).thenReturn(true);
+        when(categoryRepository.existsByCategoryNameAndBrandLine(anyString(), any(BrandLine.class)))
+                .thenReturn(true);
 
-        AppException exception = assertThrows(AppException.class, () -> categoryService.createCategory(categoryRequest));
+        AppException exception =
+                assertThrows(AppException.class, () -> categoryService.createCategory(categoryRequest));
 
         assertEquals(ErrorCode.CATEGORY_ALREADY_EXISTED, exception.getErrorCode());
         verify(brandLineRepository).findByLineName("Marmont");
@@ -100,8 +106,6 @@ public class CategoryServiceTest {
         verify(categoryRepository, never()).save(any(Category.class));
         verify(categoryMapper, never()).categoryToCategoryResponse(any(Category.class));
     }
-
-
 
     @Test
     void getCategoryByCategoryName_success() {
@@ -120,12 +124,14 @@ public class CategoryServiceTest {
     void getCategoryByCategoryName_CategoryNotFound_fail() {
         when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> categoryService.getCategoryByCategoryName("Mini Bags"));
+        AppException exception =
+                assertThrows(AppException.class, () -> categoryService.getCategoryByCategoryName("Mini Bags"));
 
         assertEquals(ErrorCode.CATEGORY_NOT_EXISTED, exception.getErrorCode());
         verify(categoryRepository).findByCategoryName("Mini Bags");
         verify(categoryMapper, never()).categoryToCategoryResponse(any(Category.class));
     }
+
     @Test
     void updateCategory_success() {
         String categoryName = "Mini Bags";
@@ -158,9 +164,9 @@ public class CategoryServiceTest {
         assertNotNull(response);
         assertEquals(existingCategory.getCategoryName(), updatedCategory.getCategoryName());
         verify(categoryRepository, times(1)).findByCategoryName(categoryName);
-        verify(brandLineRepository, times(1)).findByLineName(request.getBrandLine().getLineName());
+        verify(brandLineRepository, times(1))
+                .findByLineName(request.getBrandLine().getLineName());
         verify(categoryRepository, times(1)).save(any(Category.class));
-
     }
 
     @Test
@@ -202,7 +208,8 @@ public class CategoryServiceTest {
         when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.of(existingCategory));
         when(brandLineRepository.findByLineName("Falls")).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> categoryService.updateCategory(request, categoryName));
+        AppException exception =
+                assertThrows(AppException.class, () -> categoryService.updateCategory(request, categoryName));
         assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
     }
 
@@ -241,7 +248,8 @@ public class CategoryServiceTest {
 
         when(brandLineRepository.findByLineName(brandLineName)).thenReturn(Optional.empty());
 
-        AppException exception = assertThrows(AppException.class, () -> categoryService.getCategoriesByBrandLineName(brandLineName));
+        AppException exception =
+                assertThrows(AppException.class, () -> categoryService.getCategoriesByBrandLineName(brandLineName));
         assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
     }
 }

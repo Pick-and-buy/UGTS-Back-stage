@@ -1,5 +1,12 @@
 package com.ugts.post.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.*;
 
 import com.ugts.brand.entity.Brand;
 import com.ugts.brand.entity.BrandLine;
@@ -23,7 +30,6 @@ import com.ugts.product.entity.Product;
 import com.ugts.product.repository.ProductRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,14 +40,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -89,6 +87,7 @@ public class PostServiceTest {
     private Product productDTO;
     private User user;
     private UpdatePostRequest updatePostRequest;
+
     @BeforeEach
     void setUp() {
 
@@ -96,6 +95,7 @@ public class PostServiceTest {
         SecurityContextHolder.setContext(securityContext);
         when(authentication.getName()).thenReturn("098765466");
     }
+
     @Test
     void createPost_success() throws IOException {
         CreatePostRequest request = new CreatePostRequest();
@@ -153,7 +153,6 @@ public class PostServiceTest {
         PostResponse result = postService.createPost(request, files);
         assertNotNull(result);
         assertEquals(postResponse.getTitle(), result.getTitle());
-
     }
 
     @Test
@@ -286,7 +285,6 @@ public class PostServiceTest {
         });
 
         assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
-
     }
 
     @Test
@@ -431,6 +429,7 @@ public class PostServiceTest {
         verify(postRepository, times(1)).findById(postId);
         verify(postMapper, times(1)).postToPostResponse(post);
     }
+
     @Test
     void getPostById_PostNotFound_fail() {
         String postId = "f925dfd3-d157-40f0-a755-d9f77a0ca1f";
@@ -445,6 +444,7 @@ public class PostServiceTest {
         verify(postRepository, times(1)).findById(postId);
         verify(postMapper, times(0)).postToPostResponse(any(Post.class));
     }
+
     @Test
     void getPostsByBrand_Success() {
         String brandName = "Gucci";
@@ -466,6 +466,7 @@ public class PostServiceTest {
         verify(postRepository, times(1)).findAllByBrandName(brandName);
         verify(postMapper, times(1)).getAllPosts(posts);
     }
+
     @Test
     void getPostsByBrand_NoPostsFound_fail() {
         String brandName = "Chanel";
@@ -508,6 +509,7 @@ public class PostServiceTest {
         verify(postMapper, times(1)).postToPostResponse(post1);
         verify(postMapper, times(1)).postToPostResponse(post2);
     }
+
     @Test
     void getPostByUserId_NoPostsFound_fail() {
         String userId = "210b7e8f-d75e-4962-972d-dcd6ac713b03";
@@ -621,6 +623,7 @@ public class PostServiceTest {
         verify(postRepository, times(1)).findPostsByIsAvailable(status);
         verify(postMapper, times(1)).getAllPosts(posts);
     }
+
     @Test
     void searchPostsByStatus_Fail_Success() throws IOException {
         boolean status = false;
@@ -642,6 +645,7 @@ public class PostServiceTest {
         verify(postRepository, times(1)).findPostsByIsAvailable(status);
         verify(postMapper, times(1)).getAllPosts(posts);
     }
+
     @Test
     void searchPostsByStatus_fail() throws IOException {
         boolean status = true;
@@ -688,15 +692,15 @@ public class PostServiceTest {
 
         verify(postRepository, times(1)).deleteById(postId);
     }
-//    @Test
-//    void deletePost_PostNotFound() {
-//        String postId = "f925dfd3-d157-40f0-a755-d9f77a0ca1";
-//
-//        when(postRepository.findById(postId)).thenReturn(Optional.empty());
-//
-//        AppException exception = assertThrows(AppException.class, () -> postService.deletePost(postId));
-//
-//        assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
-//        verify(postRepository, never()).deleteById(anyString());
-//    }
+    //    @Test
+    //    void deletePost_PostNotFound() {
+    //        String postId = "f925dfd3-d157-40f0-a755-d9f77a0ca1";
+    //
+    //        when(postRepository.findById(postId)).thenReturn(Optional.empty());
+    //
+    //        AppException exception = assertThrows(AppException.class, () -> postService.deletePost(postId));
+    //
+    //        assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
+    //        verify(postRepository, never()).deleteById(anyString());
+    //    }
 }

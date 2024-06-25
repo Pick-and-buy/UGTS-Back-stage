@@ -1,5 +1,7 @@
 package com.ugts.transaction.service.impl;
 
+import java.util.Date;
+
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.order.repository.OrderRepository;
@@ -19,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -38,7 +38,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
     public TransactionResponse createTransaction(TransactionRequest transactionRequest) {
-        var order = orderRepository.findById(transactionRequest.getOrder().getId())
+        var order = orderRepository
+                .findById(transactionRequest.getOrder().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         // get user from context holder

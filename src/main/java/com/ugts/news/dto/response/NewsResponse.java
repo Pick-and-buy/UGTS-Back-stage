@@ -1,9 +1,9 @@
-package com.ugts.brand.dto.response;
+package com.ugts.news.dto.response;
 
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ugts.brand.entity.BrandLine;
+import com.ugts.brandLine.dto.response.BrandLineResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

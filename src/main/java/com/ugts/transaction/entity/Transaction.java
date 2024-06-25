@@ -21,7 +21,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @GeneratedValue(strategy = GenerationType.UUID)
+    //    @GeneratedValue(strategy = GenerationType.UUID)
     String billNo;
 
     String bankCode;

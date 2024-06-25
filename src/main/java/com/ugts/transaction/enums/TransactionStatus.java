@@ -1,9 +1,9 @@
 package com.ugts.transaction.enums;
 
 public enum TransactionStatus {
-    PENDING ,
-    PROCESSING ,
-    SUCCESS ,
-    FAILED ,
-    CANCELLED ,
+    PENDING,
+    PROCESSING,
+    SUCCESS,
+    FAILED,
+    CANCELLED,
 }

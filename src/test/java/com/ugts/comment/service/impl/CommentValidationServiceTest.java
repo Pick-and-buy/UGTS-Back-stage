@@ -1,5 +1,8 @@
 package com.ugts.comment.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 import com.ugts.comment.util.BadWordConfig;
 import com.ugts.comment.util.Trie;
 import org.junit.jupiter.api.Test;
@@ -8,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CommentValidationServiceTest {
     @Mock
@@ -20,6 +21,7 @@ public class CommentValidationServiceTest {
 
     @InjectMocks
     private CommentValidationServiceImpl commentValidationService;
+
     @Test
     void testFilterBadWords_Success() {
         String content = "This is a comment with bad words like idiot and stupid.";

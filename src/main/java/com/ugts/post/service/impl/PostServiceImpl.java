@@ -3,9 +3,9 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.*;
 
-import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
-import com.ugts.brand.repository.CategoryRepository;
+import com.ugts.brandLine.repository.BrandLineRepository;
+import com.ugts.category.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;

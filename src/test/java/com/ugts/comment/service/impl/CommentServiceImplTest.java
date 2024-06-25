@@ -1,5 +1,13 @@
 package com.ugts.comment.service.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import com.ugts.comment.entity.Comment;
@@ -11,20 +19,12 @@ import com.ugts.post.entity.Post;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 @SpringBootTest
 @TestPropertySource("/test.properties")
 class CommentServiceImplTest {
@@ -92,7 +92,6 @@ class CommentServiceImplTest {
         verify(commentRepository, times(1)).save(comment);
         verify(commentMapper, times(1)).toCommentResponse(comment);
     }
-
 
     @Test
     void createComment_EmptyContent_fail() {
@@ -174,7 +173,6 @@ class CommentServiceImplTest {
 
         verify(commentRepository, times(1)).findByPostId(postId);
         verify(commentMapper, times(1)).toCommentResponse(comment1);
-
     }
 
     @Test

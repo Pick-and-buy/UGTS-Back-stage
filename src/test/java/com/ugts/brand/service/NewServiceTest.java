@@ -1,31 +1,31 @@
 package com.ugts.brand.service;
 
-import com.ugts.brand.dto.request.NewsRequest;
-import com.ugts.brand.dto.response.NewsResponse;
-import com.ugts.brand.entity.BrandLine;
-import com.ugts.brand.entity.News;
-import com.ugts.brand.mapper.NewsMapper;
-import com.ugts.brand.repository.BrandLineRepository;
-import com.ugts.brand.repository.NewsRepository;
-import com.ugts.brand.service.impl.NewsServiceImpl;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import com.ugts.brandLine.entity.BrandLine;
+import com.ugts.brandLine.repository.BrandLineRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.news.dto.request.NewsRequest;
+import com.ugts.news.dto.response.NewsResponse;
+import com.ugts.news.entity.News;
+import com.ugts.news.mapper.NewsMapper;
+import com.ugts.news.repository.NewsRepository;
+import com.ugts.news.service.impl.NewsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -57,10 +57,16 @@ public class NewServiceTest {
         brandLine.setLineName("Test Brand Line");
         request.setBrandLine(brandLine);
 
-        News news = News.builder().id("1").title(request.getTitle()).content(request.getContent()).brandLine(brandLine).build();
+        News news = News.builder()
+                .id("1")
+                .title(request.getTitle())
+                .content(request.getContent())
+                .brandLine(brandLine)
+                .build();
         when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
         when(newsRepository.save(any(News.class))).thenReturn(news);
-        when(googleCloudStorageService.uploadNewsBannerToGCS(any(MultipartFile.class), anyString())).thenReturn("Test URL");
+        when(googleCloudStorageService.uploadNewsBannerToGCS(any(MultipartFile.class), anyString()))
+                .thenReturn("Test URL");
         when(newsMapper.toNewsResponse(any(News.class))).thenReturn(new NewsResponse());
 
         NewsResponse response = newsService.createNews(request, file);
@@ -139,7 +145,8 @@ public class NewServiceTest {
 
         when(newsRepository.findById(newsId)).thenReturn(Optional.of(existingNews));
         when(brandLineRepository.findByLineName(anyString())).thenReturn(Optional.of(brandLine));
-        when(googleCloudStorageService.uploadNewsBannerToGCS(any(MultipartFile.class), anyString())).thenReturn("Updated URL");
+        when(googleCloudStorageService.uploadNewsBannerToGCS(any(MultipartFile.class), anyString()))
+                .thenReturn("Updated URL");
         when(newsRepository.save(any(News.class))).thenReturn(existingNews);
         when(newsMapper.toNewsResponse(any(News.class))).thenReturn(new NewsResponse());
 
@@ -212,12 +219,12 @@ public class NewServiceTest {
     void deleteNews_NotFound_fail() {
         String newsId = "1";
 
-        doThrow(new AppException(ErrorCode.NEWS_NOT_EXISTED)).when(newsRepository).deleteById(newsId);
+        doThrow(new AppException(ErrorCode.NEWS_NOT_EXISTED))
+                .when(newsRepository)
+                .deleteById(newsId);
 
         AppException exception = assertThrows(AppException.class, () -> newsService.deleteNews(newsId));
         assertEquals(ErrorCode.NEWS_NOT_EXISTED, exception.getErrorCode());
         verify(newsRepository).deleteById(newsId);
     }
-
-
 }
