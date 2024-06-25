@@ -4,13 +4,13 @@ import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.order.dto.request.CreateOrderRequest;
 import com.ugts.order.dto.response.OrderResponse;
+import com.ugts.order.entity.Order;
 import com.ugts.order.entity.OrderDetails;
 import com.ugts.order.enums.OrderStatus;
 import com.ugts.order.mapper.OrderMapper;
 import com.ugts.order.repository.OrderRepository;
 import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.product.repository.ProductRepository;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
@@ -21,12 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class OrderServiceImpl implements OrderService {
-    TransactionRepository transactionRepository;
-
     PostRepository postRepository;
 
     OrderRepository orderRepository;
@@ -61,7 +62,20 @@ public class OrderServiceImpl implements OrderService {
                 .address(buyer.getAddress().toString())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
+                .isPaid(false)
+                .isRefund(false)
+                .orderDate(new Date())
+                .packageDate(orderRequest.getPackageDate())
+                .deliveryDate(orderRequest.getDeliveryDate())
+                .receivedDate(orderRequest.getReceivedDate())
                 .build();
-        return null;
+
+        var order = Order.builder()
+                .buyer(buyer)
+                .post(post)
+                .orderDetails(List.of(orderDetails))
+                .build();
+
+        return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 }

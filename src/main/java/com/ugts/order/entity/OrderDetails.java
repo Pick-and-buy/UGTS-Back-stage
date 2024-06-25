@@ -24,7 +24,7 @@ public class OrderDetails {
 
     int quantity;
 
-    boolean isFeedBack = false;
+    boolean isFeedBack;
 
     String firstName;
 
@@ -42,7 +42,7 @@ public class OrderDetails {
     @Enumerated(EnumType.STRING)
     OrderStatus status;
 
-    Boolean isPaid = false;
+    Boolean isPaid;
 
     Boolean isRefund;
 
