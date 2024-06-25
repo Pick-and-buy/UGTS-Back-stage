@@ -96,7 +96,7 @@ public class BrandLineServiceImpl implements BrandLineService {
     public BrandLineResponse getBrandLineByLineName(String brandLineName) {
         var brandLine = brandLineRepository
                 .findByLineName(brandLineName)
-                .orElseThrow(() -> new AppException(ErrorCode.BRAND_COLLECTION_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
         return brandLineMapper.toBrandLineResponse(brandLine);
     }
 
