@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.ugts.order.entity.OrderDetails;
 import com.ugts.order.enums.OrderStatus;
+import com.ugts.post.dto.response.PostResponse;
+import com.ugts.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateOrderRequest {
-    String firstName;
-    String lastName;
-    String email;
-    String phoneNumber;
-    String address;
     String paymentMethod;
-    OrderStatus status;
+    Post post;
     List<OrderDetails> orderDetails;
 }

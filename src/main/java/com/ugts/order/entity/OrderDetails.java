@@ -22,7 +22,7 @@ public class OrderDetails {
 
     double price;
 
-    int quantity = 1;
+    int quantity;
 
     boolean isFeedBack = false;
 
