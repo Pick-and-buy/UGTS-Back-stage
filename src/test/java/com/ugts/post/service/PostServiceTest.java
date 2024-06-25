@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.*;
 
 import com.ugts.brand.entity.Brand;
-import com.ugts.brand.entity.BrandLine;
-import com.ugts.brand.entity.Category;
-import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
-import com.ugts.brand.repository.CategoryRepository;
+import com.ugts.brandLine.entity.BrandLine;
+import com.ugts.brandLine.repository.BrandLineRepository;
+import com.ugts.category.entity.Category;
+import com.ugts.category.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
@@ -23,7 +23,6 @@ import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.post.repository.PostSearchRepository;
 import com.ugts.post.service.impl.PostServiceImpl;
 import com.ugts.product.entity.Condition;
 import com.ugts.product.entity.Product;
@@ -52,9 +51,6 @@ public class PostServiceTest {
 
     @Mock
     GoogleCloudStorageService googleCloudStorageService;
-
-    @Mock
-    private PostSearchRepository postSearchRepository;
 
     @Mock
     private BrandRepository brandRepository;
