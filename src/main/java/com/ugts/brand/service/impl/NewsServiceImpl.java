@@ -69,7 +69,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public List<NewsResponse> getAllNews() {
-        return newsRepository.findAll().stream().map(newsMapper::toNewsResponse).toList();
+        var news = newsRepository.findAll();
+        return newsMapper.toAllNewsResponse(news);
     }
 
     @Override
