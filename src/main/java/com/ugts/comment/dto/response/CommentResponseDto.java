@@ -1,9 +1,9 @@
 package com.ugts.comment.dto.response;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class CommentResponseDto {

@@ -10,9 +10,6 @@ import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Getter
 @Setter
@@ -21,16 +18,15 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Document(indexName = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     User purchasedUser;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -42,15 +38,13 @@ public class Post {
     @ManyToMany(mappedBy = "viewedPosts")
     Set<User> viewedUsers = new HashSet<>();
 
-    @Field(type = FieldType.Text)
     String title;
 
     String description;
 
-    @Field(type = FieldType.Boolean)
     Boolean isAvailable;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     Product product;
 
     Date createdAt;

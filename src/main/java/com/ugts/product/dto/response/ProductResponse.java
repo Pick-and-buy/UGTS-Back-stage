@@ -2,10 +2,11 @@ package com.ugts.product.dto.response;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.dto.GeneralBrandInformationDto;
-import com.ugts.brand.dto.GeneralBrandLineInformationDto;
-import com.ugts.brand.entity.BrandCollection;
-import com.ugts.brand.entity.Category;
+import com.ugts.brandCollection.entity.BrandCollection;
+import com.ugts.brandLine.dto.GeneralBrandLineInformationDto;
+import com.ugts.category.entity.Category;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -20,15 +21,16 @@ public class ProductResponse {
     GeneralBrandInformationDto brand;
     GeneralBrandLineInformationDto brandLine;
     BrandCollection brandCollection;
+
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     Category category;
+
     double price;
     String color;
     String size;
     String width;
     String height;
     String length;
-    String drop;
-    String fit;
     String referenceCode;
     String manufactureYear;
     String exteriorMaterial;

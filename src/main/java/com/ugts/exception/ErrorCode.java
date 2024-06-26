@@ -31,6 +31,7 @@ public enum ErrorCode {
             1005,
             "Password must contain at least 1 small letter, capital letter, number and special character",
             HttpStatus.BAD_REQUEST),
+    USERNAME_EXISTED(1006, "Username has already existed", HttpStatus.BAD_REQUEST),
 
     INVALID_DOB(1006, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     PHONE_NUMBER_INVALID(1007, "Your phone number must be {min} number", HttpStatus.BAD_REQUEST),
@@ -80,6 +81,9 @@ public enum ErrorCode {
 
     // NEWS
     NEWS_NOT_EXISTED(1001, "News not exist", HttpStatus.BAD_REQUEST),
+
+    // ORDERS
+    ORDER_NOT_FOUND(1001, "Order not found", HttpStatus.BAD_REQUEST),
 
 // Comment
 ;

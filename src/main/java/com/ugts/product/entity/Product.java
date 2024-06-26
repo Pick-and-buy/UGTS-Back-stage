@@ -5,9 +5,9 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.entity.Brand;
-import com.ugts.brand.entity.BrandCollection;
-import com.ugts.brand.entity.BrandLine;
-import com.ugts.brand.entity.Category;
+import com.ugts.brandCollection.entity.BrandCollection;
+import com.ugts.brandLine.entity.BrandLine;
+import com.ugts.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,10 +35,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     Brand brand;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandLine brandLine;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     BrandCollection brandCollection;
 
     @JsonIgnoreProperties("hibernateLazyInitializer")
