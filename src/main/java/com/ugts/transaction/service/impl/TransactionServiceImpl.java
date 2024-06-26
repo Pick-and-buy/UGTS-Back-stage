@@ -1,6 +1,7 @@
 package com.ugts.transaction.service.impl;
 
 import java.util.Date;
+import java.util.Random;
 
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
@@ -37,23 +38,22 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
-    public TransactionResponse createTransaction(TransactionRequest transactionRequest) {
-        var order = orderRepository
-                .findById(transactionRequest.getOrder().getId())
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+    public TransactionResponse createTransaction(TransactionRequest transactionRequest, String orderId) {
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
-        var user = userRepository
+        var buyer = userRepository
                 .findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         var transaction = Transaction.builder()
+                .billNo(getRandomBillNo())
                 .bankCode(transactionRequest.getBankCode())
                 .cardType(transactionRequest.getCardType())
-                .amount(transactionRequest.getAmount())
+                .amount((int) order.getPost().getProduct().getPrice())
                 .currency(transactionRequest.getCurrency())
                 .bankAccountNo(transactionRequest.getBankAccountNo())
                 .bankAccount(transactionRequest.getBankAccount())
@@ -61,10 +61,20 @@ public class TransactionServiceImpl implements TransactionService {
                 .reason(transactionRequest.getReason())
                 .createDate(new Date())
                 .transactionStatus(TransactionStatus.SUCCESS)
-                .user(user)
+                .user(buyer)
                 .order(order)
                 .build();
 
         return transactionMapper.toTransactionResponse(transactionRepository.save(transaction));
+    }
+
+    private String getRandomBillNo() {
+        Random random = new Random();
+        StringBuilder billNo = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            int digit = random.nextInt(10);
+            billNo.append(digit);
+        }
+        return billNo.toString();
     }
 }
