@@ -77,7 +77,6 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderDetails.setOrder(order);
-        order.getOrderDetails().add(orderDetails);
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }

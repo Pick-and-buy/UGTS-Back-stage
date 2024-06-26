@@ -2,7 +2,6 @@ package com.ugts.order.entity;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,16 +45,12 @@ public class OrderDetails {
 
     Boolean isRefund;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date orderDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date packageDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date deliveryDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date receivedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
