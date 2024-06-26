@@ -30,7 +30,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     Post post;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
     Date createAt;
 
     private String userImageUrl;
