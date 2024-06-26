@@ -53,6 +53,6 @@ public class OrderDetails {
 
     Date receivedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     Order order;
 }
