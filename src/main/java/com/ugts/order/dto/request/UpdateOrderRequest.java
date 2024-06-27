@@ -15,6 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateOrderRequest {
     OrderStatus orderStatus;
+    String firstName;
+    String lastName;
+    String email;
+    String phoneNumber;
+    String address;
     String paymentMethod;
     Date packageDate;
     Date deliveryDate;

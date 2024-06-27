@@ -25,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
@@ -140,17 +141,63 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest orderRequest) {
-        return null;
+        // Get the order
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Get the user who created the order
+        var buyer = userRepository
+                .findById(order.getBuyer().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Get user who is updating the order
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
+
+        var user = userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Verify that the user is authorized to update the order
+        if (!Objects.equals(buyer.getId(), user.getId())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        order.getOrderDetails().setAddress(orderRequest.getAddress());
+        order.getOrderDetails().setFirstName(orderRequest.getFirstName());
+        order.getOrderDetails().setLastName(orderRequest.getLastName());
+        order.getOrderDetails().setEmail(orderRequest.getEmail());
+        order.getOrderDetails().setPhoneNumber(orderRequest.getPhoneNumber());
+        order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
+
+        if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED){
+            orderRepository.delete(order);
+        } else {
+            var orderDetails = order.getOrderDetails();
+            orderDetails.setStatus(orderRequest.getOrderStatus());
+
+            orderDetailsRepository.save(orderDetails);
+        }
+
+        return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
     public List<OrderResponse> getAllOrders() {
-        return List.of();
+        var orders = orderRepository.findAll();
+        return orderMapper.toOrdersResponse(orders);
     }
 
     @Override
-    public OrderResponse getOrderByOrderId(String orderId) {
-        return null;
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public OrderResponse getOrderByOrderId(@RequestParam String orderId) {
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        return orderMapper.toOrderResponse(order);
     }
 }

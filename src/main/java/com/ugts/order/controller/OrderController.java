@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
@@ -32,6 +34,34 @@ public class OrderController {
         var result = orderService.updateOrderStatus(orderId, orderRequest);
         return ApiResponse.<OrderResponse>builder()
                 .message("Update order status success")
+                .result(result)
+                .build();
+    }
+
+    @PutMapping("/details")
+    public ApiResponse<OrderResponse> updateOrderDetails(
+            @RequestParam String orderId, @RequestBody UpdateOrderRequest orderRequest) {
+        var result = orderService.updateOrderDetails(orderId, orderRequest);
+        return ApiResponse.<OrderResponse>builder()
+                .message("Update order details success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<OrderResponse>> getAllOrders(){
+        var result = orderService.getAllOrders();
+        return ApiResponse.<List<OrderResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/details")
+    public ApiResponse<OrderResponse> getOrderByOrderId(String orderId){
+        var result = orderService.getOrderByOrderId(orderId);
+        return ApiResponse.<OrderResponse>builder()
+                .message("Success")
                 .result(result)
                 .build();
     }
