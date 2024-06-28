@@ -1,17 +1,14 @@
 package com.ugts.notification.controller;
 
-import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.dto.ApiResponse;
 import com.ugts.notification.dto.NotificationResponse;
-import com.ugts.notification.entity.Notification;
+import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.mapper.NotificationMapper;
 import com.ugts.notification.service.INotificationService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +26,8 @@ public class NotificationController {
 
     @MessageMapping("/application")
     @SendTo("/all/messages")
-    public NotificationResponse send(final Notification notification) throws Exception {
-        return notificationMapper.toNotificationResponse(notification);
+    public NotificationResponse send(final NotificationEntity notificationEntity) throws Exception {
+        return notificationMapper.toNotificationResponse(notificationEntity);
     }
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(@RequestParam String userId, @RequestParam String type, @RequestParam String message) {
