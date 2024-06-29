@@ -3,13 +3,9 @@ package com.ugts.post.service.impl;
 import java.io.IOException;
 import java.util.*;
 
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.UpdateRequest;
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import com.ugts.brand.repository.BrandLineRepository;
 import com.ugts.brand.repository.BrandRepository;
-import com.ugts.brand.repository.CategoryRepository;
+import com.ugts.brandLine.repository.BrandLineRepository;
+import com.ugts.category.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
@@ -153,7 +149,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostResponse> getAllPosts() throws IOException {
+    public List<PostResponse> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return postMapper.getAllPosts(posts);
     }
@@ -224,30 +220,24 @@ public class PostServiceImpl implements IPostService {
         return postMapper.getAllPosts(postRepository.findPostsByIsAvailable(status));
     }
 
-//    public void updatePost(String id, Map<String, Object> fields) throws IOException {
-//        if (id == null || id.isEmpty() || fields == null || fields.isEmpty()) {
-//            throw new IllegalArgumentException("ID and fields must not be null or empty");
-//        }
-//        if (postSearchRepository.findDocById(id) != null) {
-//            UpdateRequest<Object, Map<String, Object>> request =
-//                    UpdateRequest.of(u -> u.index("posts").id(id).doc(fields));
-//
-//            try {
-//                postSearchRepository.update(request, Post.class);
-//            } catch (IOException e) {
-//                log.error("An error occurred during document update: " + e.getMessage());
-//            }
-//        } else {
-//            log.error("Document with id " + id + " does not exist.");
-//        }
-//    }
-//
-//    private List<PostResponse> getPostResponses(SearchRequest request) throws IOException {
-//        SearchResponse<Post> response = postSearchRepository.search(request, Post.class);
-//        List<Post> posts = new ArrayList<>();
-//        for (Hit<Post> hit : response.hits().hits()) {
-//            posts.add(hit.source());
-//        }
-//        return postMapper.getAllPosts(posts);
-//    }
+    @Override
+    public List<PostResponse> getPostByUserId(String userId) {
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return postRepository.findPostsByUserId(user.getId()).stream()
+                .map(postMapper::postToPostResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public void deletePost(String postId) {
+        postRepository.deleteById(postId);
+    }
+
+    @Override
+    public List<PostResponse> getPostByBrandLine(String brandLineName) {
+        var posts = postRepository.findAllByBrandLine(brandLineName);
+        return postMapper.getAllPosts(posts);
+    }
 }

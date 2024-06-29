@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+// @Repository("postRepository")
 public interface PostRepository extends JpaRepository<Post, String> {
     @Query("SELECT p FROM Post p JOIN p.likedUsers u WHERE u.id = :userId")
     List<Post> findPostsLikedByUser(@Param("userId") String userId);
@@ -22,6 +23,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
 
     @Query("SELECT p FROM Post p JOIN p.product pr JOIN pr.brand b WHERE b.name = :brandName")
     List<Post> findAllByBrandName(String brandName);
+
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId")
     List<Post> findPostsByUserId(String userId);
 

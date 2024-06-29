@@ -25,13 +25,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    @Column(unique = true)
     String username;
+
     String avatar;
     String password;
     String lastName;
     String firstName;
+
+    @Column(unique = true)
     String email;
+
+    @Column(unique = true)
     String phoneNumber;
+
     Date dob;
 
     @ManyToMany

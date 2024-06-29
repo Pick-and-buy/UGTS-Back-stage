@@ -32,5 +32,6 @@ public class PostResponse {
     Date updatedAt;
 
     ProductResponse product;
+
     Set<GeneralCommentInformationDto> comments;
 }

@@ -1,5 +1,8 @@
 package com.ugts.comment.entity;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.post.entity.Post;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
@@ -26,4 +29,9 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     Post post;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
+    Date createAt;
+
+    private String userImageUrl;
 }

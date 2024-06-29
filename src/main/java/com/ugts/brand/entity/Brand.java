@@ -3,6 +3,8 @@ package com.ugts.brand.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ugts.brandCollection.entity.BrandCollection;
+import com.ugts.brandLine.entity.BrandLine;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
