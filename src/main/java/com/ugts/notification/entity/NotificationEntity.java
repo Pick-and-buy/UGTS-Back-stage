@@ -23,7 +23,9 @@ public class NotificationEntity {
 
     // Type of notification (like, comment, follower)
     private String type;
+
     private String message;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
     private Date timestamp;
 
