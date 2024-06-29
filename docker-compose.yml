@@ -72,7 +72,7 @@ services:
     networks:
       - es-net
     volumes:
-      - kibanadata:/usr/share/kibana/data
+      - kibana-data:/usr/share/kibana/data
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
@@ -109,7 +109,7 @@ services:
       #      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAKFA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
 
 networks:
@@ -122,5 +122,5 @@ volumes:
   pgadmin:
   es-data:
     driver: local
-  kibanadata:
+  kibana-data:
     driver: local

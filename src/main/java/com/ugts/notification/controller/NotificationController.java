@@ -1,6 +1,7 @@
 package com.ugts.notification.controller;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.kafka.producer.KafkaProducer;
 import com.ugts.notification.dto.NotificationResponse;
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.mapper.NotificationMapper;
@@ -22,6 +23,7 @@ import java.util.List;
 public class NotificationController {
     private INotificationService notificationService;
     private NotificationMapper notificationMapper;
+    private KafkaProducer kafkaProducer;
 
 
     @MessageMapping("/application")
@@ -30,8 +32,8 @@ public class NotificationController {
         return notificationMapper.toNotificationResponse(notificationEntity);
     }
     @PostMapping("/send")
-    public ResponseEntity<String> sendNotification(@RequestParam String userId, @RequestParam String type, @RequestParam String message) {
-        notificationService.sendNotification(userId, type, message);
+    public ResponseEntity<String> sendNotification(@RequestBody NotificationEntity notificationEntity) {
+        kafkaProducer.sendGeneralMessage(notificationEntity);
         return ResponseEntity.ok("Notification sent successfully");
     }
 
