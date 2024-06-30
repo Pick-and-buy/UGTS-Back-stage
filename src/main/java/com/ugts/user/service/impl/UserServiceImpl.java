@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Override
     public UserResponse updateUserAvatar(String userId, MultipartFile file) throws IOException {
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
