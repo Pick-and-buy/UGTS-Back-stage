@@ -1,10 +1,10 @@
 package com.ugts.notification.repository;
 
-import com.ugts.notification.entity.NotificationEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
-public interface NotificationRepository extends JpaRepository<NotificationEntity, String> {
-    List<NotificationEntity> findByUserId(String userId);
+import com.ugts.notification.entity.Notifications;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface NotificationRepository extends JpaRepository<Notifications, String> {
+    List<Notifications> findByUserId(String userId);
 }

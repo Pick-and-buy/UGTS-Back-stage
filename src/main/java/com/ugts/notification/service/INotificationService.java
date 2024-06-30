@@ -1,10 +1,11 @@
 package com.ugts.notification.service;
 
-import com.ugts.notification.dto.NotificationResponse;
-
 import java.util.List;
+
+import com.ugts.notification.dto.NotificationResponse;
 
 public interface INotificationService {
     void sendNotification(String userId, String type, String message);
-     List<NotificationResponse> getUserNotifications(String userId);
+
+    List<NotificationResponse> getUserNotifications(String userId);
 }

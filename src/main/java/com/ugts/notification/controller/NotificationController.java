@@ -1,9 +1,11 @@
 package com.ugts.notification.controller;
 
+import java.util.List;
+
 import com.ugts.dto.ApiResponse;
 import com.ugts.kafka.producer.KafkaProducer;
 import com.ugts.notification.dto.NotificationResponse;
-import com.ugts.notification.entity.NotificationEntity;
+import com.ugts.notification.entity.Notifications;
 import com.ugts.notification.mapper.NotificationMapper;
 import com.ugts.notification.service.INotificationService;
 import lombok.AccessLevel;
@@ -14,8 +16,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/notifications")
 @AllArgsConstructor
@@ -25,15 +25,15 @@ public class NotificationController {
     private NotificationMapper notificationMapper;
     private KafkaProducer kafkaProducer;
 
-
     @MessageMapping("/application")
     @SendTo("/all/messages")
-    public NotificationResponse send(final NotificationEntity notificationEntity) throws Exception {
-        return notificationMapper.toNotificationResponse(notificationEntity);
+    public NotificationResponse send(final Notifications notifications) throws Exception {
+        return notificationMapper.toNotificationResponse(notifications);
     }
+
     @PostMapping("/send")
-    public ResponseEntity<String> sendNotification(@RequestBody NotificationEntity notificationEntity) {
-        kafkaProducer.sendGeneralMessage(notificationEntity);
+    public ResponseEntity<String> sendNotification(@RequestBody Notifications notifications) {
+        kafkaProducer.sendGeneralMessage(notifications);
         return ResponseEntity.ok("Notification sent successfully");
     }
 

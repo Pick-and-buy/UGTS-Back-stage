@@ -1,7 +1,7 @@
 package com.ugts.kafka.producer;
 
 import com.ugts.constant.AppConstant;
-import com.ugts.notification.entity.NotificationEntity;
+import com.ugts.notification.entity.Notifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -13,39 +13,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaProducer {
 
-    private final KafkaTemplate<String, NotificationEntity> kafkaTemplate;
+    private final KafkaTemplate<String, Notifications> kafkaTemplate;
 
-    public void sendGeneralMessage(NotificationEntity notification){
-        //object type message
-        Message<NotificationEntity> message = MessageBuilder
-                .withPayload(notification)
+    public void sendGeneralMessage(Notifications notification) {
+        // object type message
+        Message<Notifications> message = MessageBuilder.withPayload(notification)
                 .setHeader(KafkaHeaders.TOPIC, AppConstant.GENERAL_NOTIFICATION_TOPIC)
                 .build();
         kafkaTemplate.send(message);
     }
 
-    public void sendPostMessage(NotificationEntity notification){
-        //object type message
-        Message<NotificationEntity> message = MessageBuilder
-                .withPayload(notification)
+    public void sendPostMessage(Notifications notification) {
+        // object type message
+        Message<Notifications> message = MessageBuilder.withPayload(notification)
                 .setHeader(KafkaHeaders.TOPIC, AppConstant.POST_RELATED_TOPIC)
                 .build();
         kafkaTemplate.send(message);
     }
 
-    public void sendFollowMessage(NotificationEntity notification){
-        //object type message
-        Message<NotificationEntity> message = MessageBuilder
-                .withPayload(notification)
+    public void sendFollowMessage(Notifications notification) {
+        // object type message
+        Message<Notifications> message = MessageBuilder.withPayload(notification)
                 .setHeader(KafkaHeaders.TOPIC, AppConstant.FOLLOW_RELATED_TOPIC)
                 .build();
         kafkaTemplate.send(message);
     }
 
-    public void sendBuyingMessage(NotificationEntity notification){
-        //object type message
-        Message<NotificationEntity> message = MessageBuilder
-                .withPayload(notification)
+    public void sendBuyingMessage(Notifications notification) {
+        // object type message
+        Message<Notifications> message = MessageBuilder.withPayload(notification)
                 .setHeader(KafkaHeaders.TOPIC, AppConstant.BUYING_RELATED_TOPIC)
                 .build();
         kafkaTemplate.send(message);
