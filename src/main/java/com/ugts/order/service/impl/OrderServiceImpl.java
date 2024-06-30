@@ -18,6 +18,7 @@ import com.ugts.order.repository.OrderRepository;
 import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -40,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
     OrderMapper orderMapper;
 
     OrderDetailsRepository orderDetailsRepository;
+
+    UserService userService;
 
     /**
      * Creates a new order with the given order request.
@@ -153,12 +156,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Get user who is updating the order
-        var contextHolder = SecurityContextHolder.getContext();
-        String phoneNumber = contextHolder.getAuthentication().getName();
-
-        var user = userRepository
-                .findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = userService.getProfile();
 
         // Verify that the user is authorized to update the order
         if (!Objects.equals(buyer.getId(), user.getId())) {
