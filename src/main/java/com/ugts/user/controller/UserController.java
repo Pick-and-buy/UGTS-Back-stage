@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.service.UserService;
@@ -63,10 +64,24 @@ public class UserController {
 
     @PutMapping("/{userId}/avatar")
     public ApiResponse<UserResponse> updateUserAvatar(
-            @PathVariable String userId, @RequestPart("avatar") MultipartFile avatar) throws IOException {
+            @PathVariable String userId,
+            @RequestPart("avatar") MultipartFile avatar
+    ) throws IOException {
         return ApiResponse.<UserResponse>builder()
                 .message("Update Avatar Success")
                 .result(userService.updateUserAvatar(userId, avatar))
+                .build();
+    }
+
+    @PutMapping("/address")
+    public ApiResponse<UserResponse> updateAddress(
+            @RequestParam String userId,
+            @RequestBody UpdateAddressRequest request
+    ) {
+        var result = userService.updateUserAddress(userId,request);
+        return ApiResponse.<UserResponse>builder()
+                .message("Update Address Success")
+                .result(result)
                 .build();
     }
 }

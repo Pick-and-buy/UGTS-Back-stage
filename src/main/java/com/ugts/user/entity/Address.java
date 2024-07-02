@@ -21,5 +21,9 @@ public class Address {
     String province;
     String country;
 
-    String homeAddress;
+    @Column(length = 1000)
+    String addressLine1;
+
+    @Column(length = 1000)
+    String addressLine2;
 }

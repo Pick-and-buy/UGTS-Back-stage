@@ -6,6 +6,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.post.dto.LikedPostDto;
 import com.ugts.post.dto.response.PostResponse;
+import com.ugts.user.entity.Address;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -26,7 +27,11 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date dob;
 
-    Set<LikedPostDto> likedPosts;
+    Address address;
+
     Set<RoleResponse> roles;
+
+    Set<LikedPostDto> likedPosts;
+
     Set<PostResponse> createdPosts;
 }

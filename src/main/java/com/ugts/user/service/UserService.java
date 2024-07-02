@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.user.dto.request.LikeRequestDto;
+import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,4 +26,6 @@ public interface UserService {
     UserResponse updateUserInfo(String userId, UserUpdateRequest request);
 
     UserResponse updateUserAvatar(String userId, MultipartFile file) throws IOException;
+
+    UserResponse updateUserAddress(String userId, UpdateAddressRequest updateAddressRequest);
 }

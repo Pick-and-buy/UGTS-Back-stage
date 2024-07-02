@@ -44,7 +44,7 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Address address;
 
     @JsonIgnore
