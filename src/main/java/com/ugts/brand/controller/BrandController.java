@@ -3,6 +3,7 @@ package com.ugts.brand.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ugts.brand.dto.request.BrandRequest;
 import com.ugts.brand.dto.response.BrandResponse;
 import com.ugts.brand.service.BrandService;
@@ -12,6 +13,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,9 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class BrandController {
     BrandService brandService;
 
-    @PostMapping()
+    ObjectMapper objectMapper;
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<BrandResponse> createBrand(
-            @RequestPart BrandRequest request, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
+            @RequestPart String requestJson, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
+        BrandRequest request = objectMapper.readValue(requestJson, BrandRequest.class);
         var newBrand = brandService.createBrand(request, brandLogo);
         return ApiResponse.<BrandResponse>builder().result(newBrand).build();
     }
