@@ -29,7 +29,7 @@ public class BrandController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<BrandResponse> createBrand(
-            @RequestPart String requestJson, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
+            @RequestPart("request") String requestJson, @RequestPart("brandLogo") MultipartFile[] brandLogo) throws IOException {
         BrandRequest request = objectMapper.readValue(requestJson, BrandRequest.class);
         var newBrand = brandService.createBrand(request, brandLogo);
         return ApiResponse.<BrandResponse>builder().result(newBrand).build();

@@ -27,7 +27,7 @@ public class BrandLineController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<BrandLineResponse> createBrandLine(
-            @RequestPart String requestJson, @RequestPart("brandLineImages") MultipartFile[] brandLineImages)
+            @RequestPart("request") String requestJson, @RequestPart("brandLineImages") MultipartFile[] brandLineImages)
             throws IOException {
         BrandLineRequest request = objectMapper.readValue(requestJson, BrandLineRequest.class);
         var result = brandLineService.createBrandLine(request, brandLineImages);
