@@ -64,9 +64,7 @@ public class UserController {
 
     @PutMapping("/{userId}/avatar")
     public ApiResponse<UserResponse> updateUserAvatar(
-            @PathVariable String userId,
-            @RequestPart("avatar") MultipartFile avatar
-    ) throws IOException {
+            @PathVariable String userId, @RequestPart("avatar") MultipartFile avatar) throws IOException {
         return ApiResponse.<UserResponse>builder()
                 .message("Update Avatar Success")
                 .result(userService.updateUserAvatar(userId, avatar))
@@ -75,10 +73,8 @@ public class UserController {
 
     @PutMapping("/address")
     public ApiResponse<UserResponse> updateAddress(
-            @RequestParam String userId,
-            @RequestBody UpdateAddressRequest request
-    ) {
-        var result = userService.updateUserAddress(userId,request);
+            @RequestParam String userId, @RequestBody UpdateAddressRequest request) {
+        var result = userService.updateUserAddress(userId, request);
         return ApiResponse.<UserResponse>builder()
                 .message("Update Address Success")
                 .result(result)

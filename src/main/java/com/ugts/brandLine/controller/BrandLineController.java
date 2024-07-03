@@ -68,4 +68,14 @@ public class BrandLineController {
     public void deleteBrandLine(@RequestParam String brandLineName) {
         brandLineService.deleteBrandLine(brandLineName);
     }
+
+    @PutMapping
+    public ApiResponse<BrandLineResponse> updateBrandLineInformation(
+            @RequestParam String brandLineName, @RequestBody BrandLineRequest request) {
+        var result = brandLineService.updateBrandLineInformation(brandLineName, request);
+        return ApiResponse.<BrandLineResponse>builder()
+                .message("Update brand line information success")
+                .result(result)
+                .build();
+    }
 }

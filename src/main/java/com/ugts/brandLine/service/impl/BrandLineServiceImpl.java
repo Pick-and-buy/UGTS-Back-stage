@@ -37,6 +37,14 @@ public class BrandLineServiceImpl implements BrandLineService {
 
     BrandLineMapper brandLineMapper;
 
+    /**
+     * Creates a new brand line with the given request and images, uploading them to Google Cloud Storage.
+     *
+     * @param  request        the request containing the brand line details
+     * @param  files          the images to be uploaded for the brand line
+     * @return                the created brand line response
+     * @throws IOException    if there is an error during the file upload
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
@@ -85,6 +93,11 @@ public class BrandLineServiceImpl implements BrandLineService {
         return brandLineMapper.toBrandLineResponse(brandLineRepository.save(newBrandLine));
     }
 
+    /**
+     * Retrieves all brand lines and maps them to BrandLineResponse objects.
+     *
+     * @return          A list of BrandLineResponse objects representing all brand lines.
+     */
     @Override
     public List<BrandLineResponse> getBrandLines() {
         return brandLineRepository.findAll().stream()
@@ -92,6 +105,12 @@ public class BrandLineServiceImpl implements BrandLineService {
                 .toList();
     }
 
+    /**
+     * Retrieves a brand line based on the provided brand line name.
+     *
+     * @param  brandLineName  the name of the brand line to retrieve
+     * @return          the response containing the brand line information
+     */
     @Override
     public BrandLineResponse getBrandLineByLineName(String brandLineName) {
         var brandLine = brandLineRepository
@@ -100,6 +119,12 @@ public class BrandLineServiceImpl implements BrandLineService {
         return brandLineMapper.toBrandLineResponse(brandLine);
     }
 
+    /**
+     * Deletes a brand line by its name if the user has the 'ADMIN' role.
+     *
+     * @param  brandLineName  the name of the brand line to delete
+     * @throws AppException    if the brand line does not exist
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @Override
@@ -110,6 +135,12 @@ public class BrandLineServiceImpl implements BrandLineService {
         brandLineRepository.delete(brandLine);
     }
 
+    /**
+     * Retrieves a list of BrandLineResponse objects based on the provided brand name.
+     *
+     * @param  brandName  the name of the brand to search for
+     * @return            a list of BrandLineResponse objects corresponding to the brand name
+     */
     @Override
     public List<BrandLineResponse> getBrandLineByBrandName(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
@@ -118,5 +149,44 @@ public class BrandLineServiceImpl implements BrandLineService {
         return brandLineRepository.findBrandLinesByBrandName(brandName).stream()
                 .map(brandLineMapper::toBrandLineResponse)
                 .toList();
+    }
+
+    /**
+     * Updates the brand line information for a given brand line name.
+     *
+     * @param  brandLineName  the name of the brand line to update
+     * @param  request        the request containing the updated brand line information
+     * @return                the updated brand line response
+     * @throws AppException  if the brand line already exists or if the brand or brand line does not exist
+     */
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public BrandLineResponse updateBrandLineInformation(String brandLineName, BrandLineRequest request) {
+        var existingBrandLine = brandLineRepository.findByLineName(request.getLineName());
+
+        // check if brand line already existed
+        if (existingBrandLine.isPresent()
+                && !existingBrandLine.get().getLineName().equals(brandLineName)) {
+            throw new AppException(ErrorCode.BRAND_Line_ALREADY_EXISTED);
+        }
+
+        var brand = brandRepository
+                .findByName(request.getBrandRequest().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        var brandLine = brandLineRepository
+                .findByLineName(brandLineName)
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        brandLine.setBrand(brand);
+        brandLine.setLineName(request.getLineName());
+        brandLine.setDescription(request.getDescription());
+        brandLine.setLaunchDate(request.getLaunchDate());
+        brandLine.setSignatureFeatures(request.getSignatureFeatures());
+        brandLine.setPriceRange(request.getPriceRange());
+        brandLine.setUpdatedAt(new Date());
+
+        return brandLineMapper.toBrandLineResponse(brandLineRepository.save(brandLine));
     }
 }
