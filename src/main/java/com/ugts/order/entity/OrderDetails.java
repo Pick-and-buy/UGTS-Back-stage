@@ -3,6 +3,7 @@ package com.ugts.order.entity;
 import java.util.Date;
 
 import com.ugts.order.enums.OrderStatus;
+import com.ugts.user.entity.Address;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,8 +33,6 @@ public class OrderDetails {
     String email;
 
     String phoneNumber;
-
-    String address;
 
     @Column(nullable = false, length = 50)
     String paymentMethod;

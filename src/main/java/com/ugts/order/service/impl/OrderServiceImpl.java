@@ -74,8 +74,6 @@ public class OrderServiceImpl implements OrderService {
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
-                // TODO: handle user address
-                //                .address(buyer.getAddress().toString())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)
@@ -146,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
-    public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest orderRequest) {
+    public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest updateOrderRequest) {
         // Get the order
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
@@ -163,18 +161,17 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        order.getOrderDetails().setAddress(orderRequest.getAddress());
-        order.getOrderDetails().setFirstName(orderRequest.getFirstName());
-        order.getOrderDetails().setLastName(orderRequest.getLastName());
-        order.getOrderDetails().setEmail(orderRequest.getEmail());
-        order.getOrderDetails().setPhoneNumber(orderRequest.getPhoneNumber());
+        order.getOrderDetails().setFirstName(updateOrderRequest.getFirstName());
+        order.getOrderDetails().setLastName(updateOrderRequest.getLastName());
+        order.getOrderDetails().setEmail(updateOrderRequest.getEmail());
+        order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
 
-        if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED){
+        if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED){
             orderRepository.delete(order);
         } else {
             var orderDetails = order.getOrderDetails();
-            orderDetails.setStatus(orderRequest.getOrderStatus());
+            orderDetails.setStatus(updateOrderRequest.getOrderStatus());
 
             orderDetailsRepository.save(orderDetails);
         }
@@ -182,6 +179,11 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
+    /**
+     * Retrieves all orders from the order repository and maps them to a list of OrderResponse objects.
+     *
+     * @return         	A list of OrderResponse objects representing all orders.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -190,6 +192,13 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOrdersResponse(orders);
     }
 
+    /**
+     * Retrieves an order by its order ID.
+     *
+     * @param  orderId  the ID of the order to retrieve
+     * @return          the response containing the order details
+     * @throws AppException  if the order is not found
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
