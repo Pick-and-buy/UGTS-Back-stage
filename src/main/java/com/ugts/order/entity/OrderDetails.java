@@ -2,8 +2,8 @@ package com.ugts.order.entity;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.order.enums.OrderStatus;
+import com.ugts.user.entity.Address;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -34,8 +34,6 @@ public class OrderDetails {
 
     String phoneNumber;
 
-    String address;
-
     @Column(nullable = false, length = 50)
     String paymentMethod;
 
@@ -46,18 +44,14 @@ public class OrderDetails {
 
     Boolean isRefund;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date orderDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date packageDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date deliveryDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date receivedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     Order order;
 }
