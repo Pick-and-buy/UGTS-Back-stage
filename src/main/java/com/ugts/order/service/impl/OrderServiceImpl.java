@@ -74,6 +74,8 @@ public class OrderServiceImpl implements OrderService {
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
+                // TODO: handle order detail address
+                .address(buyer.getAddress().toString())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)
@@ -165,6 +167,8 @@ public class OrderServiceImpl implements OrderService {
         order.getOrderDetails().setLastName(updateOrderRequest.getLastName());
         order.getOrderDetails().setEmail(updateOrderRequest.getEmail());
         order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
+        // TODO: handle order detail address
+        order.getOrderDetails().setAddress(updateOrderRequest.getAddress().toString());
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED){

@@ -34,6 +34,8 @@ public class OrderDetails {
 
     String phoneNumber;
 
+    String address;
+
     @Column(nullable = false, length = 50)
     String paymentMethod;
 
