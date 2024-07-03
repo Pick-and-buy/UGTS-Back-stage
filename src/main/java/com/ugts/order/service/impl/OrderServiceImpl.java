@@ -66,6 +66,8 @@ public class OrderServiceImpl implements OrderService {
                 .findById(orderRequest.getPost().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
 
+        post.setIsAvailable(false);
+
         var orderDetails = OrderDetails.builder()
                 .price(post.getProduct().getPrice())
                 .quantity(1)
@@ -171,9 +173,7 @@ public class OrderServiceImpl implements OrderService {
         order.getOrderDetails().setAddress(updateOrderRequest.getAddress().toString());
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
 
-        if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED){
-            orderRepository.delete(order);
-        } else {
+        if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             var orderDetails = order.getOrderDetails();
             orderDetails.setStatus(updateOrderRequest.getOrderStatus());
 
@@ -207,8 +207,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public OrderResponse getOrderByOrderId(@RequestParam String orderId) {
-        var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         return orderMapper.toOrderResponse(order);
     }
 }

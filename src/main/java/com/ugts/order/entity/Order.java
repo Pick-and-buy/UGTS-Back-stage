@@ -26,7 +26,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     User buyer;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     Post post;
 
     @OneToOne(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

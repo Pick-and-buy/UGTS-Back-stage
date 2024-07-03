@@ -1,5 +1,7 @@
 package com.ugts.order.controller;
 
+import java.util.List;
+
 import com.ugts.dto.ApiResponse;
 import com.ugts.order.dto.request.CreateOrderRequest;
 import com.ugts.order.dto.request.UpdateOrderRequest;
@@ -9,8 +11,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +49,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ApiResponse<List<OrderResponse>> getAllOrders(){
+    public ApiResponse<List<OrderResponse>> getAllOrders() {
         var result = orderService.getAllOrders();
         return ApiResponse.<List<OrderResponse>>builder()
                 .message("Success")
@@ -58,7 +58,7 @@ public class OrderController {
     }
 
     @GetMapping("/details")
-    public ApiResponse<OrderResponse> getOrderByOrderId(String orderId){
+    public ApiResponse<OrderResponse> getOrderByOrderId(String orderId) {
         var result = orderService.getOrderByOrderId(orderId);
         return ApiResponse.<OrderResponse>builder()
                 .message("Success")
