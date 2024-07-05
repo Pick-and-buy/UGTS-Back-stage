@@ -41,16 +41,16 @@
 			<artifactId>firebase-admin</artifactId>
 			<version>9.3.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-firestore</artifactId>
-			<version>3.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.auth</groupId>
-			<artifactId>google-auth-library-oauth2-http</artifactId>
-			<version>1.16.0</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.google.cloud</groupId>-->
+<!--			<artifactId>google-cloud-firestore</artifactId>-->
+<!--			<version>3.2.0</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.google.auth</groupId>-->
+<!--			<artifactId>google-auth-library-oauth2-http</artifactId>-->
+<!--			<version>1.16.0</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-core</artifactId>
@@ -61,11 +61,6 @@
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.kafka</groupId>-->
-<!--			<artifactId>spring-kafka-test</artifactId>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>jakarta.json</groupId>
 			<artifactId>jakarta.json-api</artifactId>

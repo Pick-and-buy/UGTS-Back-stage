@@ -1,12 +1,11 @@
 package com.ugts.notification.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.ugts.user.entity.User;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -15,22 +14,21 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notifications {
+@Table(name = "notifications")
+public class NotificationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String notificationId;
 
-    // ID of the user to be notified
-    private String userId;
-
-    // Type of notification (like, comment, follower)
-    private String typeNotification;
-
     private String notificationMessage;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
-    private Date notifyAt;
+    private Date timestamp;
 
     // To mark if the notification has been read
     private boolean isRead;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
