@@ -2,7 +2,6 @@ package com.ugts.transaction.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.Random;
 
 import com.ugts.exception.AppException;
@@ -66,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .refundBankCode(transactionRequest.getRefundBankCode())
                 .reason(transactionRequest.getReason())
                 .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
-                .transactionStatus(TransactionStatus.SUCCESS)
+                .transactionStatus(TransactionStatus.PROCESSING)
                 .user(buyer)
                 .order(order)
                 .build();
