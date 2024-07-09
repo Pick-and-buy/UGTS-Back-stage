@@ -17,6 +17,8 @@ import com.ugts.order.repository.OrderDetailsRepository;
 import com.ugts.order.repository.OrderRepository;
 import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
+import com.ugts.user.entity.Address;
+import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
@@ -37,6 +39,8 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
 
     UserRepository userRepository;
+
+    AddressRepository addressRepository;
 
     OrderMapper orderMapper;
 
@@ -76,8 +80,7 @@ public class OrderServiceImpl implements OrderService {
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
-                // TODO: handle order detail address
-                .address(buyer.getAddress().toString())
+                .address(buyer.getAddress())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)
@@ -165,12 +168,21 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
+        Address address = new Address();
+        address.setStreet(updateOrderRequest.getAddress().getStreet());
+        address.setDistrict(updateOrderRequest.getAddress().getDistrict());
+        address.setProvince(updateOrderRequest.getAddress().getProvince());
+        address.setCountry(updateOrderRequest.getAddress().getCountry());
+        address.setAddressLine1(updateOrderRequest.getAddress().getAddressLine1());
+        address.setAddressLine2(updateOrderRequest.getAddress().getAddressLine2());
+
+        addressRepository.save(address);
+
         order.getOrderDetails().setFirstName(updateOrderRequest.getFirstName());
         order.getOrderDetails().setLastName(updateOrderRequest.getLastName());
         order.getOrderDetails().setEmail(updateOrderRequest.getEmail());
         order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
-        // TODO: handle order detail address
-        order.getOrderDetails().setAddress(updateOrderRequest.getAddress().toString());
+        order.getOrderDetails().setAddress(address);
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
