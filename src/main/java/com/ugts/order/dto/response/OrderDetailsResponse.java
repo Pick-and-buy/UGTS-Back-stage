@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.order.enums.OrderStatus;
+import com.ugts.user.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class OrderDetailsResponse {
     String lastName;
     String email;
     String phoneNumber;
-    String address;
+    Address address;
     String paymentMethod;
     OrderStatus status;
     Boolean isPaid;

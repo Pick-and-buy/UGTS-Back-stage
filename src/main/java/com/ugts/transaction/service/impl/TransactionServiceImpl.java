@@ -1,6 +1,7 @@
 package com.ugts.transaction.service.impl;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Random;
 
 import com.ugts.exception.AppException;
@@ -14,6 +15,7 @@ import com.ugts.transaction.mapper.TransactionMapper;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.transaction.service.TransactionService;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.vnpay.configuration.VnPayConfiguration;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -49,8 +51,11 @@ public class TransactionServiceImpl implements TransactionService {
                 .findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        String id = VnPayConfiguration.getRandomNumber(8);
+
         var transaction = Transaction.builder()
-                .billNo(getRandomBillNo())
+                .billNo(getRandomBillNumber())
+                .transNo(id)
                 .bankCode(transactionRequest.getBankCode())
                 .cardType(transactionRequest.getCardType())
                 .amount((int) order.getPost().getProduct().getPrice())
@@ -59,16 +64,24 @@ public class TransactionServiceImpl implements TransactionService {
                 .bankAccount(transactionRequest.getBankAccount())
                 .refundBankCode(transactionRequest.getRefundBankCode())
                 .reason(transactionRequest.getReason())
-                .createDate(new Date())
-                .transactionStatus(TransactionStatus.SUCCESS)
+                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .transactionStatus(TransactionStatus.PROCESSING)
                 .user(buyer)
                 .order(order)
                 .build();
 
+        if(transactionRepository.findByTransNo(id) != null){
+            id = VnPayConfiguration.getRandomNumber(8);
+        }
+
+        transaction.setTransNo(id);
+
+        // TODO: implement notification
+
         return transactionMapper.toTransactionResponse(transactionRepository.save(transaction));
     }
 
-    private String getRandomBillNo() {
+    private String getRandomBillNumber() {
         Random random = new Random();
         StringBuilder billNo = new StringBuilder();
         for (int i = 0; i < 8; i++) {
