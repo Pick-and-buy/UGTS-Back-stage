@@ -28,7 +28,7 @@ public class Category {
     BrandLine brandLine;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<Product> products = new HashSet<>();
 
     String categoryName;
