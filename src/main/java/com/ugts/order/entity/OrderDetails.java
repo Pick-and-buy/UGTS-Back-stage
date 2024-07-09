@@ -34,7 +34,7 @@ public class OrderDetails {
 
     String phoneNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     Address address;
 
     @Column(nullable = false, length = 50)
