@@ -95,8 +95,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteCategory(String categoryName) {
-        categoryRepository.deleteByCategoryName(categoryName);
+    public void deleteCategory(String categoryId) {
+        var category = categoryRepository.findById(categoryId);
+        if (category.isEmpty()){
+            throw new AppException(ErrorCode.CATEGORY_NOT_EXISTED);
+        }
+        categoryRepository.deleteById(categoryId);
     }
 
     @Override
