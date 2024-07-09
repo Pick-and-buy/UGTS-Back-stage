@@ -83,12 +83,12 @@ public class CategoryController {
     /**
      * Delete a category based on the provided category name.
      *
-     * @param  categoryName    the name of the category to delete
+     * @param  categoryId    the name of the category to delete
      * @return                ApiResponse containing a message indicating the deletion success
      */
     @DeleteMapping
-    public ApiResponse<String> deleteCategory(@RequestParam String categoryName) {
-        categoryService.deleteCategory(categoryName);
+    public ApiResponse<String> deleteCategory(@RequestParam String categoryId) {
+        categoryService.deleteCategory(categoryId);
         return ApiResponse.<String>builder().message("Delete category success").build();
     }
 

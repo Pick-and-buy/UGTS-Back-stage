@@ -14,7 +14,7 @@ public interface CategoryService {
 
     CategoryResponse updateCategory(CategoryRequest request, String categoryName);
 
-    void deleteCategory(String categoryName);
+    void deleteCategory(String categoryId);
 
     List<CategoryResponse> getCategoriesByBrandLineName(String brandLineName);
 }
