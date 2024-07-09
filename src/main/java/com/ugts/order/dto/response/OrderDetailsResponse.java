@@ -28,15 +28,15 @@ public class OrderDetailsResponse {
     Boolean isPaid;
     Boolean isRefund;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     Date orderDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     Date packageDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     Date deliveryDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     Date receivedDate;
 }
