@@ -7,6 +7,7 @@ import com.ugts.dto.ApiResponse;
 import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
+import com.ugts.user.dto.response.AddressResponse;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
@@ -73,20 +74,20 @@ public class UserController {
     }
 
     @PostMapping("/address")
-    public ApiResponse<UserResponse> createNewAddress(
+    public ApiResponse<AddressResponse> createNewAddress(
             @RequestParam String userId, @RequestBody CreateNewAddressRequest request) {
         var result = userService.createNewAddress(userId, request);
-        return ApiResponse.<UserResponse>builder()
+        return ApiResponse.<AddressResponse>builder()
                 .message("Create New Address Success")
                 .result(result)
                 .build();
     }
 
     @PutMapping("/address")
-    public ApiResponse<UserResponse> updateAddress(
+    public ApiResponse<AddressResponse> updateAddress(
             @RequestParam String userId, @RequestParam Long addressId, @RequestBody UpdateAddressRequest request) {
         var result = userService.updateUserAddress(userId, addressId, request);
-        return ApiResponse.<UserResponse>builder()
+        return ApiResponse.<AddressResponse>builder()
                 .message("Update Address Success")
                 .result(result)
                 .build();

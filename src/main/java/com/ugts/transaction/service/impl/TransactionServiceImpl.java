@@ -86,7 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setTransNo(id);
 
-        //after transaction success, set isAvailable of post = false
+        // after transaction success, set isAvailable of post = false
         order.getPost().setIsAvailable(false);
 
         orderRepository.save(order);

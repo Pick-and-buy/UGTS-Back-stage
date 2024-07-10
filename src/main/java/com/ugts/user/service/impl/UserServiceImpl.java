@@ -15,10 +15,13 @@ import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.LikeRequestDto;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
+import com.ugts.user.dto.response.AddressResponse;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.Address;
 import com.ugts.user.entity.User;
+import com.ugts.user.mapper.AddressMapper;
 import com.ugts.user.mapper.UserMapper;
+import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
 import lombok.AccessLevel;
@@ -47,6 +50,8 @@ public class UserServiceImpl implements UserService {
     private final PostMapper postMapper;
 
     GoogleCloudStorageService googleCloudStorageService;
+    private final AddressMapper addressMapper;
+    private final AddressRepository addressRepository;
 
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
     @Override
@@ -142,7 +147,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse createNewAddress(String userId, CreateNewAddressRequest createNewAddressRequest) {
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public AddressResponse createNewAddress(String userId, CreateNewAddressRequest createNewAddressRequest) {
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
@@ -159,13 +166,14 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         user.setAddress(Set.of(address));
-        return userMapper.userToUserResponse(userRepository.save(user));
+
+        return addressMapper.toAddress(addressRepository.save(address));
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public UserResponse updateUserAddress(String userId, Long addressId, UpdateAddressRequest updateAddressRequest) {
+    public AddressResponse updateUserAddress(String userId, Long addressId, UpdateAddressRequest updateAddressRequest) {
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
@@ -185,6 +193,7 @@ public class UserServiceImpl implements UserService {
         address.setAddressLine(updateAddressRequest.getAddressLine());
 
         user.setAddress(Set.of(address));
-        return userMapper.userToUserResponse(userRepository.save(user));
+
+        return addressMapper.toAddress(addressRepository.save(address));
     }
 }
