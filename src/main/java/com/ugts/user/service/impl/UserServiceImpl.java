@@ -2,6 +2,7 @@ package com.ugts.user.service.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
@@ -10,6 +11,7 @@ import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
+import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.LikeRequestDto;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
@@ -140,9 +142,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public UserResponse updateUserAddress(String userId, UpdateAddressRequest updateAddressRequest) {
+    public UserResponse createNewAddress(String userId, CreateNewAddressRequest createNewAddressRequest) {
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
@@ -151,15 +151,40 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         var address = Address.builder()
-                .street(updateAddressRequest.getStreet())
-                .district(updateAddressRequest.getDistrict())
-                .province(updateAddressRequest.getProvince())
-                .country(updateAddressRequest.getCountry())
-                .addressLine1(updateAddressRequest.getAddressLine1())
-                .addressLine2(updateAddressRequest.getAddressLine2())
+                .street(createNewAddressRequest.getStreet())
+                .district(createNewAddressRequest.getDistrict())
+                .province(createNewAddressRequest.getProvince())
+                .country(createNewAddressRequest.getCountry())
+                .addressLine(createNewAddressRequest.getAddressLine())
                 .build();
 
-        user.setAddress(address);
+        user.setAddress(Set.of(address));
+        return userMapper.userToUserResponse(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public UserResponse updateUserAddress(String userId, Long addressId, UpdateAddressRequest updateAddressRequest) {
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
+
+        var user = userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        var address = user.getAddress().stream()
+                .filter(a -> a.getId().equals(addressId))
+                .findFirst()
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
+
+        address.setStreet(updateAddressRequest.getStreet());
+        address.setDistrict(updateAddressRequest.getDistrict());
+        address.setProvince(updateAddressRequest.getProvince());
+        address.setCountry(updateAddressRequest.getCountry());
+        address.setAddressLine(updateAddressRequest.getAddressLine());
+
+        user.setAddress(Set.of(address));
         return userMapper.userToUserResponse(userRepository.save(user));
     }
 }

@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
-                .address(buyer.getAddress())
+                .address((Address) buyer.getAddress())
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)
@@ -173,8 +173,7 @@ public class OrderServiceImpl implements OrderService {
         address.setDistrict(updateOrderRequest.getAddress().getDistrict());
         address.setProvince(updateOrderRequest.getAddress().getProvince());
         address.setCountry(updateOrderRequest.getAddress().getCountry());
-        address.setAddressLine1(updateOrderRequest.getAddress().getAddressLine1());
-        address.setAddressLine2(updateOrderRequest.getAddress().getAddressLine2());
+        address.setAddressLine(updateOrderRequest.getAddress().getAddressLine());
 
         addressRepository.save(address);
 

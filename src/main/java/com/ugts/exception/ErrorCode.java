@@ -85,6 +85,10 @@ public enum ErrorCode {
     // ORDERS
     ORDER_NOT_FOUND(1001, "Order not found", HttpStatus.BAD_REQUEST),
 
+    // Address
+    ADDRESS_NOT_EXISTED(1001, "Address not exist", HttpStatus.BAD_REQUEST),
+    ADDRESS_ALREADY_EXISTED(1002, "Address has already existed!", HttpStatus.BAD_REQUEST),
+
 // Comment
 ;
     int code;

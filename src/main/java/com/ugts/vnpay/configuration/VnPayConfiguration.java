@@ -1,9 +1,5 @@
 package com.ugts.vnpay.configuration;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -14,6 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class VnPayConfiguration {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // ko thay đổi
@@ -58,7 +58,7 @@ public class VnPayConfiguration {
         return digest;
     }
 
-    //Util for VNPAY
+    // Util for VNPAY
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
@@ -76,7 +76,7 @@ public class VnPayConfiguration {
                 sb.append("&");
             }
         }
-        return hmacSHA512(vnp_HashSecret,sb.toString());
+        return hmacSHA512(vnp_HashSecret, sb.toString());
     }
 
     public static String hmacSHA512(final String key, final String data) {

@@ -12,6 +12,5 @@ public class UpdateAddressRequest {
     String district;
     String province;
     String country;
-    String addressLine1;
-    String addressLine2;
+    String addressLine;
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
+import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.UserResponse;
@@ -71,10 +72,20 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/address")
+    public ApiResponse<UserResponse> createNewAddress(
+            @RequestParam String userId, @RequestBody CreateNewAddressRequest request) {
+        var result = userService.createNewAddress(userId, request);
+        return ApiResponse.<UserResponse>builder()
+                .message("Create New Address Success")
+                .result(result)
+                .build();
+    }
+
     @PutMapping("/address")
     public ApiResponse<UserResponse> updateAddress(
-            @RequestParam String userId, @RequestBody UpdateAddressRequest request) {
-        var result = userService.updateUserAddress(userId, request);
+            @RequestParam String userId, @RequestParam Long addressId, @RequestBody UpdateAddressRequest request) {
+        var result = userService.updateUserAddress(userId, addressId, request);
         return ApiResponse.<UserResponse>builder()
                 .message("Update Address Success")
                 .result(result)

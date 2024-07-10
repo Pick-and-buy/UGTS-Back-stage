@@ -70,7 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .order(order)
                 .build();
 
-        if(transactionRepository.findByTransNo(id) != null){
+        if (transactionRepository.findByTransNo(id) != null) {
             id = VnPayConfiguration.getRandomNumber(8);
         }
 

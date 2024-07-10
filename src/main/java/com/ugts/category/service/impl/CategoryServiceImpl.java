@@ -97,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategory(String categoryId) {
         var category = categoryRepository.findById(categoryId);
-        if (category.isEmpty()){
+        if (category.isEmpty()) {
             throw new AppException(ErrorCode.CATEGORY_NOT_EXISTED);
         }
         categoryRepository.deleteById(categoryId);

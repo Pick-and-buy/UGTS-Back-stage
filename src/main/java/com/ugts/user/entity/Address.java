@@ -22,8 +22,5 @@ public class Address {
     String country;
 
     @Column(length = 1000)
-    String addressLine1;
-
-    @Column(length = 1000)
-    String addressLine2;
+    String addressLine;
 }

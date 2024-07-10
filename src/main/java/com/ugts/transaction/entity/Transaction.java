@@ -1,7 +1,6 @@
 package com.ugts.transaction.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.ugts.order.entity.Order;
 import com.ugts.transaction.enums.TransactionStatus;

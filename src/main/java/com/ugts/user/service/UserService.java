@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ugts.post.dto.response.PostResponse;
+import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.LikeRequestDto;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
@@ -27,5 +28,7 @@ public interface UserService {
 
     UserResponse updateUserAvatar(String userId, MultipartFile file) throws IOException;
 
-    UserResponse updateUserAddress(String userId, UpdateAddressRequest updateAddressRequest);
+    UserResponse createNewAddress(String userId, CreateNewAddressRequest createNewAddressRequest);
+
+    UserResponse updateUserAddress(String userId, Long addressId, UpdateAddressRequest updateAddressRequest);
 }
