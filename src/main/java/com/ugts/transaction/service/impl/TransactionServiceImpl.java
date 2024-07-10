@@ -37,6 +37,13 @@ public class TransactionServiceImpl implements TransactionService {
 
     TransactionMapper transactionMapper;
 
+    /**
+     * Creates a transaction based on the provided transaction request and order ID.
+     *
+     * @param  transactionRequest  the request containing transaction details
+     * @param  orderId             the ID of the order associated with the transaction
+     * @return                    the response containing the created transaction details
+     */
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
@@ -47,12 +54,15 @@ public class TransactionServiceImpl implements TransactionService {
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
+        // get user
         var buyer = userRepository
                 .findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        // random an id for transaction
         String id = VnPayConfiguration.getRandomNumber(8);
 
+        // create a transaction
         var transaction = Transaction.builder()
                 .billNo(getRandomBillNumber())
                 .transNo(id)
@@ -76,11 +86,21 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setTransNo(id);
 
+        //after transaction success, set isAvailable of post = false
+        order.getPost().setIsAvailable(false);
+
+        orderRepository.save(order);
+
         // TODO: implement notification
 
         return transactionMapper.toTransactionResponse(transactionRepository.save(transaction));
     }
 
+    /**
+     * Generates a random 8-digit bill number.
+     *
+     * @return  the randomly generated bill number as a string
+     */
     private String getRandomBillNumber() {
         Random random = new Random();
         StringBuilder billNo = new StringBuilder();
