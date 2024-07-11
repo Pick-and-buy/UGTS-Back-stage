@@ -240,4 +240,13 @@ public class PostServiceImpl implements IPostService {
         var posts = postRepository.findAllByBrandLine(brandLineName);
         return postMapper.getAllPosts(posts);
     }
+
+    @Override
+    public List<PostResponse> getPostsByFollowedUser(String followedUserId) {
+        var user = userRepository.findById(followedUserId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return postRepository.findPostsByFollowedUsers(user.getId()).stream()
+                .map(postMapper::postToPostResponse)
+                .toList();
+    }
 }

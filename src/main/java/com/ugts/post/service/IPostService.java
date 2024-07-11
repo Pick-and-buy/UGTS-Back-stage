@@ -28,4 +28,6 @@ public interface IPostService {
     void deletePost(String postId);
 
     List<PostResponse> getPostByBrandLine(String brandLineName);
+
+    List<PostResponse> getPostsByFollowedUser(String followedUserId);
 }
