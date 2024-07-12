@@ -21,6 +21,7 @@ import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
 import com.ugts.user.service.impl.UserServiceImpl;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -609,6 +610,26 @@ public class UserServiceTest {
         });
 
         assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
+        verify(userRepository, times(1)).findByPhoneNumber(anyString());
+    }
+
+    @Test
+    public void test_create_new_address_invalid_details() {
+        // Given
+        String userId = "user123";
+        CreateNewAddressRequest request = new CreateNewAddressRequest();
+        request.setStreet(null); // Invalid street
+
+        User user = new User();
+        user.setPhoneNumber("1234567890");
+
+        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
+
+        // When & Then
+        assertThrows(ConstraintViolationException.class, () -> {
+            userService.createNewAddress(userId, request);
+        });
+
         verify(userRepository, times(1)).findByPhoneNumber(anyString());
     }
 }
