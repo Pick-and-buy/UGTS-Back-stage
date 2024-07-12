@@ -44,7 +44,7 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<Address> address = new HashSet<>();
 
     @JsonIgnore
