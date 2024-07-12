@@ -12,4 +12,5 @@ public class AddressResponse {
     String province;
     String country;
     String addressLine;
+    boolean isDefault;
 }

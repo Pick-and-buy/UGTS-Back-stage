@@ -187,7 +187,6 @@ public class PostServiceImpl implements IPostService {
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
-        post.setIsAvailable(true);
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
@@ -243,8 +242,8 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> getPostsByFollowedUser(String followedUserId) {
-        var user = userRepository.findById(followedUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user =
+                userRepository.findById(followedUserId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return postRepository.findPostsByFollowedUsers(user.getId()).stream()
                 .map(postMapper::postToPostResponse)
                 .toList();

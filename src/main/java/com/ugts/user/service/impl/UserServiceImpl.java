@@ -2,6 +2,7 @@ package com.ugts.user.service.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.ugts.cloudService.GoogleCloudStorageService;
@@ -45,14 +46,21 @@ public class UserServiceImpl implements UserService {
 
     UserMapper userMapper;
 
-    private final PostRepository postRepository;
+    PostRepository postRepository;
 
-    private final PostMapper postMapper;
+    PostMapper postMapper;
 
     GoogleCloudStorageService googleCloudStorageService;
-    private final AddressMapper addressMapper;
-    private final AddressRepository addressRepository;
 
+    AddressMapper addressMapper;
+
+    AddressRepository addressRepository;
+
+    /**
+     * Retrieves all users from the repository and maps them to UserResponse objects.
+     *
+     * @return          a list of UserResponse objects representing all users
+     */
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
     @Override
     public List<UserResponse> getAllUsers() {
@@ -61,15 +69,27 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    /**
+     * Retrieves a user by userId and maps it to a UserResponse object.
+     *
+     * @param  userId   the unique identifier of the user to retrieve
+     * @return          the UserResponse object corresponding to the user found
+     */
     @Override
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(String userId) {
         return userMapper.userToUserResponse(
                 userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    /**
+     * Retrieves the user profile of the currently authenticated user.
+     *
+     * @return          The user profile as a UserResponse object.
+     * @throws AppException if the user does not exist.
+     */
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public UserResponse getProfile() {
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
@@ -81,6 +101,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponse(user);
     }
 
+    /**
+     * Likes a post for a user.
+     *
+     * @param  likeRequestDto   the DTO containing the user ID and post ID
+     * @throws AppException    if the user or post does not exist or if the post is already liked
+     */
     public void likePost(LikeRequestDto likeRequestDto) {
         User user = userRepository
                 .findById(likeRequestDto.getUserId())
@@ -96,6 +122,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Removes a post from the list of liked posts for a user.
+     *
+     * @param  likeRequestDto  the DTO containing the user ID and post ID
+     * @throws AppException    if the user or post does not exist or if the post is already unliked
+     */
     @Override
     public void unlikePost(LikeRequestDto likeRequestDto) {
         User user = userRepository
@@ -112,6 +144,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Retrieves the liked posts for a user identified by the provided userId.
+     *
+     * @param  userId    the ID of the user for whom to retrieve liked posts
+     * @return           a list of PostResponse objects representing the liked posts
+     */
     @Override
     public List<PostResponse> getLikedPosts(String userId) {
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -119,9 +157,16 @@ public class UserServiceImpl implements UserService {
         return likedPosts.stream().map(postMapper::postToPostResponse).toList();
     }
 
+    /**
+     * Updates the user information based on the provided UserUpdateRequest.
+     *
+     * @param  userId    the ID of the user to be updated
+     * @param  request   the UserUpdateRequest containing the new user information
+     * @return           a UserResponse object representing the updated user information
+     */
+    @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
-    @Override
     public UserResponse updateUserInfo(String userId, UserUpdateRequest request) {
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -134,6 +179,15 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponse(userRepository.save(user));
     }
 
+    /**
+     * Updates the user's avatar by uploading the provided MultipartFile to Google Cloud Storage and
+     * updating the user's avatar URL in the database.
+     *
+     * @param  userId    the ID of the user whose avatar is being updated
+     * @param  file      the MultipartFile containing the avatar image
+     * @return           the UserResponse containing the updated user information
+     * @throws IOException if there is an error uploading the file to Google Cloud Storage
+     */
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Override
@@ -146,6 +200,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponse(userRepository.save(user));
     }
 
+    /**
+     * Creates a new address for a user based on the provided parameters.
+     *
+     * @param  userId                     The ID of the user for whom the address is being created
+     * @param  createNewAddressRequest     The request object containing the new address details
+     * @return                            The response containing the newly created address information
+     */
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -163,13 +224,21 @@ public class UserServiceImpl implements UserService {
                 .province(createNewAddressRequest.getProvince())
                 .country(createNewAddressRequest.getCountry())
                 .addressLine(createNewAddressRequest.getAddressLine())
+                .user(user)
                 .build();
-
-        user.setAddress(Set.of(address));
 
         return addressMapper.toAddress(addressRepository.save(address));
     }
 
+    /**
+     * Updates the user's address based on the provided user ID, address ID, and update address request.
+     *
+     * @param  userId         the ID of the user whose address is to be updated
+     * @param  addressId      the ID of the address to be updated
+     * @param  updateAddressRequest  the request containing the updated address information
+     * @return                the updated AddressResponse after updating the user's address
+     * @throws AppException  if the user or address does not exist
+     */
     @Override
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -195,5 +264,42 @@ public class UserServiceImpl implements UserService {
         user.setAddress(Set.of(address));
 
         return addressMapper.toAddress(addressRepository.save(address));
+    }
+
+    /**
+     * Sets the default address for a user based on the provided user ID and address ID.
+     *
+     * @param  userId     the ID of the user for whom the default address is being set
+     * @param  addressId  the ID of the address to be set as the default
+     * @return            the updated AddressResponse after setting the default address
+     */
+    @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public AddressResponse setDefaultAddress(String userId, Long addressId) {
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Find the current default address for the user
+        Optional<Address> currentDefaultAddressOpt = addressRepository.findByUserIdAndDefault(user.getId(), true);
+
+        if (currentDefaultAddressOpt.isPresent()) {
+            var currentDefaultAddress = currentDefaultAddressOpt.get();
+
+            if (!currentDefaultAddress.getId().equals(addressId)) {
+                // Update the previous default address to false
+                currentDefaultAddress.setDefault(false);
+                addressRepository.save(currentDefaultAddress);
+            }
+        }
+
+        var address = addressRepository
+                .findById(addressId)
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
+
+        // Update the new default address
+        address.setDefault(true);
+        addressRepository.save(address);
+
+        return addressMapper.toAddress(address);
     }
 }

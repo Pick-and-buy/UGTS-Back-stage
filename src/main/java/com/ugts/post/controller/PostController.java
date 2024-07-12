@@ -116,6 +116,7 @@ public class PostController {
                 .result(result)
                 .build();
     }
+
     @GetMapping("/followedUser")
     public ApiResponse<List<PostResponse>> getPostByFollowedUser(@RequestParam String followedUserId) {
         var result = postService.getPostsByFollowedUser(followedUserId);

@@ -23,4 +23,9 @@ public class Address {
 
     @Column(length = 1000)
     String addressLine;
+
+    boolean isDefault;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    User user;
 }

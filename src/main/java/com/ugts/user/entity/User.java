@@ -44,7 +44,7 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<Address> address = new HashSet<>();
 
     @JsonIgnore
@@ -66,8 +66,8 @@ public class User {
     Set<Post> purchasedPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "follower")
-    private Set<Follow> following = new HashSet<>();
+    Set<Follow> following = new HashSet<>();
 
     @OneToMany(mappedBy = "following")
-    private Set<Follow> followers = new HashSet<>();
+    Set<Follow> followers = new HashSet<>();
 }

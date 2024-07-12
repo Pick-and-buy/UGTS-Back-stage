@@ -32,4 +32,6 @@ public interface UserService {
     AddressResponse createNewAddress(String userId, CreateNewAddressRequest createNewAddressRequest);
 
     AddressResponse updateUserAddress(String userId, Long addressId, UpdateAddressRequest updateAddressRequest);
+
+    AddressResponse setDefaultAddress(String userId, Long addressId);
 }
