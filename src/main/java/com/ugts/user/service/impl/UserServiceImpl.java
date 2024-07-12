@@ -302,4 +302,15 @@ public class UserServiceImpl implements UserService {
 
         return addressMapper.toAddress(address);
     }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public void deleteAddress(Long addressId) {
+        var address = addressRepository.findById(addressId)
+                        .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
+        if (address != null) {
+            addressRepository.deleteById(addressId);
+        }
+    }
 }

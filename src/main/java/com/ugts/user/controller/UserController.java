@@ -153,4 +153,12 @@ public class UserController {
                 .result(result)
                 .build();
     }
+
+    @DeleteMapping("/address")
+    public ApiResponse<String> deleteAddress(@RequestParam Long addressId) {
+        userService.deleteAddress(addressId);
+        return ApiResponse.<String>builder()
+                .message("Delete Address Success")
+                .build();
+    }
 }
