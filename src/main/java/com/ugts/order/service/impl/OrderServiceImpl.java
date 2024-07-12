@@ -143,6 +143,11 @@ public class OrderServiceImpl implements OrderService {
         var orderDetails = order.getOrderDetails();
         orderDetails.setStatus(orderRequest.getOrderStatus());
 
+        if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
+            post.setIsAvailable(true);
+            postRepository.save(post);
+        }
+
         orderDetailsRepository.save(orderDetails);
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
@@ -187,8 +192,11 @@ public class OrderServiceImpl implements OrderService {
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             var orderDetails = order.getOrderDetails();
             orderDetails.setStatus(updateOrderRequest.getOrderStatus());
-
             orderDetailsRepository.save(orderDetails);
+
+            var post = order.getPost();
+            post.setIsAvailable(true);
+            postRepository.save(post);
         }
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
