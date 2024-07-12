@@ -44,7 +44,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
-class UserServiceTest {
+class AuthenticationServiceTest {
 
     @Autowired
     private AuthenticationService authenticationService;
