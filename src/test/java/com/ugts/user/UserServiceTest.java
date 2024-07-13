@@ -1,5 +1,12 @@
 package com.ugts.user;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.*;
+
 import com.ugts.authentication.dto.request.RegisterRequest;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
@@ -8,8 +15,10 @@ import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
+import com.ugts.user.controller.UserController;
 import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.LikeRequestDto;
+import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;
 import com.ugts.user.dto.response.AddressResponse;
 import com.ugts.user.dto.response.UserResponse;
@@ -22,27 +31,14 @@ import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
 import com.ugts.user.service.impl.UserServiceImpl;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -78,45 +74,6 @@ public class UserServiceTest {
     @Mock
     AddressRepository addressRepository;
 
-    @ConditionalOnProperty(
-            prefix = "spring",
-            value = "datasource.driverClassName",
-            havingValue = "org.postgresql.Driver")
-    @BeforeEach
-    public void initData() {
-        Date dob = new Date(2000, 1, 1);
-
-        request = RegisterRequest.builder()
-                .username("test02")
-                .firstName("quang")
-                .lastName("tran")
-                .email("test02@gmail.com")
-                .password("Quang09122002@")
-                .dob(dob)
-                .phoneNumber("0563016466")
-                .build();
-
-        response = UserResponse.builder()
-                .id("bf1ca931-8685-4ea7-b554-85926ec6e9e5")
-                .username("test02")
-                .firstName("quang")
-                .lastName("tran")
-                .email("test02@gmail.com")
-                .dob(dob)
-                .phoneNumber("0563016466")
-                .build();
-
-        user = User.builder()
-                .id("bf1ca931-8685-4ea7-b554-85926ec6e9e5")
-                .username("test02")
-                .firstName("quang")
-                .lastName("tran")
-                .email("test02@gmail.com")
-                .dob(dob)
-                .phoneNumber("0563016466")
-                .build();
-    }
-
     /**
      * Test method to retrieve all users when the user is an admin.
      */
@@ -124,7 +81,14 @@ public class UserServiceTest {
     @WithMockUser(roles = "ADMIN")
     public void retrieves_all_users_when_admin() {
         // Given
-        UserServiceImpl userService = new UserServiceImpl(userRepository, userMapper, postRepository, postMapper, googleCloudStorageService, addressMapper, addressRepository);
+        UserServiceImpl userService = new UserServiceImpl(
+                userRepository,
+                userMapper,
+                postRepository,
+                postMapper,
+                googleCloudStorageService,
+                addressMapper,
+                addressRepository);
         List<User> users = List.of(new User(), new User());
         when(userRepository.findAll()).thenReturn(users);
         when(userMapper.userToUserResponse(any(User.class))).thenReturn(new UserResponse());
@@ -143,7 +107,14 @@ public class UserServiceTest {
     @WithMockUser(roles = "ADMIN")
     public void handles_empty_user_repository() {
         // Given
-        UserServiceImpl userService = new UserServiceImpl(userRepository, userMapper, postRepository, postMapper, googleCloudStorageService, addressMapper, addressRepository);
+        UserServiceImpl userService = new UserServiceImpl(
+                userRepository,
+                userMapper,
+                postRepository,
+                postMapper,
+                googleCloudStorageService,
+                addressMapper,
+                addressRepository);
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
 
         // When
@@ -160,7 +131,14 @@ public class UserServiceTest {
     @WithMockUser(roles = "ADMIN")
     public void handles_user_mapper_exception() {
         // Given
-        UserServiceImpl userService = new UserServiceImpl(userRepository, userMapper, postRepository, postMapper, googleCloudStorageService, addressMapper, addressRepository);
+        UserServiceImpl userService = new UserServiceImpl(
+                userRepository,
+                userMapper,
+                postRepository,
+                postMapper,
+                googleCloudStorageService,
+                addressMapper,
+                addressRepository);
         List<User> users = List.of(new User());
         when(userRepository.findAll()).thenReturn(users);
         when(userMapper.userToUserResponse(any(User.class))).thenThrow(new RuntimeException("Mapping error"));
@@ -350,7 +328,8 @@ public class UserServiceTest {
         when(postMapper.postToPostResponse(post1)).thenReturn(new PostResponse());
         when(postMapper.postToPostResponse(post2)).thenReturn(new PostResponse());
 
-        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
 
         // When
         List<PostResponse> result = userService.getLikedPosts(userId);
@@ -376,7 +355,8 @@ public class UserServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
 
         // When & Then
         assertThrows(AppException.class, () -> userService.getLikedPosts(userId));
@@ -396,7 +376,8 @@ public class UserServiceTest {
         PostRepository postRepository = mock(PostRepository.class);
         PostMapper postMapper = mock(PostMapper.class);
 
-        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, postRepository, postMapper, null, null, null);
 
         // When & Then
         assertThrows(AppException.class, () -> userService.getLikedPosts(userId));
@@ -408,7 +389,9 @@ public class UserServiceTest {
      * @return None
      */
     @Test
-    @WithMockUser(username = "test02", roles = {"USER"})
+    @WithMockUser(
+            username = "test02",
+            roles = {"USER"})
     public void test_successful_update_user_info() {
         // Given
         String userId = "bf1ca931-8685-4ea7-b554-85926ec6e9e5";
@@ -512,7 +495,7 @@ public class UserServiceTest {
     public void test_successful_avatar_update() throws IOException {
         // Given
         String userId = "validUserId";
-        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[]{1, 2, 3});
+        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[] {1, 2, 3});
         User user = new User();
         user.setId(userId);
         user.setUsername("testUser");
@@ -532,7 +515,7 @@ public class UserServiceTest {
     public void test_user_not_exist_exception() {
         // Given
         String userId = "nonExistentUserId";
-        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[]{1, 2, 3});
+        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[] {1, 2, 3});
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
@@ -545,7 +528,7 @@ public class UserServiceTest {
     public void test_io_exception_on_upload() throws IOException {
         // Given
         String userId = "validUserId";
-        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[]{1, 2, 3});
+        MultipartFile file = new MockMultipartFile("avatar", "avatar.png", "image/png", new byte[] {1, 2, 3});
         User user = new User();
         user.setId(userId);
         user.setUsername("testUser");
@@ -564,7 +547,9 @@ public class UserServiceTest {
      * @return void
      */
     @Test
-    @WithMockUser(username = "test02", roles = {"USER"})
+    @WithMockUser(
+            username = "test02",
+            roles = {"USER"})
     public void test_create_new_address_success() {
         // Given
         String userId = "user123";
@@ -631,5 +616,193 @@ public class UserServiceTest {
         });
 
         verify(userRepository, times(1)).findByPhoneNumber(anyString());
+    }
+
+    @Test
+    public void test_successful_address_update() {
+        // Given
+        String userId = "bf1ca931-8685-4ea7-b554-85926ec6e9e5";
+        Long addressId = 1L;
+        UpdateAddressRequest updateAddressRequest = new UpdateAddressRequest(
+                "New Street", "New District", "New Province", "New Country", "New Address Line");
+        UserServiceImpl userService = new UserServiceImpl(
+                userRepository,
+                userMapper,
+                postRepository,
+                postMapper,
+                googleCloudStorageService,
+                addressMapper,
+                addressRepository);
+
+        // Mocking the necessary data
+        User user = new User();
+        user.setPhoneNumber("0563016466");
+        Address address = new Address();
+        address.setId(addressId);
+        user.setAddress(Set.of(address));
+
+        when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
+        when(addressRepository.save(any(Address.class))).thenReturn(address);
+
+        // When
+        AddressResponse response = userService.updateUserAddress(userId, addressId, updateAddressRequest);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("New Street", response.getStreet());
+        assertEquals("New District", response.getDistrict());
+        assertEquals("New Province", response.getProvince());
+        assertEquals("New Country", response.getCountry());
+        assertEquals("New Address Line", response.getAddressLine());
+    }
+
+    /**
+     * Test case for handling a non-existent user ID scenario.
+     */
+    @Test
+    public void test_non_existent_user_id() {
+        // Given
+        String userId = "nonExistentUserId";
+        Long addressId = 1L;
+        UpdateAddressRequest request =
+                new UpdateAddressRequest("123 Street", "District", "Province", "Country", "Address Line");
+        UserService userService = mock(UserService.class);
+        when(userService.updateUserAddress(userId, addressId, request))
+                .thenThrow(new RuntimeException("User not found"));
+        UserController userController = new UserController(userService);
+
+        // When
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            userController.updateAddress(userId, addressId, request);
+        });
+
+        // Then
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    /**
+     * Test case for handling a non-existent address ID scenario.
+     */
+    @Test
+    public void test_non_existent_address_id() {
+        // Given
+        String userId = "validUserId";
+        Long addressId = 999L;
+        UpdateAddressRequest request =
+                new UpdateAddressRequest("123 Street", "District", "Province", "Country", "Address Line");
+        UserService userService = mock(UserService.class);
+        when(userService.updateUserAddress(userId, addressId, request))
+                .thenThrow(new RuntimeException("Address not found"));
+        UserController userController = new UserController(userService);
+
+        // When
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            userController.updateAddress(userId, addressId, request);
+        });
+
+        // Then
+        assertEquals("Address not found", exception.getMessage());
+    }
+
+    /**
+     * Test case for setting the default address successfully.
+     */
+    @Test
+    public void test_set_default_address_success() {
+        // Given
+        String userId = "user123";
+        Long addressId = 1L;
+        User user = new User();
+        user.setId(userId);
+        Address address = new Address();
+        address.setId(addressId);
+        address.setUser(user);
+        address.setDefault(false);
+
+        UserRepository userRepository = mock(UserRepository.class);
+        AddressRepository addressRepository = mock(AddressRepository.class);
+        AddressMapper addressMapper = mock(AddressMapper.class);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(addressRepository.findByUserIdAndDefault(userId, true)).thenReturn(Optional.empty());
+        when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
+        when(addressMapper.toAddress(any(Address.class))).thenReturn(new AddressResponse());
+
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, null, null, null, addressMapper, addressRepository);
+
+        // When
+        AddressResponse response = userService.setDefaultAddress(userId, addressId);
+
+        // Then
+        assertNotNull(response);
+        assertTrue(address.isDefault());
+    }
+
+    /**
+     * Test case for setting the default address when the user does not exist.
+     *
+     * This test method creates a mock UserRepository and AddressMapper objects,
+     * and initializes a UserServiceImpl object with these mock objects.
+     * It then sets up the mock UserRepository to return an empty Optional when
+     * given a specific userId.
+     *
+     * The test method then calls the setDefaultAddress method of the UserServiceImpl
+     * object with the specified userId and addressId. It asserts that an AppException
+     * is thrown with the error code ErrorCode.USER_NOT_EXISTED.
+     *
+     * @return void
+     */
+    @Test
+    public void test_set_default_address_user_not_exist() {
+        // Given
+        String userId = "user123";
+        Long addressId = 1L;
+
+        UserRepository userRepository = mock(UserRepository.class);
+        AddressRepository addressRepository = mock(AddressRepository.class);
+        AddressMapper addressMapper = mock(AddressMapper.class);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, null, null, null, addressMapper, addressRepository);
+
+        // When & Then
+        AppException exception = assertThrows(AppException.class, () -> {
+            userService.setDefaultAddress(userId, addressId);
+        });
+
+        assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getErrorCode());
+    }
+
+    /**
+     * Test case for setting the default address when the address does not exist.
+     */
+    @Test
+    public void test_set_default_address_address_not_exist() {
+        // Given
+        String userId = "user123";
+        Long addressId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        UserRepository userRepository = mock(UserRepository.class);
+        AddressRepository addressRepository = mock(AddressRepository.class);
+        AddressMapper addressMapper = mock(AddressMapper.class);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(addressRepository.findByUserIdAndDefault(userId, true)).thenReturn(Optional.empty());
+        when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
+
+        UserServiceImpl userService =
+                new UserServiceImpl(userRepository, null, null, null, null, addressMapper, addressRepository);
+
+        // When & Then
+        AppException exception = assertThrows(AppException.class, () -> {
+            userService.setDefaultAddress(userId, addressId);
+        });
+
+        assertEquals(ErrorCode.ADDRESS_NOT_EXISTED, exception.getErrorCode());
     }
 }
