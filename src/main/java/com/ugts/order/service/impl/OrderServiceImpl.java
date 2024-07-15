@@ -72,6 +72,10 @@ public class OrderServiceImpl implements OrderService {
 
         post.setIsAvailable(false);
 
+        var address = addressRepository
+                .findById(orderRequest.getAddress().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
+
         var orderDetails = OrderDetails.builder()
                 .price(post.getProduct().getPrice())
                 .quantity(1)
@@ -80,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
                 .lastName(buyer.getLastName())
                 .email(buyer.getEmail())
                 .phoneNumber(buyer.getPhoneNumber())
-                .address((Address) buyer.getAddress())
+                .address(address)
                 .paymentMethod(orderRequest.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .isPaid(false)

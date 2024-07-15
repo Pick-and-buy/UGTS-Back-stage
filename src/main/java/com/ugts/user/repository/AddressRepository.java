@@ -17,4 +17,13 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      */
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.isDefault = :isDefault")
     Optional<Address> findByUserIdAndDefault(String userId, boolean isDefault);
+
+    /**
+     * A description of the entire Java function.
+     *
+     * @param  isDefault	description of parameter
+     * @return         	description of return value
+     */
+    @Query("SELECT a FROM Address a WHERE a.isDefault= :isDefault")
+    Optional<Address> findByDefault(boolean isDefault);
 }
