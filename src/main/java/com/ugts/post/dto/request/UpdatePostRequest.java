@@ -13,7 +13,5 @@ public class UpdatePostRequest {
     String id;
     String title;
     String description;
-
-    Brand brand;
     Product product;
 }
