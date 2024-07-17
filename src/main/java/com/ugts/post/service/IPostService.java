@@ -13,7 +13,7 @@ public interface IPostService {
 
     List<PostResponse> getAllPosts();
 
-    PostResponse updatePost(String id, UpdatePostRequest postRequest, MultipartFile [] productImages) throws IOException;
+    PostResponse updatePost(String id, UpdatePostRequest postRequest, MultipartFile[] productImages) throws IOException;
 
     PostResponse getPostById(String postId);
 

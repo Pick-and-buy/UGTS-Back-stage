@@ -157,7 +157,8 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse updatePost(String postId, UpdatePostRequest request, MultipartFile [] productImages) throws IOException {
+    public PostResponse updatePost(String postId, UpdatePostRequest request, MultipartFile[] productImages)
+            throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
         var product = productRepository
@@ -181,7 +182,6 @@ public class PostServiceImpl implements IPostService {
         }
 
         var updatedProduct = productRepository.save(product);
-
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
