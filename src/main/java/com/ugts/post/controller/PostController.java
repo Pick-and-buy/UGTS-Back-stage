@@ -55,8 +55,7 @@ public class PostController {
     public ApiResponse<PostResponse> updatePost(
             @PathVariable String postId,
             @RequestPart("request") String updateRequest,
-            @RequestPart("productImages") MultipartFile[] productImages
-            )
+            @RequestPart("productImages") MultipartFile[] productImages)
             throws IOException {
         UpdatePostRequest request = objectMapper.readValue(updateRequest, UpdatePostRequest.class);
 

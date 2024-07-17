@@ -307,8 +307,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void deleteAddress(Long addressId) {
-        var address = addressRepository.findById(addressId)
-                        .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
+        var address = addressRepository
+                .findById(addressId)
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
         if (address != null) {
             addressRepository.deleteById(addressId);
         }

@@ -1,6 +1,5 @@
 package com.ugts.post.dto.request;
 
-import com.ugts.brand.entity.Brand;
 import com.ugts.product.entity.Product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
