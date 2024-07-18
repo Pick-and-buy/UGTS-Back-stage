@@ -2,11 +2,13 @@ package com.ugts.user.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ugts.comment.entity.Comment;
 import com.ugts.follow.entity.Follow;
+import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,8 +31,11 @@ public class User {
     String username;
 
     String avatar;
+
     String password;
+
     String lastName;
+
     String firstName;
 
     @Column(unique = true)
@@ -69,5 +74,6 @@ public class User {
     Set<Follow> following = new HashSet<>();
 
     @OneToMany(mappedBy = "following")
+
     Set<Follow> followers = new HashSet<>();
 }
