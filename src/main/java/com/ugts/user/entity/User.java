@@ -76,4 +76,6 @@ public class User {
     @OneToMany(mappedBy = "following")
 
     Set<Follow> followers = new HashSet<>();
+
+    boolean isVerified;
 }

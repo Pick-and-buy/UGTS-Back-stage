@@ -46,7 +46,6 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public List<NotificationResponse> getUserNotifications(String userId) {
-//        System.out.println(notificationRepository.findByUserToId(userId));
         return notificationRepository.findByUserToId(userId).stream()
                 .map(notificationMapper::toNotificationResponse)
                 .toList();
