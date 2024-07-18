@@ -3,9 +3,6 @@ package com.ugts.notification.service;
 import java.util.Date;
 import java.util.List;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.kafka.producer.KafkaProducer;
@@ -34,49 +31,54 @@ public class NotificationServiceImpl implements INotificationService {
 
     public void notifyUser(String userId, String message, String topic) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        System.out.println("333333333333333333");
-        System.out.println(user);
         NotificationEntity notification = new NotificationEntity();
-        notification.setUser(user);
-        notification.setNotificationMessage(message);
+        notification.setUserToId(user.getId());
+        notification.setMessage(message);
         notification.setTimestamp(new Date());
         notification.setRead(false);
         notificationRepository.save(notification);
-
-        System.out.println("===========================================");
-        System.out.println(notification);
-        log.info(notification.toString());
         try {
             kafkaProducer.sendMessage(notification,topic);
-
         }catch (Exception e) {
             log.error("An error occurred while sending notification: " + e.getMessage());
         }
     }
 
-        public void sendPushNotification(Long userId, String message) {
-            try {
-                Message msg = Message.builder()
-                        .setToken(getUserDeviceToken(userId)) // Implement getUserDeviceToken method
-                        .setNotification(Notification.builder()
-                                .setTitle("New Notification")
-                                .setBody(message)
-                                .build())
-                        .build();
-
-                FirebaseMessaging.getInstance().send(msg);
-            } catch (Exception e) {
-                log.error("An error occurred while sending push notification: " + e.getMessage());
-            }
-        }
-
+    @Override
     public List<NotificationResponse> getUserNotifications(String userId) {
-        return notificationRepository.findByUserId(userId).stream()
+//        System.out.println(notificationRepository.findByUserToId(userId));
+        return notificationRepository.findByUserToId(userId).stream()
                 .map(notificationMapper::toNotificationResponse)
                 .toList();
     }
-    private String getUserDeviceToken(Long userId) {
-        // Implement logic to retrieve the user's device token
-        return "user_device_token";
+
+    public void createNotificationStorage(NotificationEntity notificationStorage) {
+        notificationRepository.save(notificationStorage);
+    }
+
+    public NotificationEntity getNotificationsByID(String id) {
+        return notificationRepository.findByNotificationId(id).orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_EXISTED));
+    }
+
+    public List<NotificationResponse> getNotificationsByUserIDNotRead(String userID) {
+        return notificationRepository.findByUserToIdAndDeliveredFalse(userID).stream()
+                .map(notificationMapper::toNotificationResponse)
+                .toList();
+//        return notificationRepository.findByUserToIdAndDeliveredFalse(userID);
+    }
+
+    public List<NotificationEntity> getNotificationsByUserID(String userID) {
+        return notificationRepository.findByUserToId(userID);
+    }
+
+    @Override
+    public void changeNotifyStatusToRead(String notifyID) {
+        NotificationEntity notification = getNotificationsByID(notifyID);
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
+
+    public void clear() {
+        notificationRepository.deleteAll();
     }
 }

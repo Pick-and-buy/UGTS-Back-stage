@@ -11,35 +11,27 @@ import com.ugts.notification.service.INotificationService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notifications")
-@AllArgsConstructor
+@RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class NotificationController {
-    private INotificationService notificationService;
-    private NotificationMapper notificationMapper;
-    private KafkaProducer kafkaProducer;
 
-    @MessageMapping("/application")
-    @SendTo("/all/messages")
-    public NotificationResponse send(final NotificationEntity notifications) throws Exception {
-        return notificationMapper.toNotificationResponse(notifications);
-    }
+    private final INotificationService notificationService;
 
-//    @PostMapping("/send")
-//    public ResponseEntity<String> sendNotification(@RequestBody Notifications notifications) {
-//        kafkaProducer.sendMessage(notifications);
-//        return ResponseEntity.ok("Notification sent successfully");
-//    }
-
-    @GetMapping("/user/{userId}")
+    @GetMapping("/{userId}")
     public ApiResponse<List<NotificationResponse>> getUserNotifications(@PathVariable String userId) {
         return ApiResponse.<List<NotificationResponse>>builder()
                 .result(notificationService.getUserNotifications(userId))
+                .build();
+    }
+
+    @PatchMapping("/read/{notifyID}")
+    public ApiResponse<Void> changeNotifyStatusToRead(@PathVariable String notifyID) {
+        notificationService.changeNotifyStatusToRead(notifyID);
+        return ApiResponse.<Void>builder()
+                .message("Success change status notification")
                 .build();
     }
 }

@@ -76,6 +76,6 @@ public class User {
     @OneToMany(mappedBy = "following")
     private Set<Follow> followers = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<NotificationEntity> notifications;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<NotificationEntity> notifications;
 }

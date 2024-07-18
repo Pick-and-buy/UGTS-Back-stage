@@ -20,15 +20,21 @@ public class NotificationEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String notificationId;
 
-    private String notificationMessage;
+    private String message;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
     private Date timestamp;
 
+//    @OneToOne
+    private String userToId;
+
+//    @OneToOne
+    private String userFromId;
+
+    private boolean delivered;
+
+    private NotificationType notificationType;
+
     // To mark if the notification has been read
     private boolean isRead;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }

@@ -1,11 +1,17 @@
 package com.ugts.user.service.impl;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
+import com.google.firebase.messaging.Notification;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.notification.entity.NotificationEntity;
+import com.ugts.notification.entity.NotificationType;
+import com.ugts.notification.repository.NotificationRepository;
+import com.ugts.notification.service.NotificationServiceImpl;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
@@ -42,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     private final PostMapper postMapper;
 
+    private final NotificationServiceImpl notificationService;
+
     GoogleCloudStorageService googleCloudStorageService;
 
     @PreAuthorize("hasRole('ADMIN')") // verify that the user is ADMIN before getAllUsers() is called
@@ -72,21 +80,36 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserResponse(user);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     public void likePost(LikeRequestDto likeRequestDto) {
-        User user = userRepository
+        User likeUser = userRepository
                 .findById(likeRequestDto.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Post post = postRepository
                 .findById(likeRequestDto.getPostId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
 
-        if (user.getLikedPosts().contains(post)) {
+        if (likeUser.getLikedPosts().contains(post)) {
             throw new AppException(ErrorCode.POST_ALREADY_LIKED);
         }
-        user.getLikedPosts().add(post);
-        userRepository.save(user);
+        likeUser.getLikedPosts().add(post);
+
+        //Notify to user
+        User userToNotify = post.getUser();
+        if(!userToNotify.getId().equals(likeUser.getId())) {
+            notificationService.createNotificationStorage(NotificationEntity.builder()
+                    .delivered(false)
+                    .message("New like from " + likeUser.getUsername())
+                    .notificationType(NotificationType.LIKE)
+                    .userFromId(likeUser.getId())
+                    .userToId(userToNotify.getId())
+                    .timestamp(new Date())
+                    .build());
+        }
+        userRepository.save(likeUser);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @Override
     public void unlikePost(LikeRequestDto likeRequestDto) {
         User user = userRepository
@@ -103,6 +126,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @Override
     public List<PostResponse> getLikedPosts(String userId) {
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

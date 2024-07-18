@@ -85,6 +85,9 @@ public enum ErrorCode {
     // ORDERS
     ORDER_NOT_FOUND(1001, "Order not found", HttpStatus.BAD_REQUEST),
 
+    //NOTIFICATION
+    NOTIFICATION_NOT_EXISTED(1001, "Notification not exist", HttpStatus.BAD_REQUEST),
+
 // Comment
 ;
     int code;
