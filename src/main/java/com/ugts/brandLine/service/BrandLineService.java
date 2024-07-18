@@ -17,4 +17,6 @@ public interface BrandLineService {
     void deleteBrandLine(String brandLineName);
 
     List<BrandLineResponse> getBrandLineByBrandName(String brandName);
+
+    BrandLineResponse updateBrandLineInformation(String brandLineName, BrandLineRequest request);
 }

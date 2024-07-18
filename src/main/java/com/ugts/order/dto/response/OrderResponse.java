@@ -1,10 +1,7 @@
 package com.ugts.order.dto.response;
 
-import java.util.List;
-
-import com.ugts.order.entity.OrderDetails;
-import com.ugts.post.dto.response.PostResponse;
-import com.ugts.user.dto.response.UserResponse;
+import com.ugts.post.dto.GeneralPostInformationDto;
+import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderResponse {
     String id;
-    UserResponse buyer;
-    PostResponse post;
-    List<OrderDetails> orderDetails;
+    GeneralUserInformationDto buyer;
+    GeneralPostInformationDto post;
+    OrderDetailsResponse orderDetails;
 }

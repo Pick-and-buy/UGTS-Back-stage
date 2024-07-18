@@ -21,6 +21,9 @@ public interface PostRepository extends JpaRepository<Post, String> {
     @Query("SELECT p FROM Post p WHERE p.user.id IN :followedUserIds")
     List<Post> findPostsByFollowedUsers(@Param("followedUserIds") List<String> followedUserIds);
 
+    @Query("SELECT p FROM Post p WHERE p.user.id = :followedUserId")
+    List<Post> findPostsByFollowedUsers(String followedUserId);
+
     @Query("SELECT p FROM Post p JOIN p.product pr JOIN pr.brand b WHERE b.name = :brandName")
     List<Post> findAllByBrandName(String brandName);
 

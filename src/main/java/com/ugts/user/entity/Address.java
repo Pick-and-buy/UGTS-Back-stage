@@ -1,8 +1,5 @@
 package com.ugts.user.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,8 +19,13 @@ public class Address {
     String street;
     String district;
     String province;
-    String postalCode;
+    String country;
 
-    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    Set<User> user = new HashSet<>();
+    @Column(length = 1000)
+    String addressLine;
+
+    boolean isDefault;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    User user;
 }

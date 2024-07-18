@@ -15,6 +15,7 @@ public enum OrderStatus {
     PROCESSING("The order is currently being processed."),
     DELIVERED("The order has been delivered to the customer."),
     CANCELLED("The order has been cancelled."),
+    RECEIVED("The order has been received by the customer."),
     RETURNED("The order has been returned by the customer.");
 
     String description;

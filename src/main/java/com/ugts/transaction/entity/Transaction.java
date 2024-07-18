@@ -1,6 +1,6 @@
 package com.ugts.transaction.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.ugts.order.entity.Order;
 import com.ugts.transaction.enums.TransactionStatus;
@@ -21,8 +21,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    //    @GeneratedValue(strategy = GenerationType.UUID)
     String billNo;
+
+    String transNo;
 
     String bankCode;
 
@@ -42,7 +43,7 @@ public class Transaction {
     @Column
     private String reason;
 
-    Date createDate;
+    LocalDateTime createDate;
 
     @Enumerated(EnumType.STRING)
     TransactionStatus transactionStatus;

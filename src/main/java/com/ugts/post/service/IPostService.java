@@ -13,7 +13,7 @@ public interface IPostService {
 
     List<PostResponse> getAllPosts();
 
-    PostResponse updatePost(String id, UpdatePostRequest postRequest) throws IOException;
+    PostResponse updatePost(String id, UpdatePostRequest postRequest, MultipartFile[] productImages) throws IOException;
 
     PostResponse getPostById(String postId);
 
@@ -28,4 +28,6 @@ public interface IPostService {
     void deletePost(String postId);
 
     List<PostResponse> getPostByBrandLine(String brandLineName);
+
+    List<PostResponse> getPostsByFollowedUser(String followedUserId);
 }

@@ -157,37 +157,34 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse updatePost(String postId, UpdatePostRequest request) throws IOException {
-        // TODO : cần thêm trường update về status của post và UpdatePostRequest
+    public PostResponse updatePost(String postId, UpdatePostRequest request, MultipartFile[] productImages)
+            throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
         var product = productRepository
                 .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        product.setName(request.getProduct().getName());
-        product.setPrice(request.getProduct().getPrice());
-        product.setColor(request.getProduct().getColor());
-        product.setSize(request.getProduct().getSize());
-        product.setWidth(request.getProduct().getWidth());
-        product.setHeight(request.getProduct().getHeight());
-        product.setLength(request.getProduct().getLength());
-        product.setReferenceCode(request.getProduct().getReferenceCode());
-        product.setManufactureYear(request.getProduct().getManufactureYear());
-        product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
-        product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
-        product.setCondition(request.getProduct().getCondition());
-        product.setAccessories(request.getProduct().getAccessories());
-        product.setDateCode(request.getProduct().getDateCode());
-        product.setSerialNumber(request.getProduct().getSerialNumber());
-        product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
-        product.setStory(request.getProduct().getStory());
+        // upload product image to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, post.getId());
+
+        // add product image for each URL
+        for (String fileUrl : fileUrls) {
+            // check if product image null
+            if (product.getImages() == null) {
+                product.setImages(new HashSet<>());
+            }
+
+            // add product image to product
+            var productImage =
+                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+            product.getImages().add(productImage);
+        }
 
         var updatedProduct = productRepository.save(product);
 
         post.setTitle(request.getTitle());
         post.setDescription(request.getDescription());
-        post.setIsAvailable(true);
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
@@ -239,5 +236,14 @@ public class PostServiceImpl implements IPostService {
     public List<PostResponse> getPostByBrandLine(String brandLineName) {
         var posts = postRepository.findAllByBrandLine(brandLineName);
         return postMapper.getAllPosts(posts);
+    }
+
+    @Override
+    public List<PostResponse> getPostsByFollowedUser(String followedUserId) {
+        var user =
+                userRepository.findById(followedUserId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return postRepository.findPostsByFollowedUsers(user.getId()).stream()
+                .map(postMapper::postToPostResponse)
+                .toList();
     }
 }

@@ -51,10 +51,15 @@ public class PostController {
                 .build();
     }
 
-    @PutMapping("/{postId}")
-    public ApiResponse<PostResponse> updatePost(@PathVariable String postId, @RequestBody UpdatePostRequest request)
+    @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<PostResponse> updatePost(
+            @PathVariable String postId,
+            @RequestPart("request") String updateRequest,
+            @RequestPart("productImages") MultipartFile[] productImages)
             throws IOException {
-        var result = postService.updatePost(postId, request);
+        UpdatePostRequest request = objectMapper.readValue(updateRequest, UpdatePostRequest.class);
+
+        var result = postService.updatePost(postId, request, productImages);
         return ApiResponse.<PostResponse>builder()
                 .message("Update Success")
                 .result(result)
@@ -111,6 +116,15 @@ public class PostController {
     @GetMapping("/brandLine")
     public ApiResponse<List<PostResponse>> getPostsByBrandLine(@RequestParam String brandLineName) {
         var result = postService.getPostByBrandLine(brandLineName);
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/followedUser")
+    public ApiResponse<List<PostResponse>> getPostByFollowedUser(@RequestParam String followedUserId) {
+        var result = postService.getPostsByFollowedUser(followedUserId);
         return ApiResponse.<List<PostResponse>>builder()
                 .message("Success")
                 .result(result)

@@ -49,8 +49,8 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    Address address;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Set<Address> address = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -71,11 +71,9 @@ public class User {
     Set<Post> purchasedPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "follower")
-    private Set<Follow> following = new HashSet<>();
+    Set<Follow> following = new HashSet<>();
 
     @OneToMany(mappedBy = "following")
-    private Set<Follow> followers = new HashSet<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<NotificationEntity> notifications;
+    Set<Follow> followers = new HashSet<>();
 }

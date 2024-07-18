@@ -92,8 +92,9 @@ public class BrandServiceImpl implements BrandService {
         brandRepository.delete(brand);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public BrandResponse updateBrand(String name, BrandRequest request) {
         // check if brand name already exists
         if (brandRepository.findByName(request.getName()).isPresent()) {

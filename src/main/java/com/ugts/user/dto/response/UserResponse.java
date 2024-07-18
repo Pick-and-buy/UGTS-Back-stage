@@ -26,7 +26,11 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date dob;
 
-    Set<LikedPostDto> likedPosts;
+    Set<AddressResponse> address;
+
     Set<RoleResponse> roles;
+
+    Set<LikedPostDto> likedPosts;
+
     Set<PostResponse> createdPosts;
 }
