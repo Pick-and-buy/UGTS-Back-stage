@@ -15,6 +15,7 @@ import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,10 +72,30 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     @Override
-    public void changeNotifyStatusToRead(String notifyID) {
+    @Transactional
+    public void markNotificationAsRead(String notifyID) {
+        if(notifyID == null || notifyID.isBlank()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
         NotificationEntity notification = getNotificationsByID(notifyID);
+        if(!notification.isRead()){
+            return;
+        }
         notification.setRead(true);
         notificationRepository.save(notification);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotificationByUserToId(String userId) {
+        if(userId == null || userId.isBlank()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+        try{
+            notificationRepository.deleteNotificationEntitiesByUserToId(userId);
+        }catch (Exception e) {
+            log.error("An error occurred while deleting notification: " + e.getMessage());
+        }
     }
 
     public void clear() {

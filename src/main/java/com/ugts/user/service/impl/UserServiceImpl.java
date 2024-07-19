@@ -139,6 +139,8 @@ public class UserServiceImpl implements UserService {
                     .userFromId(likeUser.getId())
                     .userToId(userToNotify.getId())
                     .timestamp(new Date())
+                    .userFromAvatar(likeUser.getAvatar())
+                    .postId(post.getId())
                     .build());
         }
         userRepository.save(likeUser);
