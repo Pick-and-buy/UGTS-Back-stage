@@ -92,6 +92,10 @@ public enum ErrorCode {
     ADDRESS_NOT_EXISTED(1001, "Address not exist", HttpStatus.BAD_REQUEST),
     ADDRESS_ALREADY_EXISTED(1002, "Address has already existed!", HttpStatus.BAD_REQUEST),
 
+    // VERIFY
+    VERIFY_SUCCESS(1001, "Verify success", HttpStatus.OK),
+    VERIFY_FAIL(1001, "Something wrong to save user data to verify", HttpStatus.BAD_REQUEST),
+
 // Comment
 ;
     int code;

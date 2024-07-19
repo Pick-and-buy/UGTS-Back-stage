@@ -25,4 +25,12 @@ public class NotificationResponse {
     private Date timestamp;
 
     private boolean isRead;
+
+    private String userFromAvatar;
+
+    private String postId;
+
+    private String orderId;
+
+
 }

@@ -14,4 +14,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     List<NotificationEntity> findByUserToIdAndDeliveredFalse(String id);
 
     List<NotificationEntity> findByUserToId(String id);
+
+    void deleteNotificationEntitiesByUserToId(String id);
 }

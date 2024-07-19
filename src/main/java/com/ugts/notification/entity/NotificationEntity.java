@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,4 +36,10 @@ public class NotificationEntity implements Serializable {
 
     // To mark if the notification has been read
     private boolean isRead;
+
+    private String userFromAvatar;
+
+    private String postId;
+
+    private String orderId;
 }

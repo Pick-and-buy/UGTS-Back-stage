@@ -10,7 +10,9 @@ public interface INotificationService {
 
     List<NotificationResponse> getUserNotifications(String userId);
 
-    void changeNotifyStatusToRead(String notifyID);
+    void markNotificationAsRead(String notifyID);
+
+    void deleteNotificationByUserToId(String userId);
 
     List<NotificationEntity>getNotificationsByUserID(String userId);
 }

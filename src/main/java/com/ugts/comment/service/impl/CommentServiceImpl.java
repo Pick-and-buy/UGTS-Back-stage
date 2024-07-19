@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.google.firebase.messaging.Notification;
 import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import com.ugts.comment.entity.Comment;
 import com.ugts.comment.mapper.CommentMapper;
 import com.ugts.comment.repository.CommentRepository;
 import com.ugts.comment.service.ICommentService;
-import com.ugts.constant.AppConstant;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.notification.entity.NotificationEntity;
@@ -23,7 +21,6 @@ import com.ugts.post.entity.Post;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +66,10 @@ public class CommentServiceImpl implements ICommentService {
                         .notificationType(NotificationType.COMMENT)
                         .userFromId(commentUser.getId())
                         .timestamp(new Date())
-                        .userToId(userToNotify.getId()).build());
+                        .userToId(userToNotify.getId())
+                        .userFromAvatar(commentUser.getAvatar())
+                        .postId(post.getId())
+                        .build());
             }
             return commentMapper.toCommentResponse(saveComment);
         } catch (Exception e) {
