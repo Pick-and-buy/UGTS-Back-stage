@@ -41,7 +41,7 @@ public class NotificationServiceImpl implements INotificationService {
         try {
             kafkaProducer.sendMessage(notification,topic);
         }catch (Exception e) {
-            log.error("An error occurred while sending notification: " + e.getMessage());
+            log.error("An error occurred while sending notification: {}", e.getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class NotificationServiceImpl implements INotificationService {
         try{
             notificationRepository.deleteNotificationEntitiesByUserToId(userId);
         }catch (Exception e) {
-            log.error("An error occurred while deleting notification: " + e.getMessage());
+            log.error("An error occurred while deleting notification: {}", e.getMessage());
         }
     }
 

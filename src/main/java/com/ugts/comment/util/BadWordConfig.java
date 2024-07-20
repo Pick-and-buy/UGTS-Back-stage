@@ -91,6 +91,7 @@ public class BadWordConfig {
             "lồn",
             "lồng",
             "lờ",
+            "Cặc",
             "mé",
             "má",
             "mọe",
