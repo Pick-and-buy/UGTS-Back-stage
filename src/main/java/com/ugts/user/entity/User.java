@@ -10,6 +10,7 @@ import com.ugts.comment.entity.Comment;
 import com.ugts.follow.entity.Follow;
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.post.entity.Post;
+import com.ugts.rating.entity.Rating;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -74,8 +75,13 @@ public class User {
     Set<Follow> following = new HashSet<>();
 
     @OneToMany(mappedBy = "following")
-
     Set<Follow> followers = new HashSet<>();
+
+    @OneToMany(mappedBy = "ratingUser")
+    private List<Rating> givenRatings;
+
+    @OneToMany(mappedBy = "ratedUser")
+    private List<Rating> receivedRatings;
 
     boolean isVerified;
 }
