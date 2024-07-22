@@ -1,6 +1,5 @@
 package com.ugts.verifyid.entity;
 
-
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,6 +41,4 @@ public class VerifyInformation {
     String issueLoc;
 
     Boolean isMatch;
-
-
 }

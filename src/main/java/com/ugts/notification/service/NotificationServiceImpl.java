@@ -39,8 +39,8 @@ public class NotificationServiceImpl implements INotificationService {
         notification.setRead(false);
         notificationRepository.save(notification);
         try {
-            kafkaProducer.sendMessage(notification,topic);
-        }catch (Exception e) {
+            kafkaProducer.sendMessage(notification, topic);
+        } catch (Exception e) {
             log.error("An error occurred while sending notification: {}", e.getMessage());
         }
     }
@@ -57,14 +57,16 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     public NotificationEntity getNotificationsByID(String id) {
-        return notificationRepository.findByNotificationId(id).orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_EXISTED));
+        return notificationRepository
+                .findByNotificationId(id)
+                .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_EXISTED));
     }
 
     public List<NotificationResponse> getNotificationsByUserIDNotRead(String userID) {
         return notificationRepository.findByUserToIdAndDeliveredFalse(userID).stream()
                 .map(notificationMapper::toNotificationResponse)
                 .toList();
-//        return notificationRepository.findByUserToIdAndDeliveredFalse(userID);
+        //        return notificationRepository.findByUserToIdAndDeliveredFalse(userID);
     }
 
     public List<NotificationEntity> getNotificationsByUserID(String userID) {
@@ -74,11 +76,11 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     @Transactional
     public void markNotificationAsRead(String notifyID) {
-        if(notifyID == null || notifyID.isBlank()) {
+        if (notifyID == null || notifyID.isBlank()) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
         NotificationEntity notification = getNotificationsByID(notifyID);
-        if(!notification.isRead()){
+        if (!notification.isRead()) {
             return;
         }
         notification.setRead(true);
@@ -88,12 +90,12 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     @Transactional
     public void deleteNotificationByUserToId(String userId) {
-        if(userId == null || userId.isBlank()) {
+        if (userId == null || userId.isBlank()) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
-        try{
+        try {
             notificationRepository.deleteNotificationEntitiesByUserToId(userId);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("An error occurred while deleting notification: {}", e.getMessage());
         }
     }

@@ -1,11 +1,11 @@
 package com.ugts.verifyid.service;
 
 import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.verifyid.dto.VerifyInformationRequest;
 import com.ugts.verifyid.entity.VerifyInformation;
-import com.ugts.exception.ErrorCode;
 import com.ugts.verifyid.repository.VerifyInformationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +23,14 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
     @Override
     @Transactional
     public void handleVerifyUser(VerifyInformationRequest verifyInformationRequest) {
-        User user = userRepository.findById(verifyInformationRequest.getUserId()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        if(!verifyInformationRequest.getIsMatch()){
+        User user = userRepository
+                .findById(verifyInformationRequest.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if (!verifyInformationRequest.getIsMatch()) {
             return;
         }
         try {
-            if(!user.isVerified()){
+            if (!user.isVerified()) {
                 user.setVerified(true);
                 user.setUsername(verifyInformationRequest.getName());
                 userRepository.save(user);
@@ -48,9 +50,8 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
                     .isMatch(verifyInformationRequest.getIsMatch())
                     .build();
             verifyInformationRepository.save(verifyInformation);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
-
     }
 }

@@ -24,10 +24,10 @@ public class NotificationEntity implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
     private Date timestamp;
 
-//    @OneToOne
+    //    @OneToOne
     private String userToId;
 
-//    @OneToOne
+    //    @OneToOne
     private String userFromId;
 
     private boolean delivered;

@@ -18,5 +18,4 @@ public class RatingMapper {
         ratingResponse.setRatedUserId(rating.getRatedUser().getId());
         return ratingResponse;
     }
-
 }

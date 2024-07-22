@@ -85,7 +85,7 @@ public enum ErrorCode {
     // ORDERS
     ORDER_NOT_FOUND(1001, "Order not found", HttpStatus.BAD_REQUEST),
 
-    //NOTIFICATION
+    // NOTIFICATION
     NOTIFICATION_NOT_EXISTED(1001, "Notification not exist", HttpStatus.BAD_REQUEST),
 
     // Address
@@ -96,7 +96,7 @@ public enum ErrorCode {
     VERIFY_SUCCESS(1001, "Verify success", HttpStatus.OK),
     VERIFY_FAIL(1001, "Something wrong to save user data to verify", HttpStatus.BAD_REQUEST),
 
-    //Rating
+    // Rating
     INVALID_STAR_RATING(1001, "Invalid star rating", HttpStatus.BAD_REQUEST),
 
 // Comment

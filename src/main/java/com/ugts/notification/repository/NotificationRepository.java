@@ -7,7 +7,7 @@ import com.ugts.notification.entity.NotificationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NotificationRepository extends JpaRepository<NotificationEntity, String> {
-//    List<NotificationEntity> findByUserId(String userId);
+    //    List<NotificationEntity> findByUserId(String userId);
 
     Optional<NotificationEntity> findByNotificationId(String id);
 

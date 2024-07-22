@@ -24,12 +24,12 @@ public class Rating {
     @NotBlank
     private String comment;
 
-    //user duoc minh rate
+    // user duoc minh rate
     @ManyToOne
     @JoinColumn(name = "rating_user_id")
     private User ratingUser;
 
-    //user rate minh
+    // user rate minh
     @ManyToOne
     @JoinColumn(name = "rated_user_id")
     private User ratedUser;

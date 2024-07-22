@@ -1,5 +1,9 @@
 package com.ugts.notification.service;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +12,6 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,18 +27,22 @@ public class PushNotificationService {
         return notifs;
     }
 
-    //TODO: add to non-UI function in report
+    // TODO: add to non-UI function in report
     public Flux<ServerSentEvent<List<NotificationEntity>>> getNotificationsByUserToID(String userID) {
         if (userID != null && !userID.isBlank()) {
             return Flux.interval(Duration.ofSeconds(1))
                     .publishOn(Schedulers.boundedElastic())
-                    .map(sequence -> ServerSentEvent.<List<NotificationEntity>>builder().id(String.valueOf(sequence))
-                            .event("user-list-event").data(getNotifs(userID))
+                    .map(sequence -> ServerSentEvent.<List<NotificationEntity>>builder()
+                            .id(String.valueOf(sequence))
+                            .event("user-list-event")
+                            .data(getNotifs(userID))
                             .build());
         }
 
         return Flux.interval(Duration.ofSeconds(1)).map(sequence -> ServerSentEvent.<List<NotificationEntity>>builder()
-                .id(String.valueOf(sequence)).event("user-list-event").data(new ArrayList<>()).build());
+                .id(String.valueOf(sequence))
+                .event("user-list-event")
+                .data(new ArrayList<>())
+                .build());
     }
 }
-

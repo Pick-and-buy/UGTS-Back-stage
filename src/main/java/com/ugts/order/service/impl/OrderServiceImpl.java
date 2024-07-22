@@ -233,4 +233,13 @@ public class OrderServiceImpl implements OrderService {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         return orderMapper.toOrderResponse(order);
     }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public List<OrderResponse> getOrderByOrderStatus(OrderStatus orderStatus) {
+        // Retrieve orders with the specified order status from the order details repository
+        List<Order> ordersByStatus = orderRepository.findOrderDetailsByOrderStatus(orderStatus);
+
+        return orderMapper.toOrdersResponse(ordersByStatus);
+    }
 }

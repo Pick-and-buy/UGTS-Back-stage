@@ -1,9 +1,14 @@
 package com.ugts.rating.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
 import com.ugts.rating.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
-import com.ugts.rating.dto.RatingResponse;
 import com.ugts.rating.entity.Rating;
 import com.ugts.rating.entity.StarRating;
 import com.ugts.rating.repository.RatingRepository;
@@ -15,14 +20,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 public class RatingServiceTest {
     @InjectMocks
@@ -48,11 +45,13 @@ public class RatingServiceTest {
     @Test
     void testCreateRating_Success() {
         // Arrange
-        RatingServiceImpl ratingService = new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper);
+        RatingServiceImpl ratingService =
+                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper);
 
         User ratingUser = new User();
         User ratedUser = new User();
-        RatingRequest ratingRequest = new RatingRequest(StarRating.FIVE_STAR, "Great service!", "ratingUserId", "ratedUserId");
+        RatingRequest ratingRequest =
+                new RatingRequest(StarRating.FIVE_STAR, "Great service!", "ratingUserId", "ratedUserId");
 
         when(userRepository.findById(ratingUser.getId())).thenReturn(Optional.of(ratingUser));
         when(userRepository.findById(ratedUser.getId())).thenReturn(Optional.of(ratedUser));
@@ -64,23 +63,26 @@ public class RatingServiceTest {
         // Assert
         verify(ratingRepository, times(1)).save(any(Rating.class));
     }
+
     @Test
     public void test_filter_bad_words_in_comment() {
-        RatingRequest ratingRequest = new RatingRequest(StarRating.FIVE_STAR, "BadWord comment", "ratingUserId", "ratedUserId");
+        RatingRequest ratingRequest =
+                new RatingRequest(StarRating.FIVE_STAR, "BadWord comment", "ratingUserId", "ratedUserId");
         User ratingUser = new User();
         User ratedUser = new User();
         when(userRepository.findById(ratingUser.getId())).thenReturn(Optional.of(ratingUser));
         when(userRepository.findById(ratedUser.getId())).thenReturn(Optional.of(ratedUser));
-        when(commentValidationService.filterBadWords("cặc, service như đầu buồi quấn rẻ")).thenReturn("Filtered comment");
+        when(commentValidationService.filterBadWords("cặc, service như đầu buồi quấn rẻ"))
+                .thenReturn("Filtered comment");
 
         ratingService.createRating(ratingRequest);
 
         ArgumentCaptor<Rating> ratingCaptor = ArgumentCaptor.forClass(Rating.class);
         verify(ratingRepository).save(ratingCaptor.capture());
-        assertEquals("***, service như ******** quấn rẻ", ratingCaptor.getValue().getComment());
+        assertEquals(
+                "***, service như ******** quấn rẻ", ratingCaptor.getValue().getComment());
     }
-    @Test
-    void testCreateRating_InvalidRating() {
 
-    }
+    @Test
+    void testCreateRating_InvalidRating() {}
 }
