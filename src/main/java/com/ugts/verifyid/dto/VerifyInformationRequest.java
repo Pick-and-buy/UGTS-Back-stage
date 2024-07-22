@@ -23,5 +23,4 @@ public class VerifyInformationRequest {
     String issueDate;
     String issueLoc;
     Boolean isMatch;
-
 }

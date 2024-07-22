@@ -1,5 +1,7 @@
 package com.ugts.notification.controller;
 
+import java.util.List;
+
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.service.PushNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/push-notifications")

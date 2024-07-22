@@ -57,9 +57,9 @@ public class CommentServiceImpl implements ICommentService {
             saveComment.setCommentContent(filteredContent);
             commentRepository.save(saveComment);
 
-            //Notify to user
+            // Notify to user
             User userToNotify = post.getUser();
-            if(!userToNotify.getId().equals(commentUser.getId())) {
+            if (!userToNotify.getId().equals(commentUser.getId())) {
                 notificationService.createNotificationStorage(NotificationEntity.builder()
                         .delivered(false)
                         .message("New comment from " + commentUser.getUsername())

@@ -8,7 +8,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ugts.comment.entity.Comment;
 import com.ugts.follow.entity.Follow;
-import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.post.entity.Post;
 import com.ugts.rating.entity.Rating;
 import jakarta.persistence.*;

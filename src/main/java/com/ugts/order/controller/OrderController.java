@@ -6,6 +6,7 @@ import com.ugts.dto.ApiResponse;
 import com.ugts.order.dto.request.CreateOrderRequest;
 import com.ugts.order.dto.request.UpdateOrderRequest;
 import com.ugts.order.dto.response.OrderResponse;
+import com.ugts.order.enums.OrderStatus;
 import com.ugts.order.service.OrderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,15 @@ public class OrderController {
     public ApiResponse<OrderResponse> getOrderByOrderId(String orderId) {
         var result = orderService.getOrderByOrderId(orderId);
         return ApiResponse.<OrderResponse>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/status")
+    public ApiResponse<List<OrderResponse>> getOrderByOrderStatus(@RequestParam OrderStatus orderStatus) {
+        var result = orderService.getOrderByOrderStatus(orderStatus);
+        return ApiResponse.<List<OrderResponse>>builder()
                 .message("Success")
                 .result(result)
                 .build();

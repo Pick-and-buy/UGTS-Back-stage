@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.notification.entity.NotificationType;
-import com.ugts.user.entity.User;
 import lombok.Data;
 
 @Data
@@ -31,6 +30,4 @@ public class NotificationResponse {
     private String postId;
 
     private String orderId;
-
-
 }

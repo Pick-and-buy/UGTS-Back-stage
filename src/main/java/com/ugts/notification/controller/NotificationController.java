@@ -3,13 +3,9 @@ package com.ugts.notification.controller;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
-import com.ugts.kafka.producer.KafkaProducer;
 import com.ugts.notification.dto.NotificationResponse;
-import com.ugts.notification.entity.NotificationEntity;
-import com.ugts.notification.mapper.NotificationMapper;
 import com.ugts.notification.service.INotificationService;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

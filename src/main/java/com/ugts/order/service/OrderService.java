@@ -5,6 +5,7 @@ import java.util.List;
 import com.ugts.order.dto.request.CreateOrderRequest;
 import com.ugts.order.dto.request.UpdateOrderRequest;
 import com.ugts.order.dto.response.OrderResponse;
+import com.ugts.order.enums.OrderStatus;
 
 public interface OrderService {
 
@@ -17,4 +18,6 @@ public interface OrderService {
     List<OrderResponse> getAllOrders();
 
     OrderResponse getOrderByOrderId(String orderId);
+
+    List<OrderResponse> getOrderByOrderStatus(OrderStatus orderStatus);
 }

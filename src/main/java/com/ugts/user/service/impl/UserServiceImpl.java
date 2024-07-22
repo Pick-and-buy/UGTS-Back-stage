@@ -11,7 +11,6 @@ import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.entity.NotificationType;
-import com.ugts.notification.repository.NotificationRepository;
 import com.ugts.notification.service.NotificationServiceImpl;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
@@ -128,9 +127,9 @@ public class UserServiceImpl implements UserService {
         }
         likeUser.getLikedPosts().add(post);
 
-        //Notify to user
+        // Notify to user
         User userToNotify = post.getUser();
-        if(!userToNotify.getId().equals(likeUser.getId())) {
+        if (!userToNotify.getId().equals(likeUser.getId())) {
             notificationService.createNotificationStorage(NotificationEntity.builder()
                     .delivered(false)
                     .message("New like from " + likeUser.getUsername())
@@ -145,7 +144,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(likeUser);
     }
 
-    
     /**
      * Removes a post from the list of liked posts for a user.
      *

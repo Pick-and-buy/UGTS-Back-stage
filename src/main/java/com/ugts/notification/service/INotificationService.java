@@ -14,5 +14,5 @@ public interface INotificationService {
 
     void deleteNotificationByUserToId(String userId);
 
-    List<NotificationEntity>getNotificationsByUserID(String userId);
+    List<NotificationEntity> getNotificationsByUserID(String userId);
 }
