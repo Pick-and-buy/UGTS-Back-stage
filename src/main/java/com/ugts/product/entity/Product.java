@@ -26,8 +26,6 @@ public class Product {
 
     String name;
 
-    //    String thumbnail;
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     Set<ProductImage> images = new HashSet<>();
 
@@ -67,5 +65,6 @@ public class Product {
     @Column(length = 500)
     String story;
 
-    Boolean isVerify;
+    @Enumerated(EnumType.STRING)
+    VerifiedLevel verifiedLevel;
 }

@@ -38,6 +38,8 @@ public class Post {
     @ManyToMany(mappedBy = "viewedPosts")
     Set<User> viewedUsers = new HashSet<>();
 
+    String thumbnail;
+
     String title;
 
     String description;

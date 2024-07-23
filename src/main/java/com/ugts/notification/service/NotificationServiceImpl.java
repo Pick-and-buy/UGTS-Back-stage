@@ -83,12 +83,12 @@ public class NotificationServiceImpl implements INotificationService {
         if (notification.isRead()) {
             throw new AppException(ErrorCode.NOTIFICATION_IS_READ);
         }
-     try{
-         notification.setRead(true);
-         notificationRepository.save(notification);
-     } catch (AppException e) {
-         log.error("An error occurred while marking notification as read: {}", e.getMessage());
-     }
+        try {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        } catch (AppException e) {
+            log.error("An error occurred while marking notification as read: {}", e.getMessage());
+        }
     }
 
     @Override

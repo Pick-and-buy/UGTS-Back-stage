@@ -77,6 +77,7 @@ public class PostServiceImpl implements IPostService {
         var category = categoryRepository
                 .findByCategoryName(postRequest.getCategory().getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
         // create product process
         var product = Product.builder()
                 .name(postRequest.getProduct().getName())
@@ -99,7 +100,7 @@ public class PostServiceImpl implements IPostService {
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .story(postRequest.getProduct().getStory())
-                .isVerify(false)
+                .verifiedLevel(postRequest.getVerifiedLevel())
                 .build();
 
         var newProduct = productRepository.save(product);
@@ -205,7 +206,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostResponse> searchPostsByTitle(String keyword) throws IOException {
+    public List<PostResponse> searchPostsByTitle(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             throw new IllegalArgumentException("Keyword must not be null or empty");
         }
@@ -213,7 +214,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostResponse> searchPostsByStatus(boolean status) throws IOException {
+    public List<PostResponse> searchPostsByStatus(boolean status) {
         return postMapper.getAllPosts(postRepository.findPostsByIsAvailable(status));
     }
 

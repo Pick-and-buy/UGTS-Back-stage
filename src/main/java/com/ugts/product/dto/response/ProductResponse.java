@@ -41,5 +41,5 @@ public class ProductResponse {
     String serialNumber;
     String purchasedPlace;
     String story;
-    Boolean isVerify;
+    String verifiedLevel;
 }

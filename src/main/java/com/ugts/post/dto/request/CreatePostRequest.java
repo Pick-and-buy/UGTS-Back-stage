@@ -5,6 +5,7 @@ import com.ugts.brandLine.entity.BrandLine;
 import com.ugts.category.entity.Category;
 import com.ugts.product.entity.Condition;
 import com.ugts.product.entity.Product;
+import com.ugts.product.entity.VerifiedLevel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,4 +23,5 @@ public class CreatePostRequest {
     Category category;
     Product product;
     Condition condition;
+    VerifiedLevel verifiedLevel;
 }
