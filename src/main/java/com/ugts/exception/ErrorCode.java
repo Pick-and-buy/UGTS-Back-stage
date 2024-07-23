@@ -87,6 +87,7 @@ public enum ErrorCode {
 
     // NOTIFICATION
     NOTIFICATION_NOT_EXISTED(1001, "Notification not exist", HttpStatus.BAD_REQUEST),
+    NOTIFICATION_IS_READ(1002, "Notification is already read", HttpStatus.BAD_REQUEST),
 
     // Address
     ADDRESS_NOT_EXISTED(1001, "Address not exist", HttpStatus.BAD_REQUEST),

@@ -80,11 +80,15 @@ public class NotificationServiceImpl implements INotificationService {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
         NotificationEntity notification = getNotificationsByID(notifyID);
-        if (!notification.isRead()) {
-            return;
+        if (notification.isRead()) {
+            throw new AppException(ErrorCode.NOTIFICATION_IS_READ);
         }
-        notification.setRead(true);
-        notificationRepository.save(notification);
+     try{
+         notification.setRead(true);
+         notificationRepository.save(notification);
+     } catch (AppException e) {
+         log.error("An error occurred while marking notification as read: {}", e.getMessage());
+     }
     }
 
     @Override
