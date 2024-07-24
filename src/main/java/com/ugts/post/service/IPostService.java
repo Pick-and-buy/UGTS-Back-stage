@@ -9,7 +9,7 @@ import com.ugts.post.dto.response.PostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IPostService {
-    PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException;
+    PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files, MultipartFile thumbnail) throws IOException;
 
     List<PostResponse> getAllPosts();
 
