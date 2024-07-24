@@ -134,7 +134,7 @@ public class PostServiceImpl implements IPostService {
         for (String fileUrl : fileUrls) {
             // check if product image null
             if (product.getImages() == null) {
-                product.setImages(new HashSet<>());
+                product.setImages(new ArrayList<>());
             }
 
             // add product image to product
@@ -173,7 +173,7 @@ public class PostServiceImpl implements IPostService {
         for (String fileUrl : fileUrls) {
             // check if product image null
             if (product.getImages() == null) {
-                product.setImages(new HashSet<>());
+                product.setImages(new ArrayList<>());
             }
 
             // add product image to product
