@@ -27,7 +27,7 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
                 .findById(verifyInformationRequest.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         if (!verifyInformationRequest.getIsMatch()) {
-            return;
+            throw new AppException(ErrorCode.VERIFY_FAIL);
         }
         try {
             if (!user.isVerified()) {
