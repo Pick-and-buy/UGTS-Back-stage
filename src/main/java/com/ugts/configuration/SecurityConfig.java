@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/following/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/vnpay/**")
+                        .requestMatchers(HttpMethod.GET, "/vnpay/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

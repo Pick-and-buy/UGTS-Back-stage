@@ -9,6 +9,7 @@ import com.ugts.transaction.entity.Transaction;
 import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.user.service.UserService;
 import com.ugts.vnpay.dto.request.CreateVNPayRequest;
 import com.ugts.vnpay.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/vnpay")
+@RequestMapping("/vnpay")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VNPayController {
 
@@ -29,6 +30,8 @@ public class VNPayController {
     TransactionRepository transactionRepository;
 
     UserRepository userRepository;
+
+    UserService userService;
 
     @PostMapping(value = "/submitOrder", produces = "application/json;charset=UTF-8")
     public String submitOrder(@RequestBody CreateVNPayRequest createVNPayRequest, HttpServletRequest request) {
@@ -53,12 +56,15 @@ public class VNPayController {
         String orderInfo = request.getParameter("vnp_OrderInfo");
         String[] arrayInfo = orderInfo.split("-");
 
-        var user =
-                userRepository.findById(arrayInfo[0]).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
+        var userId = userService.getProfile().getId();
+        userId = arrayInfo[0];
         String reason = arrayInfo[1];
+
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         transaction.setUser(user);
         transaction.setReason(reason);
+
         if (paymentStatus == 1) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             transactionRepository.save(transaction);
