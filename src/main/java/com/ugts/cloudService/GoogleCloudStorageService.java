@@ -96,10 +96,4 @@ public class GoogleCloudStorageService {
         String newsBannerFolder = "news-banner/" + newsId;
         return uploadFileToGCS(banner, newsBannerFolder);
     }
-
-    // Upload user avatar to GCP
-    public String uploadPostThumbnail(MultipartFile thumbnail, String postId) throws IOException {
-        String newsBannerFolder = "post-thumbnail/" + postId;
-        return uploadFileToGCS(thumbnail, newsBannerFolder);
-    }
 }

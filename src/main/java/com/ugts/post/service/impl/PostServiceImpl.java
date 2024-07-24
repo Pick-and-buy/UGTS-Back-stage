@@ -55,7 +55,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] productImages, MultipartFile thumbnail) throws IOException {
+    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
         // Validate the CreatePostRequest object
         if (postRequest == null
                 || postRequest.getBrand() == null
@@ -77,7 +77,6 @@ public class PostServiceImpl implements IPostService {
         var category = categoryRepository
                 .findByCategoryName(postRequest.getCategory().getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-
 
         // create product process
         var product = Product.builder()
@@ -128,11 +127,8 @@ public class PostServiceImpl implements IPostService {
         // save new post into database
         var newPost = postRepository.save(post);
 
-        String thumbnailUrl = googleCloudStorageService.uploadPostThumbnail(thumbnail, post.getId());
-        post.setThumbnail(thumbnailUrl);
-
         // upload product image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, post.getId());
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(files, post.getId());
 
         // add product image for each URL
         for (String fileUrl : fileUrls) {

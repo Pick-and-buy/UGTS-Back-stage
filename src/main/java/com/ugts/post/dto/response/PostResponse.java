@@ -21,7 +21,6 @@ public class PostResponse {
     GeneralUserInformationDto user;
 
     String id;
-    String thumbnail;;
     String title;
     String description;
     Boolean isAvailable;
