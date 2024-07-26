@@ -37,7 +37,11 @@ public class RatingServiceImpl implements IRatingService {
         User ratedUser = userRepository
                 .findById(ratingRequest.getRatedUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        if (ratingRequest.getStars() != StarRating.ONE_STAR && ratingRequest.getStars() != StarRating.FIVE_STAR) {
+        if (ratingRequest.getStars() != StarRating.ONE_STAR
+                && ratingRequest.getStars() != StarRating.FIVE_STAR
+                && ratingRequest.getStars() !=StarRating.TWO_STAR
+                && ratingRequest.getStars() != StarRating.THREE_STAR
+                && ratingRequest.getStars() != StarRating.FOUR_STAR) {
             throw new AppException(ErrorCode.INVALID_STAR_RATING);
         }
         try {
