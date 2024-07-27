@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class ProductImageResponse {
     Long id;
     String imageUrl;
+    String imgIndex;
 }

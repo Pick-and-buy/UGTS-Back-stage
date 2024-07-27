@@ -20,4 +20,6 @@ public class ProductImage {
     Product product;
 
     String imageUrl;
+
+    String imgIndex;
 }

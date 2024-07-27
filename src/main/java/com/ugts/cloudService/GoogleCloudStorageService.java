@@ -67,7 +67,7 @@ public class GoogleCloudStorageService {
 
     // Upload product images to GCP
     public List<String> uploadProductImagesToGCS(MultipartFile[] productImages, String productId) throws IOException {
-        String productImagesFolder = "product-images/" + productId;
+        String productImagesFolder = "product" + "/images/" + productId;
         return uploadFilesToGCS(productImages, productImagesFolder);
     }
 
@@ -95,5 +95,18 @@ public class GoogleCloudStorageService {
     public String uploadNewsBannerToGCS(MultipartFile banner, String newsId) throws IOException {
         String newsBannerFolder = "news-banner/" + newsId;
         return uploadFileToGCS(banner, newsBannerFolder);
+    }
+
+    // Upload product video to GCP
+    public String uploadProductVideoToGCS(MultipartFile productVideo, String productId) throws IOException {
+        String productVideosFolder = "product" + "/videos/" + productId;
+        return uploadFileToGCSInternal(productVideo, productVideosFolder);
+    }
+
+    // Upload originalReceiptProof to GCP
+    public String uploadOriginalReceiptProofToGCS(MultipartFile originalReceiptProof, String productId)
+            throws IOException {
+        String originalReceiptProofFolder = "product" + "/original-receipt-proof/" + productId;
+        return uploadFileToGCS(originalReceiptProof, originalReceiptProofFolder);
     }
 }

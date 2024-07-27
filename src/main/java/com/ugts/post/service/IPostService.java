@@ -9,11 +9,22 @@ import com.ugts.post.dto.response.PostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IPostService {
-    PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException;
+    PostResponse createPost(
+            CreatePostRequest postRequest,
+            MultipartFile[] productImages,
+            MultipartFile productVideo,
+            MultipartFile originalReceiptProof)
+            throws IOException;
 
     List<PostResponse> getAllPosts();
 
-    PostResponse updatePost(String id, UpdatePostRequest postRequest, MultipartFile[] productImages) throws IOException;
+    PostResponse updatePost(
+            String id,
+            UpdatePostRequest postRequest,
+            MultipartFile[] productImages,
+            MultipartFile productVideo,
+            MultipartFile originalReceiptProof)
+            throws IOException;
 
     PostResponse getPostById(String postId);
 

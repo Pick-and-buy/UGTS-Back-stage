@@ -29,13 +29,16 @@ public class PostController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPost(
-            @RequestPart("request") String requestJson, @RequestPart("productImage") MultipartFile[] productImages)
+            @RequestPart("request") String requestJson,
+            @RequestPart("productImage") MultipartFile[] productImages,
+            @RequestPart(value = "productVideo", required = false) MultipartFile productVideo,
+            @RequestPart(value = "originalReceiptProof", required = false) MultipartFile originalReceiptProof)
             throws IOException {
 
         // Chuyển đổi JSON string thành đối tượng CreatePostRequest
         CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
 
-        var result = postService.createPost(request, productImages);
+        var result = postService.createPost(request, productImages, productVideo, originalReceiptProof);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)
@@ -54,12 +57,14 @@ public class PostController {
     @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> updatePost(
             @PathVariable String postId,
-            @RequestPart("request") String updateRequest,
-            @RequestPart("productImages") MultipartFile[] productImages)
+            @RequestPart(value = "request", required = false) String updateRequest,
+            @RequestPart(value = "productImages", required = false) MultipartFile[] productImages,
+            @RequestPart(value = "productVideo", required = false) MultipartFile productVideo,
+            @RequestPart(value = "originalReceiptProof", required = false) MultipartFile originalReceiptProof)
             throws IOException {
         UpdatePostRequest request = objectMapper.readValue(updateRequest, UpdatePostRequest.class);
 
-        var result = postService.updatePost(postId, request, productImages);
+        var result = postService.updatePost(postId, request, productImages, productVideo, originalReceiptProof);
         return ApiResponse.<PostResponse>builder()
                 .message("Update Success")
                 .result(result)

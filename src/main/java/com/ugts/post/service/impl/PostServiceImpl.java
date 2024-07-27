@@ -18,6 +18,7 @@ import com.ugts.post.repository.PostRepository;
 import com.ugts.post.service.IPostService;
 import com.ugts.product.entity.Product;
 import com.ugts.product.entity.ProductImage;
+import com.ugts.product.entity.VerifiedLevel;
 import com.ugts.product.repository.ProductRepository;
 import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
@@ -55,7 +56,12 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse createPost(CreatePostRequest postRequest, MultipartFile[] files) throws IOException {
+    public PostResponse createPost(
+            CreatePostRequest postRequest,
+            MultipartFile[] productImages,
+            MultipartFile productVideo,
+            MultipartFile originalReceiptProof)
+            throws IOException {
         // Validate the CreatePostRequest object
         if (postRequest == null
                 || postRequest.getBrand() == null
@@ -100,7 +106,7 @@ public class PostServiceImpl implements IPostService {
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .story(postRequest.getProduct().getStory())
-                .verifiedLevel(postRequest.getVerifiedLevel())
+                .verifiedLevel(VerifiedLevel.LEVEL_1)
                 .build();
 
         var newProduct = productRepository.save(product);
@@ -127,21 +133,59 @@ public class PostServiceImpl implements IPostService {
         // save new post into database
         var newPost = postRepository.save(post);
 
-        // upload product image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(files, post.getId());
+        //        // upload product images to GCS
+        //        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages,
+        // product.getId());
+        //
+        //        // add product image for each URL
+        //        for (String fileUrl : fileUrls) {
+        //            // check if product image null
+        //            if (product.getImages() == null) {
+        //                product.setImages(new ArrayList<>());
+        //            }
+        //
+        //            // add product image to product
+        //            var productImage =
+        //                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+        //            product.getImages().add(productImage);
+        //        }
+
+        // upload product images to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
+
+        // Keep track of imgIndex values that were not filled
+        List<Integer> emptyImgIndexes = new ArrayList<>();
+        // Check if product images list is null, initialize it if null
+        if (product.getImages() == null) {
+            product.setImages(new ArrayList<>());
+        }
 
         // add product image for each URL
-        for (String fileUrl : fileUrls) {
-            // check if product image null
-            if (product.getImages() == null) {
-                product.setImages(new ArrayList<>());
+        for (int i = 0; i < 15; i++) { // Assuming a total of 15 images
+            if (emptyImgIndexes.contains(i + 1)) {
+                // imgIndex not filled by the user, add null
+                product.getImages().add(null);
+            } else {
+                // imgIndex filled by the user, add the corresponding image
+                if (i < fileUrls.size()) {
+                    var productImage = ProductImage.builder()
+                            .product(product)
+                            .imageUrl(fileUrls.get(i))
+                            .imgIndex(String.valueOf(i + 1))
+                            .build();
+                    product.getImages().add(productImage);
+                }
             }
-
-            // add product image to product
-            var productImage =
-                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
-            product.getImages().add(productImage);
         }
+
+        // upload product video to GCS
+        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+        product.setProductVideo(videoUrl);
+
+        // upload originalReceiptProofUrls to GCS
+        String originalReceiptProofUrls =
+                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+        product.setOriginalReceiptProof(originalReceiptProofUrls);
 
         // save product into database
         productRepository.save(product);
@@ -158,7 +202,12 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse updatePost(String postId, UpdatePostRequest request, MultipartFile[] productImages)
+    public PostResponse updatePost(
+            String postId,
+            UpdatePostRequest request,
+            MultipartFile[] productImages,
+            MultipartFile productVideo,
+            MultipartFile originalReceiptProof)
             throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
@@ -166,11 +215,11 @@ public class PostServiceImpl implements IPostService {
                 .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
-        // upload product image to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, post.getId());
+        // upload product images to GCS
+        List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
 
         // add product image for each URL
-        for (String fileUrl : fileUrls) {
+        for (String imageUrl : imageUrls) {
             // check if product image null
             if (product.getImages() == null) {
                 product.setImages(new ArrayList<>());
@@ -178,9 +227,18 @@ public class PostServiceImpl implements IPostService {
 
             // add product image to product
             var productImage =
-                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+                    ProductImage.builder().product(product).imageUrl(imageUrl).build();
             product.getImages().add(productImage);
         }
+
+        // upload product video to GCS
+        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+        product.setProductVideo(videoUrl);
+
+        // upload originalReceiptProofUrls to GCS
+        String originalReceiptProofUrls =
+                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+        product.setOriginalReceiptProof(originalReceiptProofUrls);
 
         var updatedProduct = productRepository.save(product);
 

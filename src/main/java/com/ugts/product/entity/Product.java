@@ -67,4 +67,8 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     VerifiedLevel verifiedLevel;
+
+    String productVideo;
+
+    String originalReceiptProof;
 }
