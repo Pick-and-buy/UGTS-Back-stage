@@ -49,6 +49,8 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
+    boolean isVerified;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<Address> address = new HashSet<>();
 
@@ -82,5 +84,4 @@ public class User {
     @OneToMany(mappedBy = "ratedUser")
     private List<Rating> receivedRatings;
 
-    boolean isVerified;
 }
