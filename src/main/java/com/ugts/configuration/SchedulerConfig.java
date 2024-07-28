@@ -10,7 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 @RequiredArgsConstructor
 public class SchedulerConfig {
-    OrderService orderService;
+
+    private final OrderService orderService;
 
     //TODO: add to docs
     @Scheduled(fixedRate = 86400000) // 86400000 milliseconds = 24 hours
