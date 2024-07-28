@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class RatingResponse {
     private String ratingId;
-    private StarRating stars;
+    private int stars;
     private String comment;
     private String ratingUserId;
     private String ratingUserAvatar;
