@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.order.enums.OrderStatus;
+import com.ugts.order.repository.OrderRepository;
 import com.ugts.rating.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.dto.RatingResponse;
@@ -27,6 +29,7 @@ public class RatingServiceImpl implements IRatingService {
     private final RatingRepository ratingRepository;
     private final CommentValidationServiceImpl commentValidationService;
     private final RatingMapper ratingMapper;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional
@@ -52,9 +55,16 @@ public class RatingServiceImpl implements IRatingService {
                     .ratingUser(ratingUser)
                     .ratedUser(ratedUser)
                     .build());
-            // TODO: End transaction, change transaction status to completed
         } catch (Exception e) {
             log.error("An error occurred while create rating : {}", e.getMessage());
+        }
+        // TODO: End transaction, change transaction status to completed
+        try{
+            orderRepository
+                    .findById(ratingRequest.getOrderId())
+                    .ifPresent(order -> order.getOrderDetails().setStatus(OrderStatus.COMPLETED));
+        }catch (Exception e){
+            log.error("An error occurred while update order status : {}", e.getMessage());
         }
     }
 

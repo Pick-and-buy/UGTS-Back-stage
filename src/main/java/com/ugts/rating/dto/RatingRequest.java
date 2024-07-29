@@ -16,4 +16,5 @@ public class RatingRequest {
     private String comment;
     private String ratingUserId;
     private String ratedUserId;
+    private String orderId;
 }

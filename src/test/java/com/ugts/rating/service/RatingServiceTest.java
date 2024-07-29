@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
+import com.ugts.order.repository.OrderRepository;
 import com.ugts.rating.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.entity.Rating;
@@ -35,6 +36,9 @@ public class RatingServiceTest {
     RatingMapper ratingMapper;
 
     @Mock
+    private OrderRepository orderRepository;
+
+    @Mock
     CommentValidationServiceImpl commentValidationService;
 
     @BeforeEach
@@ -46,12 +50,12 @@ public class RatingServiceTest {
     void testCreateRating_Success() {
         // Arrange
         RatingServiceImpl ratingService =
-                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper);
+                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper, orderRepository);
 
         User ratingUser = new User();
         User ratedUser = new User();
         RatingRequest ratingRequest =
-                new RatingRequest(StarRating.FIVE_STAR, "Great service!", "ratingUserId", "ratedUserId");
+                new RatingRequest(StarRating.FIVE_STAR, "Great service!", "ratingUserId", "ratedUserId", "orderId");
 
         when(userRepository.findById(ratingUser.getId())).thenReturn(Optional.of(ratingUser));
         when(userRepository.findById(ratedUser.getId())).thenReturn(Optional.of(ratedUser));
@@ -67,7 +71,7 @@ public class RatingServiceTest {
     @Test
     public void test_filter_bad_words_in_comment() {
         RatingRequest ratingRequest =
-                new RatingRequest(StarRating.FIVE_STAR, "BadWord comment", "ratingUserId", "ratedUserId");
+                new RatingRequest(StarRating.FIVE_STAR, "BadWord comment", "ratingUserId", "ratedUserId", "orderId");
         User ratingUser = new User();
         User ratedUser = new User();
         when(userRepository.findById(ratingUser.getId())).thenReturn(Optional.of(ratingUser));
