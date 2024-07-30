@@ -28,9 +28,9 @@ public class PostController {
     ObjectMapper objectMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<PostResponse> createPost(
+    public ApiResponse<PostResponse> createPostLevel2(
             @RequestPart("request") String requestJson,
-            @RequestPart("productImage") MultipartFile[] productImages,
+            @RequestPart("productImages") MultipartFile[] productImages,
             @RequestPart(value = "productVideo", required = false) MultipartFile productVideo,
             @RequestPart(value = "originalReceiptProof", required = false) MultipartFile originalReceiptProof)
             throws IOException {
@@ -38,7 +38,7 @@ public class PostController {
         // Chuyển đổi JSON string thành đối tượng CreatePostRequest
         CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
 
-        var result = postService.createPost(request, productImages, productVideo, originalReceiptProof);
+        var result = postService.createPostLevel2(request, productImages, productVideo, originalReceiptProof);
         return ApiResponse.<PostResponse>builder()
                 .message("Create Success")
                 .result(result)

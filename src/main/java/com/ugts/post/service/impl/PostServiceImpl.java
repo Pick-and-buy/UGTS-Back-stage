@@ -56,7 +56,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public PostResponse createPost(
+    public PostResponse createPostLevel2(
             CreatePostRequest postRequest,
             MultipartFile[] productImages,
             MultipartFile productVideo,
@@ -133,59 +133,60 @@ public class PostServiceImpl implements IPostService {
         // save new post into database
         var newPost = postRepository.save(post);
 
+        // upload product images to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
+
+        // add product image for each URL
+        for (String fileUrl : fileUrls) {
+            // check if product image null
+            if (product.getImages() == null) {
+                product.setImages(new ArrayList<>());
+            }
+
+            // add product image to product
+            var productImage =
+                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+            product.getImages().add(productImage);
+        }
+
         //        // upload product images to GCS
         //        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages,
         // product.getId());
         //
-        //        // add product image for each URL
-        //        for (String fileUrl : fileUrls) {
-        //            // check if product image null
-        //            if (product.getImages() == null) {
-        //                product.setImages(new ArrayList<>());
-        //            }
-        //
-        //            // add product image to product
-        //            var productImage =
-        //                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
-        //            product.getImages().add(productImage);
+        //        // Keep track of imgIndex values that were not filled
+        //        List<Integer> emptyImgIndexes = new ArrayList<>();
+        //        // Check if product images list is null, initialize it if null
+        //        if (product.getImages() == null) {
+        //            product.setImages(new ArrayList<>());
         //        }
-
-        // upload product images to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
-
-        // Keep track of imgIndex values that were not filled
-        List<Integer> emptyImgIndexes = new ArrayList<>();
-        // Check if product images list is null, initialize it if null
-        if (product.getImages() == null) {
-            product.setImages(new ArrayList<>());
-        }
-
-        // add product image for each URL
-        for (int i = 0; i < 15; i++) { // Assuming a total of 15 images
-            if (emptyImgIndexes.contains(i + 1)) {
-                // imgIndex not filled by the user, add null
-                product.getImages().add(null);
-            } else {
-                // imgIndex filled by the user, add the corresponding image
-                if (i < fileUrls.size()) {
-                    var productImage = ProductImage.builder()
-                            .product(product)
-                            .imageUrl(fileUrls.get(i))
-                            .imgIndex(String.valueOf(i + 1))
-                            .build();
-                    product.getImages().add(productImage);
-                }
-            }
-        }
-
-        // upload product video to GCS
-        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
-        product.setProductVideo(videoUrl);
-
-        // upload originalReceiptProofUrls to GCS
-        String originalReceiptProofUrls =
-                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
-        product.setOriginalReceiptProof(originalReceiptProofUrls);
+        //
+        //        // add product image for each URL
+        //        for (int i = 0; i < 15; i++) { // Assuming a total of 15 images
+        //            if (emptyImgIndexes.contains(i + 1)) {
+        //                // imgIndex not filled by the user, add null
+        //                product.getImages().add(null);
+        //            } else {
+        //                // imgIndex filled by the user, add the corresponding image
+        //                if (i < fileUrls.size()) {
+        //                    var productImage = ProductImage.builder()
+        //                            .product(product)
+        //                            .imageUrl(fileUrls.get(i))
+        //                            .imgIndex(String.valueOf(i + 1))
+        //                            .build();
+        //                    product.getImages().add(productImage);
+        //                }
+        //            }
+        //        }
+        //
+        //        // upload product video to GCS
+        //        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+        //        product.setProductVideo(videoUrl);
+        //
+        //        // upload originalReceiptProofUrls to GCS
+        //        String originalReceiptProofUrls =
+        //                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof,
+        // product.getId());
+        //        product.setOriginalReceiptProof(originalReceiptProofUrls);
 
         // save product into database
         productRepository.save(product);
