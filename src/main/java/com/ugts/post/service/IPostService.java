@@ -9,6 +9,8 @@ import com.ugts.post.dto.response.PostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IPostService {
+    PostResponse createPostLevel1(CreatePostRequest postRequest, MultipartFile[] productImages) throws IOException;
+
     PostResponse createPostLevel2(
             CreatePostRequest postRequest,
             MultipartFile[] productImages,

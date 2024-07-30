@@ -56,6 +56,104 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
+    public PostResponse createPostLevel1(CreatePostRequest postRequest, MultipartFile[] productImages)
+            throws IOException {
+        // Validate the CreatePostRequest object
+        if (postRequest == null
+                || postRequest.getBrand() == null
+                || postRequest.getBrandLine() == null
+                || postRequest.getCategory() == null
+                || postRequest.getProduct() == null) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+
+        // check brand existed
+        var brand = brandRepository
+                .findByName(postRequest.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        var brandLine = brandLineRepository
+                .findByLineName(postRequest.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
+        // create product process
+        var product = Product.builder()
+                .name(postRequest.getProduct().getName())
+                .brand(brand)
+                .brandLine(brandLine)
+                .category(category)
+                .price(postRequest.getProduct().getPrice())
+                .color(postRequest.getProduct().getColor())
+                .size(postRequest.getProduct().getSize())
+                .width(postRequest.getProduct().getWidth())
+                .height(postRequest.getProduct().getHeight())
+                .length(postRequest.getProduct().getLength())
+                .referenceCode(postRequest.getProduct().getReferenceCode())
+                .manufactureYear(postRequest.getProduct().getManufactureYear())
+                .interiorMaterial(postRequest.getProduct().getInteriorMaterial())
+                .exteriorMaterial(postRequest.getProduct().getExteriorMaterial())
+                .condition(postRequest.getCondition())
+                .accessories(postRequest.getProduct().getAccessories())
+                .dateCode(postRequest.getProduct().getDateCode())
+                .serialNumber(postRequest.getProduct().getSerialNumber())
+                .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
+                .story(postRequest.getProduct().getStory())
+                .verifiedLevel(VerifiedLevel.LEVEL_2)
+                .build();
+
+        var newProduct = productRepository.save(product);
+
+        // get user from context holder
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
+
+        var user = userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // create post process
+        var post = Post.builder()
+                .user(user)
+                .title(postRequest.getTitle())
+                .description(postRequest.getDescription())
+                .isAvailable(true)
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .product(newProduct)
+                .build();
+
+        // save new post into database
+        var newPost = postRepository.save(post);
+
+        // upload product images to GCS
+        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
+
+        // add product image for each URL
+        for (String fileUrl : fileUrls) {
+            // check if product image null
+            if (product.getImages() == null) {
+                product.setImages(new ArrayList<>());
+            }
+
+            // add product image to product
+            var productImage =
+                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+            product.getImages().add(productImage);
+        }
+
+        // save product into database
+        productRepository.save(product);
+
+        return postMapper.postToPostResponse(postRepository.save(newPost));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
     public PostResponse createPostLevel2(
             CreatePostRequest postRequest,
             MultipartFile[] productImages,
@@ -106,7 +204,7 @@ public class PostServiceImpl implements IPostService {
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .story(postRequest.getProduct().getStory())
-                .verifiedLevel(VerifiedLevel.LEVEL_1)
+                .verifiedLevel(VerifiedLevel.LEVEL_2)
                 .build();
 
         var newProduct = productRepository.save(product);
@@ -149,44 +247,14 @@ public class PostServiceImpl implements IPostService {
             product.getImages().add(productImage);
         }
 
-        //        // upload product images to GCS
-        //        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages,
-        // product.getId());
-        //
-        //        // Keep track of imgIndex values that were not filled
-        //        List<Integer> emptyImgIndexes = new ArrayList<>();
-        //        // Check if product images list is null, initialize it if null
-        //        if (product.getImages() == null) {
-        //            product.setImages(new ArrayList<>());
-        //        }
-        //
-        //        // add product image for each URL
-        //        for (int i = 0; i < 15; i++) { // Assuming a total of 15 images
-        //            if (emptyImgIndexes.contains(i + 1)) {
-        //                // imgIndex not filled by the user, add null
-        //                product.getImages().add(null);
-        //            } else {
-        //                // imgIndex filled by the user, add the corresponding image
-        //                if (i < fileUrls.size()) {
-        //                    var productImage = ProductImage.builder()
-        //                            .product(product)
-        //                            .imageUrl(fileUrls.get(i))
-        //                            .imgIndex(String.valueOf(i + 1))
-        //                            .build();
-        //                    product.getImages().add(productImage);
-        //                }
-        //            }
-        //        }
-        //
-        //        // upload product video to GCS
-        //        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
-        //        product.setProductVideo(videoUrl);
-        //
-        //        // upload originalReceiptProofUrls to GCS
-        //        String originalReceiptProofUrls =
-        //                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof,
-        // product.getId());
-        //        product.setOriginalReceiptProof(originalReceiptProofUrls);
+        // upload product video to GCS
+        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+        product.setProductVideo(videoUrl);
+
+        // upload originalReceiptProofUrls to GCS
+        String originalReceiptProofUrls =
+                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+        product.setOriginalReceiptProof(originalReceiptProofUrls);
 
         // save product into database
         productRepository.save(product);

@@ -25,9 +25,26 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
 
     IPostService postService;
+
     ObjectMapper objectMapper;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/level-1", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<PostResponse> createPostLevel1(
+            @RequestPart("request") String requestJson,
+            @RequestPart("productImages") MultipartFile[] productImages)
+            throws IOException {
+
+        // Chuyển đổi JSON string thành đối tượng CreatePostRequest
+        CreatePostRequest request = objectMapper.readValue(requestJson, CreatePostRequest.class);
+
+        var result = postService.createPostLevel1(request, productImages);
+        return ApiResponse.<PostResponse>builder()
+                .message("Create Success")
+                .result(result)
+                .build();
+    }
+
+    @PostMapping(value = "/level-2", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPostLevel2(
             @RequestPart("request") String requestJson,
             @RequestPart("productImages") MultipartFile[] productImages,
