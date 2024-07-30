@@ -102,7 +102,7 @@ public class PostServiceImpl implements IPostService {
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .story(postRequest.getProduct().getStory())
-                .verifiedLevel(VerifiedLevel.LEVEL_2)
+                .verifiedLevel(VerifiedLevel.LEVEL_1)
                 .build();
 
         var newProduct = productRepository.save(product);
