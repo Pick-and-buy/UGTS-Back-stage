@@ -9,6 +9,9 @@ import java.util.Objects;
 
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.notification.entity.NotificationEntity;
+import com.ugts.notification.entity.NotificationType;
+import com.ugts.notification.service.NotificationServiceImpl;
 import com.ugts.order.dto.request.CreateOrderRequest;
 import com.ugts.order.dto.request.UpdateOrderRequest;
 import com.ugts.order.dto.response.OrderResponse;
@@ -57,6 +60,8 @@ public class OrderServiceImpl implements OrderService {
     UserService userService;
 
     IRatingService ratingService;
+
+    private final NotificationServiceImpl notificationService;
 
     /**
      * Creates a new order with the given order request.
@@ -255,15 +260,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void autoRateAndCompleteOrders(){
+    public void autoRateOrders(){
         LocalDateTime now = LocalDateTime.now();
         // Retrieve orders with the specified order status from the order details repository
         List<Order> orders = orderRepository.findOrderDetailsByOrderStatus(OrderStatus.RECEIVED);
      try{
          for(Order order : orders){
-             if (now.isAfter(convertToLocalDateTime(order.getOrderDetails().getReceivedDate()).plusDays(3))) {
+             if (!order.getIsBuyerRate()
+                     && now.isAfter(convertToLocalDateTime(order.getOrderDetails().getReceivedDate()).plusDays(3))) {
                  autoRateOrder(order);
-                 completeOrder(order);
+                 order.setIsBuyerRate(true);
+
+                 //TODO: notify to seller that buyer has auto rate
+                 notificationService.createNotificationStorage(NotificationEntity.builder()
+                         .delivered(false)
+                         .message(order.getBuyer().getUsername() + " has rate the order ")
+                         .notificationType(NotificationType.RATE)
+                         .userFromId(order.getBuyer().getId())
+                         .timestamp(new Date())
+                         .userToId(order.getBuyer().getId())
+                         .userFromAvatar(order.getBuyer().getAvatar())
+                         .orderId(order.getId())
+                         .build());
+//                 completeOrder(order);
              }
          }
      }catch (Exception e){
@@ -288,8 +307,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     protected void completeOrder(Order order) {
        try{
-           order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
-           orderRepository.save(order);
+           if(order.getIsBuyerRate() && order.getIsSellerRate()){
+               order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
+               orderRepository.save(order);
+           }
        }catch (Exception e){
            log.error("An error occurred when trying to complete the order: {}", e.getMessage());
        }

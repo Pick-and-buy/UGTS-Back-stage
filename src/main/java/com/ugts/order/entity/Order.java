@@ -34,4 +34,8 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     List<Transaction> transactions = new ArrayList<>();
+
+    Boolean isBuyerRate;
+
+    Boolean isSellerRate;
 }
