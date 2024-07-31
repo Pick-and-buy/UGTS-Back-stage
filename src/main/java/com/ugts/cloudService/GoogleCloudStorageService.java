@@ -30,6 +30,9 @@ public class GoogleCloudStorageService {
 
     // General function to upload file to GCP
     private String uploadFileToGCSInternal(MultipartFile file, String folderName) throws IOException {
+        if (file == null) {
+            return null;
+        }
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
         BlobId blobId = BlobId.of(bucketName, folderName + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)

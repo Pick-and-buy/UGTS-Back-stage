@@ -30,8 +30,7 @@ public class PostController {
 
     @PostMapping(value = "/level-1", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<PostResponse> createPostLevel1(
-            @RequestPart("request") String requestJson,
-            @RequestPart("productImages") MultipartFile[] productImages)
+            @RequestPart("request") String requestJson, @RequestPart("productImages") MultipartFile[] productImages)
             throws IOException {
 
         // Chuyển đổi JSON string thành đối tượng CreatePostRequest
