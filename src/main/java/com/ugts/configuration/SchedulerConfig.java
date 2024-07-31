@@ -16,6 +16,6 @@ public class SchedulerConfig {
     //TODO: add to docs
     @Scheduled(fixedRate = 86400000) // 86400000 milliseconds = 24 hours
     public void scheduleTaskWithFixedRate() {
-        orderService.autoRateAndCompleteOrders();
+        orderService.autoRateOrders();
     }
 }

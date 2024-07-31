@@ -21,5 +21,5 @@ public interface OrderService {
 
     List<OrderResponse> getOrderByOrderStatus(OrderStatus orderStatus);
 
-    void autoRateAndCompleteOrders();
+    void autoRateOrders();
 }
