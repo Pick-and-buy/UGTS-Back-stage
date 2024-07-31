@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
+import com.ugts.notification.service.NotificationServiceImpl;
 import com.ugts.order.repository.OrderRepository;
 import com.ugts.rating.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
@@ -41,6 +42,9 @@ public class RatingServiceTest {
     @Mock
     CommentValidationServiceImpl commentValidationService;
 
+    @Mock
+    private NotificationServiceImpl notificationService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -50,7 +54,7 @@ public class RatingServiceTest {
     void testCreateRating_Success() {
         // Arrange
         RatingServiceImpl ratingService =
-                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper, orderRepository);
+                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper, orderRepository, notificationService);
 
         User ratingUser = new User();
         User ratedUser = new User();
