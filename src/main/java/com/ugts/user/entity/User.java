@@ -27,6 +27,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    @Column(unique = true)
     String username;
 
     String avatar;

@@ -59,7 +59,6 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
             if (!user.isVerified()) {
                 String fullName = verifyInformationRequest.getName();
                 user.setVerified(true);
-                user.setUsername(fullName);
                 String[] nameParts = splitName(fullName);
                 user.setLastName(nameParts[0]);
                 user.setFirstName(nameParts[1]);
