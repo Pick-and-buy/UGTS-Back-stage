@@ -1,6 +1,6 @@
 package com.ugts.product.dto.response;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.brand.dto.GeneralBrandInformationDto;
@@ -17,7 +17,7 @@ public class ProductResponse {
     String id;
     String name;
     String thumbnail;
-    Set<ProductImageResponse> images;
+    List<ProductImageResponse> images;
     GeneralBrandInformationDto brand;
     GeneralBrandLineInformationDto brandLine;
     BrandCollection brandCollection;
@@ -42,4 +42,6 @@ public class ProductResponse {
     String purchasedPlace;
     String story;
     String verifiedLevel;
+    String productVideo;
+    String originalReceiptProof;
 }
