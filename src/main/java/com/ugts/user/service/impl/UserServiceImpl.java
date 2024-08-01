@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         if (!userToNotify.getId().equals(likeUser.getId())) {
             notificationService.createNotificationStorage(NotificationEntity.builder()
                     .delivered(false)
-                    .message("New like from " + likeUser.getUsername())
+                    .message("Lượt yêu thích mới từ " + likeUser.getUsername())
                     .notificationType(NotificationType.LIKE)
                     .userFromId(likeUser.getId())
                     .userToId(userToNotify.getId())

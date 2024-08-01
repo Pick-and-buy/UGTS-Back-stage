@@ -32,6 +32,10 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
         if (!verifyInformationRequest.getIsMatch()) {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
+        VerifyInformation userVerify = verifyInformationRepository.findByUser(user);
+        if(passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
+            throw new AppException(ErrorCode.USER_HAS_ALREADY_VERIFIED);
+        }
         try {
             changeUserInfo(user, verifyInformationRequest);
             VerifyInformation verifyInformation = VerifyInformation.builder()
