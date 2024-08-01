@@ -62,7 +62,7 @@ public class CommentServiceImpl implements ICommentService {
             if (!userToNotify.getId().equals(commentUser.getId())) {
                 notificationService.createNotificationStorage(NotificationEntity.builder()
                         .delivered(false)
-                        .message("New comment from " + commentUser.getUsername())
+                        .message("Bình luận mới từ " + commentUser.getUsername())
                         .notificationType(NotificationType.COMMENT)
                         .userFromId(commentUser.getId())
                         .timestamp(new Date())

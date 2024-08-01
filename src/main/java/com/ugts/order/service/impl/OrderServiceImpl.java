@@ -113,10 +113,23 @@ public class OrderServiceImpl implements OrderService {
         var order = Order.builder()
                 .buyer(buyer)
                 .post(post)
+                .isBuyerRate(false)
+                .isSellerRate(false)
                 .orderDetails(orderDetails)
                 .build();
 
         orderDetails.setOrder(order);
+
+        notificationService.createNotificationStorage(NotificationEntity.builder()
+                .delivered(false)
+                .message(buyer.getUsername() + " đã mua mặt hàng túi xách của bạn　😍! Kiểm tra ngay! ")
+                .notificationType(NotificationType.BUY)
+                .userFromId(post.getUser().getId())
+                .timestamp(new Date())
+                .userToId(post.getUser().getId())
+                .userFromAvatar(buyer.getAvatar())
+                .orderId(order.getId())
+                .build());
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
@@ -274,7 +287,7 @@ public class OrderServiceImpl implements OrderService {
                  //TODO: notify to seller that buyer has auto rate
                  notificationService.createNotificationStorage(NotificationEntity.builder()
                          .delivered(false)
-                         .message(order.getBuyer().getUsername() + " has rate the order ")
+                         .message(order.getBuyer().getUsername() + " đã đánh giá đơn hàng của bạn! Đánh giá lại ngay! ")
                          .notificationType(NotificationType.RATE)
                          .userFromId(order.getBuyer().getId())
                          .timestamp(new Date())

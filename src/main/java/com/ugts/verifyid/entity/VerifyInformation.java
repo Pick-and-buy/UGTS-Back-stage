@@ -20,6 +20,7 @@ public class VerifyInformation {
     @OneToOne
     User user;
 
+    @Column(unique = true)
     String cardId;
 
     String name;
