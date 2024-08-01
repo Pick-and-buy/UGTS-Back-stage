@@ -3,39 +3,47 @@ package com.ugts.vnpay.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import com.ugts.exception.AppException;
+import com.ugts.exception.ErrorCode;
+import com.ugts.transaction.entity.Transaction;
+import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.repository.TransactionRepository;
+import com.ugts.user.repository.UserRepository;
+import com.ugts.user.service.UserService;
 import com.ugts.vnpay.configuration.VnPayConfiguration;
 import com.ugts.vnpay.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VNPayServiceImpl implements VNPayService {
 
-    private final TransactionRepository transactionRepository;
+    UserService userService;
+
+    UserRepository userRepository;
+
+    TransactionRepository transactionRepository;
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public String createOrder(int total, String orderInfor, String urlReturn, String ipAddr) {
+    public String createOrder(int total, String orderInfo, String urlReturn) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VnPayConfiguration.getRandomNumber(8);
-
-        if (transactionRepository.findByTransNo(vnp_TxnRef) != null) {
-            vnp_TxnRef = VnPayConfiguration.getRandomNumber(8);
-        }
-
-        //        String vnp_IpAddr = "127.0.0.1";
+        String vnp_IpAddr = "127.0.0.1";
         String vnp_TmnCode = VnPayConfiguration.vnp_TmnCode;
         String orderType = "order-type";
 
@@ -47,7 +55,7 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", orderInfor);
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
         vnp_Params.put("vnp_OrderType", orderType);
 
         String locate = "vn";
@@ -55,20 +63,15 @@ public class VNPayServiceImpl implements VNPayService {
 
         urlReturn += VnPayConfiguration.vnp_ReturnURL;
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
-        vnp_Params.put("vnp_IpAddr", ipAddr);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //        return LocalDateTime.parse(date, formatter);
-
-        //        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("Asia/Ho_Chi_Minh")));
-        //        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        //        String vnp_CreateDate = formatter.format(cld.getTime());
-        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String vnp_CreateDate = formatter.format(currentTime);
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-        String vnp_ExpireDate = formatter.format(currentTime.plusMinutes(15));
+        cld.add(Calendar.MINUTE, 15);
+        String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
         List fieldNames = new ArrayList(vnp_Params.keySet());
@@ -137,6 +140,50 @@ public class VNPayServiceImpl implements VNPayService {
             }
         } else {
             return -1;
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public String getPaymentInfo(HttpServletRequest request) {
+        int paymentStatus = orderReturn(request);
+
+        var transaction = Transaction.builder()
+                .id(request.getParameter("vnp_TransactionNo"))
+                .billNo(request.getParameter("vnp_TxnRef"))
+                .transNo(request.getParameter("vnp_TransactionNo"))
+                .bankCode(request.getParameter("vnp_BankCode"))
+                .cardType(request.getParameter("vnp_CardType"))
+                .amount(Integer.parseInt(request.getParameter("vnp_Amount")))
+                .currency("VND")
+                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .reason(request.getParameter("vnp_OrderInfo"))
+                .build();
+
+        String orderInfo = request.getParameter("vnp_OrderInfo");
+        String[] arrayInfo = orderInfo.split("-");
+
+        var userId = userService.getProfile().getId();
+        String[] updatedArrayInfo = new String[arrayInfo.length + 1]; // Create a new array with increased length
+        updatedArrayInfo[0] = userId; // Add userId at the beginning of the array
+        System.arraycopy(arrayInfo, 0, updatedArrayInfo, 1, arrayInfo.length); // Copy the existing elements
+        String reason = updatedArrayInfo[1];
+
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        transaction.setUser(user);
+        transaction.setReason(reason);
+
+        if (paymentStatus == 1) {
+            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            transactionRepository.save(transaction);
+            return "Thanh toán thành công !!!";
+        } else if (paymentStatus == 0) {
+            transaction.setTransactionStatus(TransactionStatus.FAILED);
+            transactionRepository.save(transaction);
+            return "Thanh toán không thành công !!!";
+        } else{
+            return "Lỗi !!! Mã Secure Hash không hợp lệ.";
         }
     }
 }

@@ -14,31 +14,33 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VnPayConfiguration {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // ko thay đổi
-    public static String vnp_ReturnURL = "/vnpay/getPaymentInfo";
+    public static String vnp_ReturnURL = "/api/v1/vnpay/payment-info";
     public static String vnp_TmnCode = "1QGJZR3I"; // terminal code trong mail
     public static String vnp_HashSecret = "UF19UBP2JIZ2HIAERRQ2G0P84MXNLKWE"; // secret key trong mail
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction"; // ko thay đổi
 
-    public static String md5(String message) {
-        String digest = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hash = md.digest(message.getBytes("UTF-8"));
-            StringBuilder sb = new StringBuilder(2 * hash.length);
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b & 0xff));
-            }
-            digest = sb.toString();
-        } catch (UnsupportedEncodingException ex) {
-            digest = "";
-        } catch (NoSuchAlgorithmException ex) {
-            digest = "";
-        }
-        return digest;
-    }
+    //    public static String md5(String message) {
+    //        String digest = null;
+    //        try {
+    //            MessageDigest md = MessageDigest.getInstance("MD5");
+    //            byte[] hash = md.digest(message.getBytes("UTF-8"));
+    //            StringBuilder sb = new StringBuilder(2 * hash.length);
+    //            for (byte b : hash) {
+    //                sb.append(String.format("%02x", b & 0xff));
+    //            }
+    //            digest = sb.toString();
+    //        } catch (UnsupportedEncodingException ex) {
+    //            digest = "";
+    //        } catch (NoSuchAlgorithmException ex) {
+    //            digest = "";
+    //        }
+    //        return digest;
+    //    }
 
     public static String Sha256(String message) {
         String digest = null;
