@@ -4,5 +4,6 @@ public enum NotificationType {
     LIKE,
     COMMENT,
     BUY,
-    POST_VERIFY
+    POST_VERIFY,
+    RATE
 }

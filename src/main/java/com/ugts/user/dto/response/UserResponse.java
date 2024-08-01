@@ -33,4 +33,7 @@ public class UserResponse {
     Set<LikedPostDto> likedPosts;
 
     Set<PostResponse> createdPosts;
+
+    boolean isVerified;
+
 }
