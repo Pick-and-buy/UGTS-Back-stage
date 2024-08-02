@@ -34,6 +34,6 @@ public class UserResponse {
 
     Set<PostResponse> createdPosts;
 
-    boolean isVerified;
+    Boolean isVerified;
 
 }

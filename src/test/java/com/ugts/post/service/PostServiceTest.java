@@ -146,7 +146,7 @@ public class PostServiceTest {
         when(userRepository.findByPhoneNumber(anyString())).thenReturn(Optional.of(user));
         when(postRepository.save(any(Post.class))).thenReturn(post);
         when(postMapper.postToPostResponse(any(Post.class))).thenReturn(postResponse);
-        PostResponse result = postService.createPost(request, files);
+        PostResponse result = postService.createPostLevel1(request, files);
         assertNotNull(result);
         assertEquals(postResponse.getTitle(), result.getTitle());
     }
@@ -157,7 +157,7 @@ public class PostServiceTest {
         MultipartFile[] files = new MultipartFile[0];
 
         AppException exception = assertThrows(AppException.class, () -> {
-            postService.createPost(invalidRequest, files);
+            postService.createPostLevel1(invalidRequest, files);
         });
 
         assertEquals(ErrorCode.INVALID_INPUT, exception.getErrorCode());
@@ -218,7 +218,7 @@ public class PostServiceTest {
         when(postMapper.postToPostResponse(any(Post.class))).thenReturn(postResponse);
 
         AppException exception = assertThrows(AppException.class, () -> {
-            postService.createPost(request, files);
+            postService.createPostLevel1(request, files);
         });
 
         assertEquals(ErrorCode.BRAND_NOT_EXISTED, exception.getErrorCode());
@@ -277,7 +277,7 @@ public class PostServiceTest {
         when(postRepository.save(any(Post.class))).thenReturn(post);
         when(postMapper.postToPostResponse(any(Post.class))).thenReturn(postResponse);
         AppException exception = assertThrows(AppException.class, () -> {
-            postService.createPost(request, files);
+            postService.createPostLevel1(request, files);
         });
 
         assertEquals(ErrorCode.BRAND_LINE_NOT_EXISTED, exception.getErrorCode());
@@ -337,7 +337,7 @@ public class PostServiceTest {
         when(postRepository.save(any(Post.class))).thenReturn(post);
         when(postMapper.postToPostResponse(any(Post.class))).thenReturn(postResponse);
         AppException exception = assertThrows(AppException.class, () -> {
-            postService.createPost(request, files);
+            postService.createPostLevel1(request, files);
         });
 
         assertEquals(ErrorCode.CATEGORY_NOT_EXISTED, exception.getErrorCode());

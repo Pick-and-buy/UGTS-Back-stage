@@ -60,9 +60,9 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
     }
     private void changeUserInfo(User user, VerifyInformationRequest verifyInformationRequest) {
         try {
-            if (!user.isVerified()) {
+            if (!user.getIsVerified()) {
                 String fullName = verifyInformationRequest.getName();
-                user.setVerified(true);
+                user.setIsVerified(true);
                 String[] nameParts = splitName(fullName);
                 user.setLastName(nameParts[0]);
                 user.setFirstName(nameParts[1]);

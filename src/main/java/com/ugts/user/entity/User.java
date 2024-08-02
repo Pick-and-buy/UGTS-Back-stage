@@ -49,7 +49,7 @@ public class User {
     @ManyToMany
     Set<Role> roles;
 
-    boolean isVerified;
+    Boolean isVerified;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<Address> address = new HashSet<>();
