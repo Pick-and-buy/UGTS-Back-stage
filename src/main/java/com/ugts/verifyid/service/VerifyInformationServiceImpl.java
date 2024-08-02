@@ -13,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class VerifyInformationServiceImpl implements IVerifyInformation {
@@ -29,12 +32,12 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
         if (!verifyInformationRequest.getIsMatch()) {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
+        VerifyInformation userVerify = verifyInformationRepository.findByUser(user);
+        if(passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
+            throw new AppException(ErrorCode.USER_HAS_ALREADY_VERIFIED);
+        }
         try {
-            if (!user.isVerified()) {
-                user.setVerified(true);
-                user.setUsername(verifyInformationRequest.getName());
-                userRepository.save(user);
-            }
+            changeUserInfo(user, verifyInformationRequest);
             VerifyInformation verifyInformation = VerifyInformation.builder()
                     .user(user)
                     .cardId(passwordEncoder.encode(verifyInformationRequest.getCardId()))
@@ -53,5 +56,50 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
         } catch (Exception e) {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
+
+    }
+    private void changeUserInfo(User user, VerifyInformationRequest verifyInformationRequest) {
+        try {
+            if (!user.getIsVerified()) {
+                String fullName = verifyInformationRequest.getName();
+                user.setIsVerified(true);
+                String[] nameParts = splitName(fullName);
+                user.setLastName(nameParts[0]);
+                user.setFirstName(nameParts[1]);
+                user.setDob(convertStringToDate(verifyInformationRequest.getDob()));
+                userRepository.save(user);
+            }
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.VERIFY_FAIL);
+        }
+    }
+
+    public static String[] splitName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        // Tách chuỗi dựa vào dấu cách
+        String[] parts = fullName.trim().split("\\s+");
+
+        // Trường hợp chỉ có một phần tử
+        if (parts.length == 1) {
+            return new String[] { parts[0], "" };
+        }
+
+        // Trường hợp có nhiều phần tử
+        String lastName = parts[0];
+        String firstName = parts[parts.length - 1];
+        return new String[] { lastName, firstName };
+    }
+
+    public Date convertStringToDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateString);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format: " + dateString);
+        }
+        return date;
     }
 }

@@ -19,7 +19,7 @@ public class RatingControllerTest {
 
     @Test
     public void test_create_rating_with_valid_request() {
-        RatingRequest ratingRequest = new RatingRequest(StarRating.FIVE_STAR, "Great service", "user123", "user456");
+        RatingRequest ratingRequest = new RatingRequest(StarRating.FIVE_STAR, "Great service", "user123", "user456", "order123");
         RatingController ratingController = new RatingController(ratingService);
 
         ApiResponse<Void> response = ratingController.createRating(ratingRequest);

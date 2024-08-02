@@ -20,4 +20,6 @@ public interface OrderService {
     OrderResponse getOrderByOrderId(String orderId);
 
     List<OrderResponse> getOrderByOrderStatus(OrderStatus orderStatus);
+
+    void autoRateOrders();
 }

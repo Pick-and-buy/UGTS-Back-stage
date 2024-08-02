@@ -88,6 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
+        user.setIsVerified(false);
 
         try {
             user = userRepository.save(user);
