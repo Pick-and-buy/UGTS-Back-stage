@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +28,7 @@ public class PostRedisServiceImpl implements IPostRedisService {
     }
 
     @Override
+    @Scheduled(fixedRate = 3600000) // clear cache every 1 hour
     public void clear() {
         redisTemplate.delete(redisTemplate.keys("ALL_POSTS_*"));
     }
