@@ -182,7 +182,7 @@ public class VNPayServiceImpl implements VNPayService {
             transaction.setTransactionStatus(TransactionStatus.FAILED);
             transactionRepository.save(transaction);
             return "Thanh toán không thành công !!!";
-        } else{
+        } else {
             return "Lỗi !!! Mã Secure Hash không hợp lệ.";
         }
     }

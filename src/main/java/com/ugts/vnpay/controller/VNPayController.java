@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,9 +41,6 @@ public class VNPayController {
     @GetMapping("/payment-info")
     public ApiResponse<String> getPaymentInfo(HttpServletRequest request) {
         var result = vnPayService.getPaymentInfo(request);
-        return ApiResponse.<String>builder()
-                .message("Success")
-                .result(result)
-                .build();
+        return ApiResponse.<String>builder().message("Success").result(result).build();
     }
 }
