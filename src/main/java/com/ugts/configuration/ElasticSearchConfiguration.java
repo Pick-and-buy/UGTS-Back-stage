@@ -4,9 +4,6 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.context.annotation.Bean;
@@ -19,10 +16,10 @@ public class ElasticSearchConfiguration {
         return RestClient.builder(new HttpHost("localhost", 9200)).build();
     }
 
-    @Bean
-    public ObjectMapper getObjectMapper() {
-        return JsonMapper.builder().addModule(new JavaTimeModule()).build();
-    }
+    //    @Bean
+    //    public ObjectMapper getObjectMapper() {
+    //        return JsonMapper.builder().addModule(new JavaTimeModule()).build();
+    //    }
 
     @Bean
     public ElasticsearchTransport getElasticsearchTransport() {
