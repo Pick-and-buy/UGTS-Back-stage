@@ -2,7 +2,6 @@ package com.ugts.rating.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
@@ -14,7 +13,6 @@ import com.ugts.notification.service.NotificationServiceImpl;
 import com.ugts.order.entity.Order;
 import com.ugts.order.enums.OrderStatus;
 import com.ugts.order.repository.OrderRepository;
-import com.ugts.order.service.impl.OrderServiceImpl;
 import com.ugts.rating.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.dto.RatingResponse;
@@ -39,13 +37,12 @@ public class RatingServiceImpl implements IRatingService {
     private final OrderRepository orderRepository;
     private final NotificationServiceImpl notificationService;
 
-
     @Override
     @Transactional
     public void createRating(RatingRequest ratingRequest) {
         if (ratingRequest.getStars() != StarRating.ONE_STAR
                 && ratingRequest.getStars() != StarRating.FIVE_STAR
-                && ratingRequest.getStars() !=StarRating.TWO_STAR
+                && ratingRequest.getStars() != StarRating.TWO_STAR
                 && ratingRequest.getStars() != StarRating.THREE_STAR
                 && ratingRequest.getStars() != StarRating.FOUR_STAR) {
             throw new AppException(ErrorCode.INVALID_STAR_RATING);
@@ -57,13 +54,15 @@ public class RatingServiceImpl implements IRatingService {
                 .findById(ratingRequest.getRatedUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        Order order = orderRepository.findById(ratingRequest.getOrderId()).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        Order order = orderRepository
+                .findById(ratingRequest.getOrderId())
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         String sellerId = order.getPost().getUser().getId();
         try {
-            //buyer rate seller
-            if(ratedUser.getId().equals(sellerId)
+            // buyer rate seller
+            if (ratedUser.getId().equals(sellerId)
                     && !order.getIsBuyerRate()
-                    && ratingRequest.getRatingUserId().equals(order.getBuyer().getId())){
+                    && ratingRequest.getRatingUserId().equals(order.getBuyer().getId())) {
                 String filteredContent = commentValidationService.filterBadWords(ratingRequest.getComment());
                 createRating(Rating.builder()
                         .stars(ratingRequest.getStars())
@@ -72,7 +71,7 @@ public class RatingServiceImpl implements IRatingService {
                         .ratedUser(ratedUser)
                         .build());
                 order.setIsBuyerRate(true);
-                //TODO: notify to seller that buyer has rate
+                // TODO: notify to seller that buyer has rate
                 notificationService.createNotificationStorage(NotificationEntity.builder()
                         .delivered(false)
                         .message(ratingUser.getUsername() + " has rate you! Rate now! ")
@@ -89,11 +88,11 @@ public class RatingServiceImpl implements IRatingService {
             log.error("An error occurred while create rating : {}", e.getMessage());
         }
         // TODO: End transaction, change transaction status to completed
-        try{
-            //seller rate buyer
-            if(order.getIsBuyerRate()
+        try {
+            // seller rate buyer
+            if (order.getIsBuyerRate()
                     && !order.getIsSellerRate()
-                    && ratingRequest.getRatingUserId().equals(sellerId)){
+                    && ratingRequest.getRatingUserId().equals(sellerId)) {
                 String filteredContent = commentValidationService.filterBadWords(ratingRequest.getComment());
                 createRating(Rating.builder()
                         .stars(ratingRequest.getStars())
@@ -102,11 +101,11 @@ public class RatingServiceImpl implements IRatingService {
                         .ratedUser(ratedUser)
                         .build());
                 order.setIsSellerRate(true);
-                if(order.getIsBuyerRate() && order.getIsSellerRate()){
+                if (order.getIsBuyerRate() && order.getIsSellerRate()) {
                     order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("An error occurred while update order status : {}", e.getMessage());
         }
     }

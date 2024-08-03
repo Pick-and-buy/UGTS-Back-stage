@@ -3,6 +3,8 @@ package com.ugts.authentication.controller;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,23 +52,25 @@ class UserControllerIntegrationTest {
 
     @BeforeEach
     public void initData() {
-        Date dob = new Date(2000, 1, 1);
+        LocalDateTime localDateTime = LocalDateTime.of(2002, 10, 1, 0, 0);
+
+        Date dob = Date.from(localDateTime.atZone(ZoneId.of("UTC")).toInstant());
 
         request = RegisterRequest.builder()
-                .username("test02")
+                .username("test03")
                 .firstName("quang")
                 .lastName("tran")
-                .email("test02@gmail.com")
+                .email("test03@gmail.com")
                 .password("Quang09122002@")
                 .dob(dob)
                 .build();
 
         response = UserResponse.builder()
-                .id("42e2-bae5-9ea7c0f1c4d4")
-                .username("test02")
+                .id("42e2-bae5-9ea7c0f1c4d455")
+                .username("test03")
                 .firstName("quang")
                 .lastName("tran")
-                .email("test02@gmail.com")
+                .email("test03@gmail.com")
                 .dob(dob)
                 .build();
     }
@@ -84,10 +88,10 @@ class UserControllerIntegrationTest {
                         .content(content))
                 .andExpect(status().isOk()) // status of API response
                 .andExpect(jsonPath("code").value(1000)) // code of API response
-                .andExpect(jsonPath("result.username").value("test02")) // Result of API response
+                .andExpect(jsonPath("result.username").value("test03")) // Result of API response
                 .andExpect(jsonPath("result.firstName").value("quang"))
                 .andExpect(jsonPath("result.lastName").value("tran"))
-                .andExpect(jsonPath("result.email").value("test02@gmail.com"))
-                .andExpect(jsonPath("result.dob").value("2000-01-01"));
+                .andExpect(jsonPath("result.email").value("test03@gmail.com"))
+                .andExpect(jsonPath("result.dob").value("2002-10-01"));
     }
 }

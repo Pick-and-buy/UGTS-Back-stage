@@ -53,8 +53,13 @@ public class RatingServiceTest {
     @Test
     void testCreateRating_Success() {
         // Arrange
-        RatingServiceImpl ratingService =
-                new RatingServiceImpl(userRepository, ratingRepository, commentValidationService, ratingMapper, orderRepository, notificationService);
+        RatingServiceImpl ratingService = new RatingServiceImpl(
+                userRepository,
+                ratingRepository,
+                commentValidationService,
+                ratingMapper,
+                orderRepository,
+                notificationService);
 
         User ratingUser = new User();
         User ratedUser = new User();

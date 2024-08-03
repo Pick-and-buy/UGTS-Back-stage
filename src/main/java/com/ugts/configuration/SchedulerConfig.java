@@ -13,7 +13,7 @@ public class SchedulerConfig {
 
     private final OrderService orderService;
 
-    //TODO: add to docs
+    // TODO: add to docs
     @Scheduled(fixedRate = 86400000) // 86400000 milliseconds = 24 hours
     public void scheduleTaskWithFixedRate() {
         orderService.autoRateOrders();

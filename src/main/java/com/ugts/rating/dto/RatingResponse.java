@@ -1,6 +1,5 @@
 package com.ugts.rating.dto;
 
-import com.ugts.rating.entity.StarRating;
 import lombok.Data;
 
 @Data

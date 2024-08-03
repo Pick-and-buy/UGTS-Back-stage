@@ -1,48 +1,48 @@
-//package com.ugts.user;
+// package com.ugts.user;
 //
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
+// import static org.junit.jupiter.api.Assertions.*;
+// import static org.mockito.ArgumentMatchers.any;
+// import static org.mockito.Mockito.*;
 //
-//import java.io.IOException;
-//import java.util.*;
+// import java.io.IOException;
+// import java.util.*;
 //
-//import com.ugts.authentication.dto.request.RegisterRequest;
-//import com.ugts.cloudService.GoogleCloudStorageService;
-//import com.ugts.exception.AppException;
-//import com.ugts.exception.ErrorCode;
-//import com.ugts.post.dto.response.PostResponse;
-//import com.ugts.post.entity.Post;
-//import com.ugts.post.mapper.PostMapper;
-//import com.ugts.post.repository.PostRepository;
-//import com.ugts.user.controller.UserController;
-//import com.ugts.user.dto.request.CreateNewAddressRequest;
-//import com.ugts.user.dto.request.LikeRequestDto;
-//import com.ugts.user.dto.request.UpdateAddressRequest;
-//import com.ugts.user.dto.request.UserUpdateRequest;
-//import com.ugts.user.dto.response.AddressResponse;
-//import com.ugts.user.dto.response.UserResponse;
-//import com.ugts.user.entity.Address;
-//import com.ugts.user.entity.User;
-//import com.ugts.user.mapper.AddressMapper;
-//import com.ugts.user.mapper.UserMapper;
-//import com.ugts.user.repository.AddressRepository;
-//import com.ugts.user.repository.UserRepository;
-//import com.ugts.user.service.UserService;
-//import com.ugts.user.service.impl.UserServiceImpl;
-//import jakarta.validation.ConstraintViolationException;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mock;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.mock.web.MockMultipartFile;
-//import org.springframework.security.test.context.support.WithMockUser;
-//import org.springframework.test.context.TestPropertySource;
-//import org.springframework.web.multipart.MultipartFile;
+// import com.ugts.authentication.dto.request.RegisterRequest;
+// import com.ugts.cloudService.GoogleCloudStorageService;
+// import com.ugts.exception.AppException;
+// import com.ugts.exception.ErrorCode;
+// import com.ugts.post.dto.response.PostResponse;
+// import com.ugts.post.entity.Post;
+// import com.ugts.post.mapper.PostMapper;
+// import com.ugts.post.repository.PostRepository;
+// import com.ugts.user.controller.UserController;
+// import com.ugts.user.dto.request.CreateNewAddressRequest;
+// import com.ugts.user.dto.request.LikeRequestDto;
+// import com.ugts.user.dto.request.UpdateAddressRequest;
+// import com.ugts.user.dto.request.UserUpdateRequest;
+// import com.ugts.user.dto.response.AddressResponse;
+// import com.ugts.user.dto.response.UserResponse;
+// import com.ugts.user.entity.Address;
+// import com.ugts.user.entity.User;
+// import com.ugts.user.mapper.AddressMapper;
+// import com.ugts.user.mapper.UserMapper;
+// import com.ugts.user.repository.AddressRepository;
+// import com.ugts.user.repository.UserRepository;
+// import com.ugts.user.service.UserService;
+// import com.ugts.user.service.impl.UserServiceImpl;
+// import jakarta.validation.ConstraintViolationException;
+// import org.junit.jupiter.api.Test;
+// import org.mockito.Mock;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.mock.web.MockMultipartFile;
+// import org.springframework.security.test.context.support.WithMockUser;
+// import org.springframework.test.context.TestPropertySource;
+// import org.springframework.web.multipart.MultipartFile;
 //
-//@SpringBootTest
-//@TestPropertySource("/test.properties")
-//public class UserServiceTest {
+// @SpringBootTest
+// @TestPropertySource("/test.properties")
+// public class UserServiceTest {
 //
 //    @Autowired
 //    private UserService userService;
@@ -229,7 +229,8 @@
 //        // Given
 //        UserRepository userRepository = mock(UserRepository.class);
 //        PostRepository postRepository = mock(PostRepository.class);
-//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null, null);
+//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null,
+// null);
 //
 //        User user = new User();
 //        user.setId("user1");
@@ -260,7 +261,8 @@
 //        // Given
 //        UserRepository userRepository = mock(UserRepository.class);
 //        PostRepository postRepository = mock(PostRepository.class);
-//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null, null);
+//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null,
+// null);
 //
 //        LikeRequestDto likeRequestDto = new LikeRequestDto("user1", "post1");
 //
@@ -284,7 +286,8 @@
 //        // Given
 //        UserRepository userRepository = mock(UserRepository.class);
 //        PostRepository postRepository = mock(PostRepository.class);
-//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null, null);
+//        UserServiceImpl userService = new UserServiceImpl(userRepository, null, postRepository, null, null, null,
+// null);
 //
 //        User user = new User();
 //        user.setId("user1");
@@ -457,8 +460,10 @@
 //     *
 //     * This test verifies that the user information is not updated when the update request contains null values.
 //     * The test sets up a mock user repository and mapper to simulate the behavior of the actual implementation.
-//     * It then calls the `updateUserInfo` method of the `UserService` with a user ID and a user update request containing null values.
-//     * The test asserts that the response is not null and that the user's first name, last name, username, email, and date of birth are all null.
+//     * It then calls the `updateUserInfo` method of the `UserService` with a user ID and a user update request
+// containing null values.
+//     * The test asserts that the response is not null and that the user's first name, last name, username, email, and
+// date of birth are all null.
 //     *
 //     * @throws Exception if an error occurs during the test execution
 //     */
@@ -500,7 +505,8 @@
 //        user.setId(userId);
 //        user.setUsername("testUser");
 //        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-//        when(googleCloudStorageService.uploadUserAvatarToGCS(file, userId)).thenReturn("http://example.com/avatar.png");
+//        when(googleCloudStorageService.uploadUserAvatarToGCS(file,
+// userId)).thenReturn("http://example.com/avatar.png");
 //        when(userRepository.save(any(User.class))).thenReturn(user);
 //
 //        // When
@@ -533,7 +539,8 @@
 //        user.setId(userId);
 //        user.setUsername("testUser");
 //        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-//        when(googleCloudStorageService.uploadUserAvatarToGCS(file, userId)).thenThrow(new IOException("Upload failed"));
+//        when(googleCloudStorageService.uploadUserAvatarToGCS(file, userId)).thenThrow(new IOException("Upload
+// failed"));
 //
 //        // When & Then
 //        assertThrows(IOException.class, () -> {
@@ -805,4 +812,4 @@
 //
 //        assertEquals(ErrorCode.ADDRESS_NOT_EXISTED, exception.getErrorCode());
 //    }
-//}
+// }

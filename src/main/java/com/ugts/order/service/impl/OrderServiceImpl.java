@@ -2,7 +2,6 @@ package com.ugts.order.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -273,61 +272,65 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void autoRateOrders(){
+    public void autoRateOrders() {
         LocalDateTime now = LocalDateTime.now();
         // Retrieve orders with the specified order status from the order details repository
         List<Order> orders = orderRepository.findOrderDetailsByOrderStatus(OrderStatus.RECEIVED);
-     try{
-         for(Order order : orders){
-             if (!order.getIsBuyerRate()
-                     && now.isAfter(convertToLocalDateTime(order.getOrderDetails().getReceivedDate()).plusDays(3))) {
-                 autoRateOrder(order);
-                 order.setIsBuyerRate(true);
+        try {
+            for (Order order : orders) {
+                if (!order.getIsBuyerRate()
+                        && now.isAfter(
+                                convertToLocalDateTime(order.getOrderDetails().getReceivedDate())
+                                        .plusDays(3))) {
+                    autoRateOrder(order);
+                    order.setIsBuyerRate(true);
 
-                 //TODO: notify to seller that buyer has auto rate
-                 notificationService.createNotificationStorage(NotificationEntity.builder()
-                         .delivered(false)
-                         .message(order.getBuyer().getUsername() + " đã đánh giá đơn hàng của bạn! Đánh giá lại ngay! ")
-                         .notificationType(NotificationType.RATE)
-                         .userFromId(order.getBuyer().getId())
-                         .timestamp(new Date())
-                         .userToId(order.getBuyer().getId())
-                         .userFromAvatar(order.getBuyer().getAvatar())
-                         .orderId(order.getId())
-                         .build());
-//                 completeOrder(order);
-             }
-         }
-     }catch (Exception e){
-         log.error("An error occurred while create auto rating : {}", e.getMessage());
-     }
+                    // TODO: notify to seller that buyer has auto rate
+                    notificationService.createNotificationStorage(NotificationEntity.builder()
+                            .delivered(false)
+                            .message(order.getBuyer().getUsername()
+                                    + " đã đánh giá đơn hàng của bạn! Đánh giá lại ngay! ")
+                            .notificationType(NotificationType.RATE)
+                            .userFromId(order.getBuyer().getId())
+                            .timestamp(new Date())
+                            .userToId(order.getBuyer().getId())
+                            .userFromAvatar(order.getBuyer().getAvatar())
+                            .orderId(order.getId())
+                            .build());
+                    //                 completeOrder(order);
+                }
+            }
+        } catch (Exception e) {
+            log.error("An error occurred while create auto rating : {}", e.getMessage());
+        }
     }
 
     @Transactional
     protected void autoRateOrder(Order order) {
-       try {
-           RatingRequest ratingRequest = new RatingRequest();
-           ratingRequest.setStars(StarRating.FIVE_STAR);
-           ratingRequest.setComment("");
-           ratingRequest.setRatingUserId(order.getBuyer().getId());
-           ratingRequest.setRatedUserId(order.getPost().getUser().getId());
-           orderRepository.save(order);
-       }catch (Exception e){
-           log.error("An error occurred while create rating : {}", e.getMessage());
-       }
+        try {
+            RatingRequest ratingRequest = new RatingRequest();
+            ratingRequest.setStars(StarRating.FIVE_STAR);
+            ratingRequest.setComment("");
+            ratingRequest.setRatingUserId(order.getBuyer().getId());
+            ratingRequest.setRatedUserId(order.getPost().getUser().getId());
+            orderRepository.save(order);
+        } catch (Exception e) {
+            log.error("An error occurred while create rating : {}", e.getMessage());
+        }
     }
 
     @Transactional
     protected void completeOrder(Order order) {
-       try{
-           if(order.getIsBuyerRate() && order.getIsSellerRate()){
-               order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
-               orderRepository.save(order);
-           }
-       }catch (Exception e){
-           log.error("An error occurred when trying to complete the order: {}", e.getMessage());
-       }
+        try {
+            if (order.getIsBuyerRate() && order.getIsSellerRate()) {
+                order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
+                orderRepository.save(order);
+            }
+        } catch (Exception e) {
+            log.error("An error occurred when trying to complete the order: {}", e.getMessage());
+        }
     }
+
     private static LocalDateTime convertToLocalDateTime(Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }

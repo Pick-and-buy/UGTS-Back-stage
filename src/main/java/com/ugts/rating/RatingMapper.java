@@ -2,7 +2,6 @@ package com.ugts.rating;
 
 import com.ugts.rating.dto.RatingResponse;
 import com.ugts.rating.entity.Rating;
-import com.ugts.rating.entity.StarRating;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +15,7 @@ public class RatingMapper {
         ratingResponse.setRatingUserAvatar(rating.getRatingUser().getAvatar());
         ratingResponse.setRatingUserName(rating.getRatingUser().getUsername());
         ratingResponse.setRatedUserId(rating.getRatedUser().getId());
-        switch (rating.getStars()){
+        switch (rating.getStars()) {
             case ONE_STAR:
                 ratingResponse.setStars(1);
                 break;

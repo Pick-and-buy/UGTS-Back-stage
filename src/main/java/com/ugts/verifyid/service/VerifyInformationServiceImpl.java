@@ -1,5 +1,8 @@
 package com.ugts.verifyid.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.user.entity.User;
@@ -12,9 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
         VerifyInformation userVerify = verifyInformationRepository.findByUser(user);
-        if(passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
+        if (passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
             throw new AppException(ErrorCode.USER_HAS_ALREADY_VERIFIED);
         }
         try {
@@ -56,8 +56,8 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
         } catch (Exception e) {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
-
     }
+
     private void changeUserInfo(User user, VerifyInformationRequest verifyInformationRequest) {
         try {
             if (!user.getIsVerified()) {
@@ -83,13 +83,13 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
 
         // Trường hợp chỉ có một phần tử
         if (parts.length == 1) {
-            return new String[] { parts[0], "" };
+            return new String[] {parts[0], ""};
         }
 
         // Trường hợp có nhiều phần tử
         String lastName = parts[0];
         String firstName = parts[parts.length - 1];
-        return new String[] { lastName, firstName };
+        return new String[] {lastName, firstName};
     }
 
     public Date convertStringToDate(String dateString) {
