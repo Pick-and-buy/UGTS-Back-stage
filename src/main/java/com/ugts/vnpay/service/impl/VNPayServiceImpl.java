@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.order.repository.OrderRepository;
 import com.ugts.transaction.entity.Transaction;
 import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.repository.TransactionRepository;
@@ -36,10 +37,12 @@ public class VNPayServiceImpl implements VNPayService {
 
     TransactionRepository transactionRepository;
 
+    OrderRepository orderRepository;
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public String createOrder(int total, String orderInfo, String urlReturn) {
+    public String createPayment(int total, String orderInfo, String urlReturn) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VnPayConfiguration.getRandomNumber(8);
@@ -145,7 +148,7 @@ public class VNPayServiceImpl implements VNPayService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public String getPaymentInfo(HttpServletRequest request) {
+    public String getPaymentInfo(HttpServletRequest request, String orderId) {
         int paymentStatus = orderReturn(request);
 
         var transaction = Transaction.builder()
@@ -167,12 +170,20 @@ public class VNPayServiceImpl implements VNPayService {
         String[] updatedArrayInfo = new String[arrayInfo.length + 1]; // Create a new array with increased length
         updatedArrayInfo[0] = userId; // Add userId at the beginning of the array
         System.arraycopy(arrayInfo, 0, updatedArrayInfo, 1, arrayInfo.length); // Copy the existing elements
-        String reason = updatedArrayInfo[1];
+
 
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
         transaction.setUser(user);
+
+        String reason = updatedArrayInfo[1];
         transaction.setReason(reason);
+
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        order.getOrderDetails().setIsPaid(true);
+
+        transaction.setOrder(order);
 
         if (paymentStatus == 1) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);

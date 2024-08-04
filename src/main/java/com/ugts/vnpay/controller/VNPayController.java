@@ -31,7 +31,7 @@ public class VNPayController {
             @RequestParam("orderInfo") String orderInfo,
             HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        var result = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
+        var result = vnPayService.createPayment(orderTotal, orderInfo, baseUrl);
         return ApiResponse.<String>builder()
                 .message("Create Payment Success")
                 .result(result)
@@ -39,8 +39,8 @@ public class VNPayController {
     }
 
     @GetMapping("/payment-info")
-    public ApiResponse<String> getPaymentInfo(HttpServletRequest request) {
-        var result = vnPayService.getPaymentInfo(request);
+    public ApiResponse<String> getPaymentInfo(HttpServletRequest request, String orderId) {
+        var result = vnPayService.getPaymentInfo(request, orderId);
         return ApiResponse.<String>builder().message("Success").result(result).build();
     }
 }
