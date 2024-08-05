@@ -68,7 +68,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .transNo(id)
                 .bankCode(transactionRequest.getBankCode())
                 .cardType(transactionRequest.getCardType())
-                .amount((int) order.getPost().getProduct().getPrice())
+                .amount(order.getPost().getProduct().getPrice())
                 .currency(transactionRequest.getCurrency())
                 .bankAccountNo(transactionRequest.getBankAccountNo())
                 .bankAccount(transactionRequest.getBankAccount())
