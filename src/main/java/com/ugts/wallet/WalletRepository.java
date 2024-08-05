@@ -1,4 +1,6 @@
 package com.ugts.wallet;
 
-public interface WalletRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface WalletRepository extends JpaRepository<Wallet, String> {
 }
