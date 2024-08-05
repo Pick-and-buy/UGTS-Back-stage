@@ -1,10 +1,13 @@
 package com.ugts.rating.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,4 +36,7 @@ public class Rating {
     @ManyToOne
     @JoinColumn(name = "rated_user_id")
     private User ratedUser;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
+    Date ratedAt;
 }

@@ -69,6 +69,7 @@ public class RatingServiceImpl implements IRatingService {
                         .comment(filteredContent)
                         .ratingUser(ratingUser)
                         .ratedUser(ratedUser)
+                        .ratedAt(new Date())
                         .build());
                 order.setIsBuyerRate(true);
                 // TODO: notify to seller that buyer has rate
@@ -99,6 +100,7 @@ public class RatingServiceImpl implements IRatingService {
                         .comment(filteredContent)
                         .ratingUser(ratingUser)
                         .ratedUser(ratedUser)
+                        .ratedAt(new Date())
                         .build());
                 order.setIsSellerRate(true);
                 if (order.getIsBuyerRate() && order.getIsSellerRate()) {
