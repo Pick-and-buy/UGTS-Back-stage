@@ -10,6 +10,7 @@ import com.ugts.comment.entity.Comment;
 import com.ugts.follow.entity.Follow;
 import com.ugts.post.entity.Post;
 import com.ugts.rating.entity.Rating;
+import com.ugts.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -83,4 +84,8 @@ public class User {
 
     @OneToMany(mappedBy = "ratedUser")
     private List<Rating> receivedRatings;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private Wallet wallet;
 }

@@ -157,7 +157,7 @@ public class VNPayServiceImpl implements VNPayService {
                 .transNo(request.getParameter("vnp_TransactionNo"))
                 .bankCode(request.getParameter("vnp_BankCode"))
                 .cardType(request.getParameter("vnp_CardType"))
-                .amount(Integer.parseInt(request.getParameter("vnp_Amount")))
+                .amount(Double.parseDouble(request.getParameter("vnp_Amount")))
                 .currency("VND")
                 .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .reason(request.getParameter("vnp_OrderInfo"))

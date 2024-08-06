@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 
 import com.ugts.order.entity.Order;
 import com.ugts.transaction.enums.TransactionStatus;
+import com.ugts.transaction.enums.TransactionType;
 import com.ugts.user.entity.User;
+import com.ugts.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +31,7 @@ public class Transaction {
 
     String cardType;
 
-    Integer amount;
+    Double amount;
 
     String currency;
 
@@ -53,4 +55,9 @@ public class Transaction {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Order order;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Wallet wallet;
+
+    TransactionType transactionType;
 }
