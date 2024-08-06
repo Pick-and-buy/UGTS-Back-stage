@@ -71,7 +71,6 @@ public class PostController {
     @GetMapping
     public ApiResponse<List<PostResponse>> getAllPosts() throws JsonProcessingException {
         var result = postService.getAllPosts();
-
         return ApiResponse.<List<PostResponse>>builder()
                 .message("Get All Post Success")
                 .result(result)

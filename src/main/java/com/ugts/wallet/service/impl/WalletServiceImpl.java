@@ -1,4 +1,6 @@
-package com.ugts.wallet;
+package com.ugts.wallet.service.impl;
+
+import java.time.LocalDateTime;
 
 import com.ugts.bankaccount.BankAccount;
 import com.ugts.bankaccount.BankAccountRepository;
@@ -9,12 +11,13 @@ import com.ugts.transaction.enums.TransactionType;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.wallet.entity.Wallet;
+import com.ugts.wallet.repository.WalletRepository;
+import com.ugts.wallet.service.IWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +36,9 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public void fundTransfer(String fromUserId, String toUserId, Double amount) {
+    public void fundTransfer(String fromUserId, String toUserId, Double amount) {}
 
-    }
-    //Nap tien
+    // Nap tien
     @Override
     @PreAuthorize("hasRole('USER')")
     @Transactional
@@ -45,24 +47,24 @@ public class WalletServiceImpl implements IWalletService {
         depositUser = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Wallet wallet = depositUser.getWallet();
         BankAccount bankAccount = bankAccountRepository.findByWalletId(wallet.getWalletId());
-        if(bankAccount == null){
+        if (bankAccount == null) {
             throw new AppException(ErrorCode.BANK_ACCOUNT_NOT_EXISTED);
         }
 
-        if(bankAccount.getBankBalance() == 0 || bankAccount.getBankBalance() < amount){
+        if (bankAccount.getBankBalance() == 0 || bankAccount.getBankBalance() < amount) {
             throw new AppException(ErrorCode.INSUFFICIENT_BALANCE);
         }
 
-        try{
+        try {
             wallet.setBalance(wallet.getBalance() + amount);
             bankAccount.setBankBalance(bankAccount.getBankBalance() - amount);
             bankAccountRepository.save(bankAccount);
             walletRepository.save(wallet);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.DEPOSIT_FAIL);
         }
 
-        //Transaction detail
+        // Transaction detail
         Transaction transaction = new Transaction();
         transaction.setTransactionType(TransactionType.DEPOSIT_TO_WALLET);
         transaction.setCreateDate(LocalDateTime.now());
@@ -77,26 +79,27 @@ public class WalletServiceImpl implements IWalletService {
     @Override
     @PreAuthorize("hasRole('USER')")
     public void withdrawMoney(String userId, Double amount) {
-        User withdrawUser = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User withdrawUser =
+                userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Wallet wallet = withdrawUser.getWallet();
         BankAccount bankAccount = bankAccountRepository.findByWalletId(wallet.getWalletId());
-        if(bankAccount == null){
+        if (bankAccount == null) {
             throw new AppException(ErrorCode.BANK_ACCOUNT_NOT_EXISTED);
         }
-        if(wallet.getBalance() < amount){
+        if (wallet.getBalance() < amount) {
             throw new AppException(ErrorCode.INSUFFICIENT_BALANCE);
         }
 
-        try{
+        try {
             wallet.setBalance(wallet.getBalance() - amount);
             bankAccount.setBankBalance(bankAccount.getBankBalance() + amount);
             bankAccountRepository.save(bankAccount);
             walletRepository.save(wallet);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.WITHDRAW_FAIL);
         }
 
-        //Transaction detail
+        // Transaction detail
         Transaction transaction = new Transaction();
         transaction.setTransactionType(TransactionType.WITHDRAW_TO_BANK);
         transaction.setCreateDate(LocalDateTime.now());
@@ -106,5 +109,4 @@ public class WalletServiceImpl implements IWalletService {
         wallet.getTransaction().add(transaction);
         transactionRepository.save(transaction);
     }
-
 }

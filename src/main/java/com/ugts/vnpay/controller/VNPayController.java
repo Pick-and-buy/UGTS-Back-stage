@@ -39,8 +39,8 @@ public class VNPayController {
     }
 
     @GetMapping("/payment-info")
-    public ApiResponse<String> getPaymentInfo(HttpServletRequest request, String orderId) {
-        var result = vnPayService.getPaymentInfo(request, orderId);
+    public ApiResponse<String> getPaymentInfo(HttpServletRequest request) {
+        var result = vnPayService.getPaymentInfo(request);
         return ApiResponse.<String>builder().message("Success").result(result).build();
     }
 }

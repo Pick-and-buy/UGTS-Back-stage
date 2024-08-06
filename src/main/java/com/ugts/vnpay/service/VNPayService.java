@@ -7,5 +7,5 @@ public interface VNPayService {
 
     int orderReturn(HttpServletRequest request);
 
-    String getPaymentInfo(HttpServletRequest request, String orderId);
+    String getPaymentInfo(HttpServletRequest request);
 }

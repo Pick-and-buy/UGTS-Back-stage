@@ -36,6 +36,4 @@ public class BankAccount {
 
     @NotNull
     private Double bankBalance;
-
-
 }

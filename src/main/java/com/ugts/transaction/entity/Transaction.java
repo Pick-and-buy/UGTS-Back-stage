@@ -6,7 +6,7 @@ import com.ugts.order.entity.Order;
 import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.enums.TransactionType;
 import com.ugts.user.entity.User;
-import com.ugts.wallet.Wallet;
+import com.ugts.wallet.entity.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

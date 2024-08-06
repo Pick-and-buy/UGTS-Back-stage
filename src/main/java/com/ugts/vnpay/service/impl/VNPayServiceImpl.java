@@ -148,7 +148,7 @@ public class VNPayServiceImpl implements VNPayService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public String getPaymentInfo(HttpServletRequest request, String orderId) {
+    public String getPaymentInfo(HttpServletRequest request) {
         int paymentStatus = orderReturn(request);
 
         var transaction = Transaction.builder()
@@ -177,11 +177,11 @@ public class VNPayServiceImpl implements VNPayService {
         String reason = updatedArrayInfo[1];
         transaction.setReason(reason);
 
-        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-
-        order.getOrderDetails().setIsPaid(true);
-
-        transaction.setOrder(order);
+//        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+//
+//        order.getOrderDetails().setIsPaid(true);
+//
+//        transaction.setOrder(order);
 
         if (paymentStatus == 1) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
