@@ -1,7 +1,7 @@
 package com.ugts.wallet.service;
 
 public interface IWalletService {
-    void charge(String userId, String walletId, double amount);
+    void charge(String walletId, double amount);
 
     Double showBalance(String userId);
 

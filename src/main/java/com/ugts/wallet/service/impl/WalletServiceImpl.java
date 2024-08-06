@@ -11,6 +11,7 @@ import com.ugts.transaction.enums.TransactionType;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.user.service.UserService;
 import com.ugts.wallet.entity.Wallet;
 import com.ugts.wallet.repository.WalletRepository;
 import com.ugts.wallet.service.IWalletService;
@@ -26,11 +27,13 @@ public class WalletServiceImpl implements IWalletService {
     private final BankAccountRepository bankAccountRepository;
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final UserService userService;
 
     @Override
     @Transactional
-    public void charge(String userId, String walletId, double amount) {
+    public void charge(String walletId, double amount) {
         try {
+            var userId = userService.getProfile().getId();
             var user = userRepository.findById(userId)
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 

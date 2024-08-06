@@ -18,10 +18,9 @@ public class WalletController {
     IWalletService walletService;
 
     @PostMapping("/charge")
-    public ApiResponse<Void> charge(@RequestParam("userId") String userId,
-                                    @RequestParam("walletId") String walletId,
+    public ApiResponse<Void> charge(@RequestParam("walletId") String walletId,
                                     @RequestParam("amount") double amount) {
-        walletService.charge(userId, walletId, amount);
+        walletService.charge(walletId, amount);
         return ApiResponse.<Void>builder()
                 .message("Charge success")
                 .build();
