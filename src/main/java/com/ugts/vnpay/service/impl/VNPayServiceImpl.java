@@ -171,15 +171,13 @@ public class VNPayServiceImpl implements VNPayService {
         updatedArrayInfo[0] = userId; // Add userId at the beginning of the array
         System.arraycopy(arrayInfo, 0, updatedArrayInfo, 1, arrayInfo.length); // Copy the existing elements
 
-
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         transaction.setUser(user);
 
         String reason = updatedArrayInfo[1];
         transaction.setReason(reason);
 
-        var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
         order.getOrderDetails().setIsPaid(true);
 

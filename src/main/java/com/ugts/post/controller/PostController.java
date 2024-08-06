@@ -1,9 +1,7 @@
 package com.ugts.post.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,17 +9,13 @@ import com.ugts.dto.ApiResponse;
 import com.ugts.post.dto.request.CreatePostRequest;
 import com.ugts.post.dto.request.UpdatePostRequest;
 import com.ugts.post.dto.response.PostResponse;
-import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
-import com.ugts.post.service.IPostRedisService;
 import com.ugts.post.service.IPostService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +30,6 @@ public class PostController {
     IPostService postService;
 
     ObjectMapper objectMapper;
-
-    IPostRedisService postRedisService;
 
     PostRepository postRepository;
 
@@ -77,39 +69,12 @@ public class PostController {
     }
 
     @GetMapping
-    public ApiResponse<Map<String, Object>> getAllPosts(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-            throws JsonProcessingException {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        List<PostResponse> posts = postRedisService.getAllPosts(pageRequest);
+    public ApiResponse<List<PostResponse>> getAllPosts() throws JsonProcessingException {
+        var result = postService.getAllPosts();
 
-        Map<String, Object> response = new HashMap<>();
-        if (posts == null || posts.isEmpty()) {
-            Page<Post> postPage = postRepository.findAll(pageRequest);
-            posts = postPage.getContent().stream()
-                    .map(postMapper::postToPostResponse)
-                    .toList();
-            postRedisService.saveAllPosts(posts, pageRequest);
-
-            response.put("posts", posts);
-            response.put("page", postPage.getNumber());
-            response.put("size", postPage.getSize());
-            response.put("totalElements", postPage.getTotalElements());
-            response.put("totalPages", postPage.getTotalPages());
-        } else {
-            long totalElements = postRepository.count(); // Or use a method to get the total elements cached
-            int totalPages = (int) Math.ceil((double) totalElements / size);
-
-            response.put("posts", posts);
-            response.put("page", page);
-            response.put("size", size);
-            response.put("totalElements", totalElements);
-            response.put("totalPages", totalPages);
-        }
-
-        return ApiResponse.<Map<String, Object>>builder()
+        return ApiResponse.<List<PostResponse>>builder()
                 .message("Get All Post Success")
-                .result(response)
+                .result(result)
                 .build();
     }
 
