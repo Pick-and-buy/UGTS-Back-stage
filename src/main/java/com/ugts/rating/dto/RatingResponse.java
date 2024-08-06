@@ -1,10 +1,10 @@
 package com.ugts.rating.dto;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class RatingResponse {
