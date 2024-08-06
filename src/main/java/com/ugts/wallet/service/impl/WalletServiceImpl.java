@@ -28,6 +28,26 @@ public class WalletServiceImpl implements IWalletService {
     private final TransactionRepository transactionRepository;
 
     @Override
+    @Transactional
+    public void charge(String userId, String walletId, double amount) {
+        try {
+            var user = userRepository.findById(userId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+            var wallet = walletRepository.findById(walletId)
+                    .orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+
+            var currentBalance = user.getWallet().getBalance();
+
+            double newBalance = currentBalance + amount;
+
+            wallet.setBalance(newBalance);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("some thing wrong when try to charge into wallet", e);
+        }
+    }
+
+    @Override
     @PreAuthorize("hasRole('USER')")
     public Double showBalance(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -45,7 +65,8 @@ public class WalletServiceImpl implements IWalletService {
     public void depositMoney(String userId, Double amount) {
         User depositUser;
         depositUser = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Wallet wallet = depositUser.getWallet();
+
+        var wallet = depositUser.getWallet();
         BankAccount bankAccount = bankAccountRepository.findByWalletId(wallet.getWalletId());
         if (bankAccount == null) {
             throw new AppException(ErrorCode.BANK_ACCOUNT_NOT_EXISTED);
