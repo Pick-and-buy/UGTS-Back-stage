@@ -4,6 +4,8 @@ import com.ugts.product.entity.Product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class UpdatePostRequest {
     String description;
     Product product;
     Boolean boosted;
+    LocalDateTime boostEndTime;
 }

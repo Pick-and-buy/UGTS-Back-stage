@@ -77,7 +77,8 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
-    private Product createPostFunction(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
+    @Transactional
+    protected Product createPostFunction(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
@@ -116,8 +117,8 @@ public class PostServiceImpl implements IPostService {
                 .build();
         return productRepository.save(product);
     }
-
-    private Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages) throws IOException {
+    @Transactional
+    protected Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages) throws IOException {
         // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
@@ -136,7 +137,12 @@ public class PostServiceImpl implements IPostService {
                 .updatedAt(new Date())
                 .product(product)
                 .build();
-
+        if(postRequest.getBoosted()) {
+            boostPost(post.getId(), 2);
+        }else {
+            post.setBoosted(false);
+            post.setBoostEndTime(null);
+        }
         // save new post into database
         var newPost = postRepository.save(post);
 
@@ -235,6 +241,12 @@ public class PostServiceImpl implements IPostService {
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
+        if(request.getBoosted() && request.getBoostEndTime() == null) {
+            boostPost(post.getId(), 2);
+        }else {
+            post.setBoosted(false);
+            post.setBoostEndTime(null);
+        }
 
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
@@ -300,7 +312,6 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public void boostPost(String postId, int hours) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-
         try{
          post.setBoosted(true);
          post.setBoostEndTime(LocalDateTime.now().plusHours(hours));
