@@ -18,6 +18,7 @@ import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
 import com.ugts.vnpay.configuration.VnPayConfiguration;
 import com.ugts.vnpay.service.VNPayService;
+import com.ugts.wallet.repository.WalletRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class VNPayServiceImpl implements VNPayService {
     TransactionRepository transactionRepository;
 
     OrderRepository orderRepository;
+    private final WalletRepository walletRepository;
 
     @Override
     @Transactional
@@ -150,6 +152,9 @@ public class VNPayServiceImpl implements VNPayService {
     @PreAuthorize("hasRole('USER')")
     public String getPaymentInfo(HttpServletRequest request) {
         int paymentStatus = orderReturn(request);
+        var walletId = userService.getProfile().getWallet().getWalletId();
+        var currentWallet =
+                walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
 
         var transaction = Transaction.builder()
                 .id(request.getParameter("vnp_TransactionNo"))
@@ -161,6 +166,7 @@ public class VNPayServiceImpl implements VNPayService {
                 .currency("VND")
                 .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
                 .reason(request.getParameter("vnp_OrderInfo"))
+                .wallet(currentWallet)
                 .build();
 
         String orderInfo = request.getParameter("vnp_OrderInfo");
@@ -176,12 +182,6 @@ public class VNPayServiceImpl implements VNPayService {
 
         String reason = updatedArrayInfo[1];
         transaction.setReason(reason);
-
-//        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-//
-//        order.getOrderDetails().setIsPaid(true);
-//
-//        transaction.setOrder(order);
 
         if (paymentStatus == 1) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);

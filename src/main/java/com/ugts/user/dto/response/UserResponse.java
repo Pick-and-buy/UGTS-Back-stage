@@ -4,8 +4,10 @@ import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.post.dto.LikedPostDto;
 import com.ugts.post.dto.response.PostResponse;
+import com.ugts.wallet.dto.WalletResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -32,7 +34,11 @@ public class UserResponse {
 
     Set<LikedPostDto> likedPosts;
 
+    @JsonIgnoreProperties(value = {"comments", "user"})
     Set<PostResponse> createdPosts;
 
     Boolean isVerified;
+
+    @JsonIgnoreProperties(value = "user")
+    WalletResponse wallet;
 }

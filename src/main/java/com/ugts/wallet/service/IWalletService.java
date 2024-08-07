@@ -5,7 +5,7 @@ import com.ugts.wallet.dto.WalletResponse;
 public interface IWalletService {
     WalletResponse registerNewWallet();
 
-    void charge(String walletId, double amount);
+    double charge(String walletId, double amount);
 
     Double showBalance(String userId);
 

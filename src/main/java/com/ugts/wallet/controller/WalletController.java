@@ -28,8 +28,12 @@ public class WalletController {
     }
 
     @PostMapping("/charge")
-    public ApiResponse<Void> charge(@RequestParam("walletId") String walletId, @RequestParam("amount") double amount) {
-        walletService.charge(walletId, amount);
-        return ApiResponse.<Void>builder().message("Charge success").build();
+    public ApiResponse<Double> charge(
+            @RequestParam("walletId") String walletId, @RequestParam("amount") double amount) {
+        var result = walletService.charge(walletId, amount);
+        return ApiResponse.<Double>builder()
+                .message("Charge success")
+                .result(result)
+                .build();
     }
 }

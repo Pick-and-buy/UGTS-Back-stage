@@ -46,7 +46,7 @@ public class WalletServiceImpl implements IWalletService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    public void charge(String walletId, double amount) {
+    public double charge(String walletId, double amount) {
         try {
             var userId = userService.getProfile().getId();
             var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -57,6 +57,8 @@ public class WalletServiceImpl implements IWalletService {
             var currentBalance = user.getWallet().getBalance();
             double newBalance = currentBalance + amount;
             wallet.setBalance(newBalance);
+
+            return newBalance;
         } catch (RuntimeException e) {
             throw new RuntimeException("some thing wrong when try to charge into wallet", e);
         }
