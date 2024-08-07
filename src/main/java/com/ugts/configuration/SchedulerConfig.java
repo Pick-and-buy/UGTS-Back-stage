@@ -30,7 +30,6 @@ public class SchedulerConfig {
         orderService.autoRateOrders();
     }
 
-
     @Scheduled(fixedRate = 3600000) // Every hour
     public void removeExpiredBoosts() {
         postRepository.resetExpiredBoosts(LocalDateTime.now());

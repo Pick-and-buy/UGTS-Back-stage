@@ -16,5 +16,4 @@ public class UpdatePostRequest {
     String description;
     Product product;
     Boolean boosted;
-    LocalDateTime boostEndTime;
 }

@@ -51,4 +51,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
     @Modifying
     @Query("UPDATE Post p SET p.boosted = false, p.boostEndTime = null WHERE p.boostEndTime < ?1 AND p.boosted = true")
     void resetExpiredBoosts(LocalDateTime now);
+
+    @Query("SELECT p FROM Post p ORDER BY p.boosted DESC, p.boostEndTime DESC")
+    List<Post> findAllOrderByBoostedDesc();
 }

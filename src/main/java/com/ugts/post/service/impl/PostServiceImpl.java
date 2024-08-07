@@ -61,7 +61,7 @@ public class PostServiceImpl implements IPostService {
     public PostResponse createPostLevel1(CreatePostRequest postRequest, MultipartFile[] productImages)
             throws IOException {
         checkPostInput(postRequest);
-        Product product = createPostFunction(postRequest, VerifiedLevel.LEVEL_1);
+        Product product = createProduct(postRequest, VerifiedLevel.LEVEL_1);
         Post newPost = saveNewPost(postRequest, product, productImages);
         return postMapper.postToPostResponse(newPost);
     }
@@ -78,7 +78,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Transactional
-    protected Product createPostFunction(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
+    protected Product createProduct(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
@@ -137,6 +137,8 @@ public class PostServiceImpl implements IPostService {
                 .updatedAt(new Date())
                 .product(product)
                 .build();
+        postRepository.save(post);
+
         if(postRequest.getBoosted()) {
             boostPost(post.getId(), 2);
         }else {
@@ -183,7 +185,7 @@ public class PostServiceImpl implements IPostService {
             throws IOException {
 
         checkPostInput(postRequest);
-        Product product = createPostFunction(postRequest, VerifiedLevel.LEVEL_2);
+        Product product = createProduct(postRequest, VerifiedLevel.LEVEL_2);
         Post newPost = saveNewPost(postRequest, product, productImages);
 
         // upload product video to GCS
@@ -203,7 +205,7 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<PostResponse> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllOrderByBoostedDesc();
         return postMapper.getAllPosts(posts);
     }
 
@@ -241,7 +243,8 @@ public class PostServiceImpl implements IPostService {
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
-        if(request.getBoosted() && request.getBoostEndTime() == null) {
+
+        if(request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);
         }else {
             post.setBoosted(false);
