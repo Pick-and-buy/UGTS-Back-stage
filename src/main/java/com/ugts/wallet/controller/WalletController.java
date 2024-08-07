@@ -1,6 +1,9 @@
 package com.ugts.wallet.controller;
 
+import java.util.Set;
+
 import com.ugts.dto.ApiResponse;
+import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.wallet.dto.WalletResponse;
 import com.ugts.wallet.service.IWalletService;
 import lombok.AccessLevel;
@@ -51,6 +54,15 @@ public class WalletController {
         var result = walletService.payForOrder(walletId, orderId, payAmount);
         return ApiResponse.<Double>builder()
                 .message("Pay Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/transaction-histories")
+    public ApiResponse<Set<TransactionResponse>> getTransactionHistories(@RequestParam("walletId") String walletId) {
+        var result = walletService.getTransactionHistories(walletId);
+        return ApiResponse.<Set<TransactionResponse>>builder()
+                .message("Success")
                 .result(result)
                 .build();
     }

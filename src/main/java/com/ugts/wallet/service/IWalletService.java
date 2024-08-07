@@ -1,5 +1,8 @@
 package com.ugts.wallet.service;
 
+import java.util.Set;
+
+import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.wallet.dto.WalletResponse;
 
 public interface IWalletService {
@@ -10,6 +13,8 @@ public interface IWalletService {
     WalletResponse getWalletInformation(String walletId);
 
     double payForOrder(String walletId, String order, double payAmount);
+
+    Set<TransactionResponse> getTransactionHistories(String walletId);
 
     void fundTransfer(String fromUserId, String toUserId, Double amount);
 

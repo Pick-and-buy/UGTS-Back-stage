@@ -1,17 +1,19 @@
 package com.ugts.wallet.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.ugts.bankaccount.BankAccount;
 import com.ugts.bankaccount.BankAccountRepository;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.order.repository.OrderRepository;
+import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.transaction.entity.Transaction;
 import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.enums.TransactionType;
+import com.ugts.transaction.mapper.TransactionMapper;
 import com.ugts.transaction.repository.TransactionRepository;
-import com.ugts.transaction.service.TransactionService;
 import com.ugts.transaction.service.impl.TransactionServiceImpl;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
@@ -22,24 +24,26 @@ import com.ugts.wallet.entity.Wallet;
 import com.ugts.wallet.mapper.WalletMapper;
 import com.ugts.wallet.repository.WalletRepository;
 import com.ugts.wallet.service.IWalletService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WalletServiceImpl implements IWalletService {
-    private final UserRepository userRepository;
-    private final BankAccountRepository bankAccountRepository;
-    private final WalletRepository walletRepository;
-    private final TransactionRepository transactionRepository;
-    private final UserService userService;
-    private final WalletMapper walletMapper;
-    private final VnPayConfiguration configuration;
-    private final TransactionService transactionService;
-    private final TransactionServiceImpl transactionServiceImpl;
-    private final OrderRepository orderRepository;
+    UserRepository userRepository;
+    BankAccountRepository bankAccountRepository;
+    WalletRepository walletRepository;
+    TransactionRepository transactionRepository;
+    UserService userService;
+    WalletMapper walletMapper;
+    TransactionServiceImpl transactionServiceImpl;
+    OrderRepository orderRepository;
+    TransactionMapper transactionMapper;
 
     @Override
     @Transactional
@@ -108,6 +112,7 @@ public class WalletServiceImpl implements IWalletService {
                     .billNo(billNo)
                     .cardType("Wallet")
                     .amount(payAmount)
+                    .currency("VND")
                     .reason("Pay For Order")
                     .createDate(LocalDateTime.now())
                     .transactionStatus(TransactionStatus.SUCCESS)
@@ -123,6 +128,18 @@ public class WalletServiceImpl implements IWalletService {
         } catch (RuntimeException e) {
             throw new RuntimeException("some thing wrong when try to pay for order", e);
         }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public Set<TransactionResponse> getTransactionHistories(String walletId) {
+        if (walletId.isBlank() || walletId.isEmpty()) {
+            throw new RuntimeException("wallet ID must not be null");
+        }
+        var wallet =
+                walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+        var transactions = wallet.getTransactions();
+        return transactionMapper.toTransactionsResponse(transactions);
     }
 
     @Override
