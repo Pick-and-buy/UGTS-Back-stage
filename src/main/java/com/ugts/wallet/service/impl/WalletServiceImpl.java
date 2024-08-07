@@ -6,12 +6,17 @@ import com.ugts.bankaccount.BankAccount;
 import com.ugts.bankaccount.BankAccountRepository;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
+import com.ugts.order.repository.OrderRepository;
 import com.ugts.transaction.entity.Transaction;
+import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.enums.TransactionType;
 import com.ugts.transaction.repository.TransactionRepository;
+import com.ugts.transaction.service.TransactionService;
+import com.ugts.transaction.service.impl.TransactionServiceImpl;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
+import com.ugts.vnpay.configuration.VnPayConfiguration;
 import com.ugts.wallet.dto.WalletResponse;
 import com.ugts.wallet.entity.Wallet;
 import com.ugts.wallet.mapper.WalletMapper;
@@ -31,6 +36,10 @@ public class WalletServiceImpl implements IWalletService {
     private final TransactionRepository transactionRepository;
     private final UserService userService;
     private final WalletMapper walletMapper;
+    private final VnPayConfiguration configuration;
+    private final TransactionService transactionService;
+    private final TransactionServiceImpl transactionServiceImpl;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional
@@ -70,6 +79,50 @@ public class WalletServiceImpl implements IWalletService {
         var wallet =
                 walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
         return walletMapper.walletToWalletResponse(wallet);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public double payForOrder(String walletId, String orderId, double payAmount) {
+        try {
+            var userId = userService.getProfile().getId();
+            var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+            var wallet =
+                    walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+
+            var currentBalance = user.getWallet().getBalance();
+            if (currentBalance < payAmount) {
+                throw new AppException(ErrorCode.INSUFFICIENT_BALANCE);
+            }
+            var newBalance = currentBalance - payAmount;
+            wallet.setBalance(newBalance);
+
+            var transNo = VnPayConfiguration.getRandomNumber(8);
+            var billNo = transactionServiceImpl.getRandomBillNumber();
+            var order =
+                    orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+            var transaction = Transaction.builder()
+                    .transNo(transNo)
+                    .billNo(billNo)
+                    .cardType("Wallet")
+                    .amount(payAmount)
+                    .reason("Pay For Order")
+                    .createDate(LocalDateTime.now())
+                    .transactionStatus(TransactionStatus.SUCCESS)
+                    .user(user)
+                    .order(order)
+                    .wallet(wallet)
+                    .transactionType(TransactionType.PAY_ORDER)
+                    .build();
+
+            transactionRepository.save(transaction);
+
+            return newBalance;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("some thing wrong when try to pay for order", e);
+        }
     }
 
     @Override

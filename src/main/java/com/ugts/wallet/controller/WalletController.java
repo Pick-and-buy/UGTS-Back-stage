@@ -42,4 +42,16 @@ public class WalletController {
                 .result(result)
                 .build();
     }
+
+    @PutMapping("/pay-order")
+    public ApiResponse<Double> payOrder(
+            @RequestParam("walletId") String walletId,
+            @RequestParam("orderId") String orderId,
+            @RequestParam("payAmount") double payAmount) {
+        var result = walletService.payForOrder(walletId, orderId, payAmount);
+        return ApiResponse.<Double>builder()
+                .message("Pay Success")
+                .result(result)
+                .build();
+    }
 }

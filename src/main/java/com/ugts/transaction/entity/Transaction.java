@@ -41,7 +41,6 @@ public class Transaction {
 
     String refundBankCode;
 
-    @Lob
     @Column
     private String reason;
 

@@ -9,6 +9,8 @@ public interface IWalletService {
 
     WalletResponse getWalletInformation(String walletId);
 
+    double payForOrder(String walletId, String order, double payAmount);
+
     void fundTransfer(String fromUserId, String toUserId, Double amount);
 
     void depositMoney(String userId, Double amount);
