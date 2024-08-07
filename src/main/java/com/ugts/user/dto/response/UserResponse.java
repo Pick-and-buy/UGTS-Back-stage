@@ -39,6 +39,6 @@ public class UserResponse {
 
     Boolean isVerified;
 
-    @JsonIgnoreProperties(value = "user")
+    @JsonIgnoreProperties(value = {"user", "transactions"})
     WalletResponse wallet;
 }

@@ -27,7 +27,7 @@ public class Wallet {
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Transaction> transaction = new HashSet<>();
+    private Set<Transaction> transactions = new HashSet<>();
 }

@@ -7,7 +7,7 @@ public interface IWalletService {
 
     double charge(String walletId, double amount);
 
-    Double showBalance(String userId);
+    WalletResponse getWalletInformation(String walletId);
 
     void fundTransfer(String fromUserId, String toUserId, Double amount);
 

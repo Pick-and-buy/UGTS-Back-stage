@@ -66,9 +66,10 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public Double showBalance(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return user.getWallet().getBalance();
+    public WalletResponse getWalletInformation(String walletId) {
+        var wallet =
+                walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+        return walletMapper.walletToWalletResponse(wallet);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class WalletServiceImpl implements IWalletService {
         transaction.setAmount(amount);
         transaction.setWallet(wallet);
         transaction.setUser(depositUser);
-        wallet.getTransaction().add(transaction);
+        wallet.getTransactions().add(transaction);
         transactionRepository.save(transaction);
     }
 
@@ -144,7 +145,7 @@ public class WalletServiceImpl implements IWalletService {
         transaction.setAmount(amount);
         transaction.setWallet(wallet);
         transaction.setUser(withdrawUser);
-        wallet.getTransaction().add(transaction);
+        wallet.getTransactions().add(transaction);
         transactionRepository.save(transaction);
     }
 }

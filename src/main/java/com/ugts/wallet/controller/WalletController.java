@@ -6,10 +6,7 @@ import com.ugts.wallet.service.IWalletService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/wallets")
@@ -33,6 +30,15 @@ public class WalletController {
         var result = walletService.charge(walletId, amount);
         return ApiResponse.<Double>builder()
                 .message("Charge success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/info")
+    public ApiResponse<WalletResponse> getWalletInfo(@RequestParam("walletId") String walletId) {
+        var result = walletService.getWalletInformation(walletId);
+        return ApiResponse.<WalletResponse>builder()
+                .message("Success")
                 .result(result)
                 .build();
     }

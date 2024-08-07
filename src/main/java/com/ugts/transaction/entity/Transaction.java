@@ -59,5 +59,6 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Wallet wallet;
 
+    @Enumerated(EnumType.STRING)
     TransactionType transactionType;
 }
