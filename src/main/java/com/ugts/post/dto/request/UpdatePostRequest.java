@@ -13,4 +13,5 @@ public class UpdatePostRequest {
     String title;
     String description;
     Product product;
+    Boolean boosted;
 }

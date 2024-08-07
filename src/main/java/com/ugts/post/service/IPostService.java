@@ -43,4 +43,6 @@ public interface IPostService {
     List<PostResponse> getPostByBrandLine(String brandLineName);
 
     List<PostResponse> getPostsByFollowedUser(String followedUserId);
+
+    void boostPost(String postId, int hours);
 }

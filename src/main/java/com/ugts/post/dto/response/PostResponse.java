@@ -1,5 +1,6 @@
 package com.ugts.post.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -34,4 +35,8 @@ public class PostResponse {
     ProductResponse product;
 
     Set<GeneralCommentInformationDto> comments;
+
+    Boolean boosted;
+
+    LocalDateTime boostEndTime;
 }
