@@ -146,44 +146,6 @@ public class WalletServiceImpl implements IWalletService {
     @PreAuthorize("hasRole('USER')")
     public void fundTransfer(String fromUserId, String toUserId, Double amount) {}
 
-    // Nap tien
-    @Override
-    @PreAuthorize("hasRole('USER')")
-    @Transactional
-    public void depositMoney(String userId, Double amount) {
-        User depositUser;
-        depositUser = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
-        var wallet = depositUser.getWallet();
-        BankAccount bankAccount = bankAccountRepository.findByWalletId(wallet.getWalletId());
-        if (bankAccount == null) {
-            throw new AppException(ErrorCode.BANK_ACCOUNT_NOT_EXISTED);
-        }
-
-        if (bankAccount.getBankBalance() == 0 || bankAccount.getBankBalance() < amount) {
-            throw new AppException(ErrorCode.INSUFFICIENT_BALANCE);
-        }
-
-        try {
-            wallet.setBalance(wallet.getBalance() + amount);
-            bankAccount.setBankBalance(bankAccount.getBankBalance() - amount);
-            bankAccountRepository.save(bankAccount);
-            walletRepository.save(wallet);
-        } catch (Exception e) {
-            throw new AppException(ErrorCode.DEPOSIT_FAIL);
-        }
-
-        // Transaction detail
-        Transaction transaction = new Transaction();
-        transaction.setTransactionType(TransactionType.DEPOSIT_TO_WALLET);
-        transaction.setCreateDate(LocalDateTime.now());
-        transaction.setAmount(amount);
-        transaction.setWallet(wallet);
-        transaction.setUser(depositUser);
-        wallet.getTransactions().add(transaction);
-        transactionRepository.save(transaction);
-    }
-
     // Rut tien vao bank
     @Override
     @PreAuthorize("hasRole('USER')")
