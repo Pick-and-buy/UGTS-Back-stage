@@ -12,7 +12,9 @@ import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
+import com.ugts.wallet.dto.WalletResponse;
 import com.ugts.wallet.entity.Wallet;
+import com.ugts.wallet.mapper.WalletMapper;
 import com.ugts.wallet.repository.WalletRepository;
 import com.ugts.wallet.service.IWalletService;
 import lombok.RequiredArgsConstructor;
@@ -28,22 +30,32 @@ public class WalletServiceImpl implements IWalletService {
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final UserService userService;
+    private final WalletMapper walletMapper;
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public WalletResponse registerNewWallet() {
+        var userId = userService.getProfile().getId();
+        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var newWallet = Wallet.builder().user(user).balance(0.0).build();
+
+        return walletMapper.walletToWalletResponse(walletRepository.save(newWallet));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
     public void charge(String walletId, double amount) {
         try {
             var userId = userService.getProfile().getId();
-            var user = userRepository.findById(userId)
-                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-            var wallet = walletRepository.findById(walletId)
-                    .orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+            var wallet =
+                    walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
 
             var currentBalance = user.getWallet().getBalance();
-
             double newBalance = currentBalance + amount;
-
             wallet.setBalance(newBalance);
         } catch (RuntimeException e) {
             throw new RuntimeException("some thing wrong when try to charge into wallet", e);
