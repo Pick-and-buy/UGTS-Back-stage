@@ -45,4 +45,6 @@ public interface IPostService {
     List<PostResponse> getPostsByFollowedUser(String followedUserId);
 
     void boostPost(String postId, int hours);
+
+    void archivePost(String postId);
 }

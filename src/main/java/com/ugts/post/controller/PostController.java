@@ -158,4 +158,11 @@ public class PostController {
                 .result(result)
                 .build();
     }
+
+    @PutMapping("/archive-post/{postId}")
+    public ApiResponse<Void> archivePost(@PathVariable String postId) {
+        postService.archivePost(postId);
+        return ApiResponse.<Void>builder().message("Archive post success").build();
+    }
+
 }

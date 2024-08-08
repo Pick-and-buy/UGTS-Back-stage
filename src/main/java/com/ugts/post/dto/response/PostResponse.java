@@ -39,4 +39,7 @@ public class PostResponse {
     Boolean boosted;
 
     LocalDateTime boostEndTime;
+
+    Boolean isArchived;
+
 }

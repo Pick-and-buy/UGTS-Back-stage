@@ -138,6 +138,7 @@ public class PostServiceImpl implements IPostService {
                 .createdAt(new Date())
                 .updatedAt(new Date())
                 .product(product)
+                .isArchived(false)
                 .build();
         postRepository.save(post);
 
@@ -324,5 +325,14 @@ public class PostServiceImpl implements IPostService {
         } catch (Exception e) {
             log.error("An error occurred while boost post: {}", e.getMessage());
         }
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void archivePost(String postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        post.setIsArchived(true);
+        postRepository.save(post);
     }
 }

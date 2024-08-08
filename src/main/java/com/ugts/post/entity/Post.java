@@ -57,4 +57,6 @@ public class Post {
     Boolean boosted;
 
     LocalDateTime boostEndTime;
+
+    Boolean isArchived;
 }
