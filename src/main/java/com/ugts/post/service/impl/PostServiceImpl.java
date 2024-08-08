@@ -66,7 +66,7 @@ public class PostServiceImpl implements IPostService {
         return postMapper.postToPostResponse(newPost);
     }
 
-    private void checkPostInput(CreatePostRequest postRequest){
+    private void checkPostInput(CreatePostRequest postRequest) {
         // Validate the CreatePostRequest object
         if (postRequest == null
                 || postRequest.getBrand() == null
@@ -117,8 +117,10 @@ public class PostServiceImpl implements IPostService {
                 .build();
         return productRepository.save(product);
     }
+
     @Transactional
-    protected Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages) throws IOException {
+    protected Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages)
+            throws IOException {
         // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
@@ -139,9 +141,9 @@ public class PostServiceImpl implements IPostService {
                 .build();
         postRepository.save(post);
 
-        if(postRequest.getBoosted()) {
+        if (postRequest.getBoosted()) {
             boostPost(post.getId(), 2);
-        }else {
+        } else {
             post.setBoosted(false);
             post.setBoostEndTime(null);
         }
@@ -154,8 +156,8 @@ public class PostServiceImpl implements IPostService {
         // save product into database
         productRepository.save(product);
         return postRepository.save(newPost);
-
     }
+
     private void uploadProductImagesToGCS(MultipartFile[] productImages, Product product) throws IOException {
         // upload product images to GCS
         List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
@@ -244,9 +246,9 @@ public class PostServiceImpl implements IPostService {
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
 
-        if(request.getBoosted() && post.getBoostEndTime() == null) {
+        if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);
-        }else {
+        } else {
             post.setBoosted(false);
             post.setBoostEndTime(null);
         }
@@ -315,12 +317,12 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public void boostPost(String postId, int hours) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        try{
-         post.setBoosted(true);
-         post.setBoostEndTime(LocalDateTime.now().plusHours(hours));
-         postRepository.save(post);
-        }catch (Exception e){
-         log.error("An error occurred while boost post: {}", e.getMessage());
-     }
+        try {
+            post.setBoosted(true);
+            post.setBoostEndTime(LocalDateTime.now().plusHours(hours));
+            postRepository.save(post);
+        } catch (Exception e) {
+            log.error("An error occurred while boost post: {}", e.getMessage());
+        }
     }
 }

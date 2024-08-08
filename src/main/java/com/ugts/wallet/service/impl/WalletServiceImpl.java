@@ -47,11 +47,26 @@ public class WalletServiceImpl implements IWalletService {
     OrderRepository orderRepository;
     TransactionMapper transactionMapper;
 
+    /**
+     * Retrieves the user by getting the user ID from the user service profile,
+     * then finds and returns the user from the user repository based on the user ID.
+     * Throws an 'AppException' with the error code 'USER_NOT_EXISTED' if the user is not found.
+     *
+     * @return The user retrieved from the repository.
+     */
     private User retrieveUser() {
         var userId = userService.getProfile().getId();
         return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
+    /**
+     * Registers a new wallet for the user.
+     * Retrieves the user, checks if the user already has a wallet,
+     * creates a new wallet with a balance of 0.0 for the user,
+     * logs the creation of the new wallet, and returns the wallet response after saving the new wallet.
+     *
+     * @return The wallet response after registering the new wallet.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -59,7 +74,7 @@ public class WalletServiceImpl implements IWalletService {
         var user = retrieveUser();
 
         // Check if the user already has a wallet
-        if(walletRepository.findByUser(user).isPresent()) {
+        if (walletRepository.findByUser(user).isPresent()) {
             throw new AppException(ErrorCode.WALLET_ALREADY_EXISTED);
         }
         var newWallet = Wallet.builder().user(user).balance(0.0).build();
@@ -70,6 +85,14 @@ public class WalletServiceImpl implements IWalletService {
         return walletMapper.walletToWalletResponse(walletRepository.save(newWallet));
     }
 
+    /**
+     * Charges the specified amount to the user's wallet.
+     *
+     * @param walletId The ID of the wallet to charge.
+     * @param amount The amount to charge to the wallet.
+     * @return The new balance after charging the amount to the wallet.
+     * @throws AppException if the wallet is not found or if an error occurs during the charge process.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -90,6 +113,13 @@ public class WalletServiceImpl implements IWalletService {
         }
     }
 
+    /**
+     * Retrieves and returns the wallet information based on the provided wallet ID.
+     *
+     * @param walletId The ID of the wallet to retrieve information for.
+     * @return The wallet response containing the user, wallet ID, and balance.
+     * @throws AppException if the wallet with the specified ID is not found.
+     */
     @Override
     @PreAuthorize("hasRole('USER')")
     public WalletResponse getWalletInformation(String walletId) {
@@ -98,6 +128,15 @@ public class WalletServiceImpl implements IWalletService {
         return walletMapper.walletToWalletResponse(wallet);
     }
 
+    /**
+     * Processes a payment for an order using the specified wallet.
+     *
+     * @param walletId The ID of the wallet to make the payment from.
+     * @param orderId The ID of the order to pay for.
+     * @param payAmount The amount to be paid for the order.
+     * @return The new balance after deducting the payment amount from the wallet.
+     * @throws AppException if the wallet is not found, or if there is insufficient balance for the payment.
+     */
     @Override
     @PreAuthorize("hasRole('USER')")
     public double payForOrder(String walletId, String orderId, double payAmount) {
@@ -144,12 +183,8 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public Set<TransactionResponse> getTransactionHistories(String walletId) {
-        if (walletId.isBlank() || walletId.isEmpty()) {
-            throw new RuntimeException("wallet ID must not be null");
-        }
-        var wallet =
-                walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+    public Set<TransactionResponse> getTransactionHistories() {
+        var wallet = retrieveUser().getWallet();
         var transactions = wallet.getTransactions();
         return transactionMapper.toTransactionsResponse(transactions);
     }

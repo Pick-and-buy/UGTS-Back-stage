@@ -14,7 +14,7 @@ public interface IWalletService {
 
     double payForOrder(String walletId, String order, double payAmount);
 
-    Set<TransactionResponse> getTransactionHistories(String walletId);
+    Set<TransactionResponse> getTransactionHistories();
 
     void fundTransfer(String fromUserId, String toUserId, Double amount);
 
