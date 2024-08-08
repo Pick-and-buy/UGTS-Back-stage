@@ -86,7 +86,7 @@ public class FollowServiceImpl implements IFollowService {
     }
 
     @Override
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public List<UserResponse> getFollowers(String userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);
