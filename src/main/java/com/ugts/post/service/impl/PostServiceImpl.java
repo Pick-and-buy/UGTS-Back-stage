@@ -55,6 +55,16 @@ public class PostServiceImpl implements IPostService {
 
     BrandLineRepository brandLineRepository;
 
+    /**
+     * Creates a new post at level 1 with the provided post request and product images.
+     * Validates the post request, creates a new product at level 1, saves the new post,
+     * and returns the response of the new post.
+     *
+     * @param postRequest The request containing details of the post to be created.
+     * @param productImages The images of the product associated with the post.
+     * @return The response of the newly created post.
+     * @throws IOException If an I/O error occurs during the process.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -66,6 +76,11 @@ public class PostServiceImpl implements IPostService {
         return postMapper.postToPostResponse(newPost);
     }
 
+    /**
+     * Validates the provided CreatePostRequest object.
+     * Checks if the postRequest is null or if any of its brand, brandLine, category, or product fields are null.
+     * Throws an AppException with ErrorCode.INVALID_INPUT if validation fails.
+     */
     private void checkPostInput(CreatePostRequest postRequest) {
         // Validate the CreatePostRequest object
         if (postRequest == null
@@ -77,6 +92,12 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
+    /**
+     * Creates a new product based on the provided CreatePostRequest and VerifiedLevel.
+     * Retrieves the brand, brand line, and category from their respective repositories based on the request data.
+     * Constructs a new product object with the extracted information and the verified level.
+     * Saves the product in the database and returns the created product.
+     */
     @Transactional
     protected Product createProduct(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
         // check brand existed
@@ -118,6 +139,19 @@ public class PostServiceImpl implements IPostService {
         return productRepository.save(product);
     }
 
+    /**
+     * Saves a new post based on the provided post request, product, and product images.
+     * Retrieves the user from the context holder using the phone number from the authentication.
+     * Creates a new post with the user, title, description, product, and timestamps.
+     * Handles boosting the post if requested and saves the new post into the database.
+     * Uploads product images to Google Cloud Storage and saves the product in the database.
+     *
+     * @param postRequest The request containing details of the post to be created.
+     * @param product The product associated with the post.
+     * @param productImages The images of the product associated with the post.
+     * @return The newly saved post.
+     * @throws IOException If an I/O error occurs during the process.
+     */
     @Transactional
     protected Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages)
             throws IOException {
@@ -159,6 +193,16 @@ public class PostServiceImpl implements IPostService {
         return postRepository.save(newPost);
     }
 
+    /**
+     * Uploads the provided product images to Google Cloud Storage (GCS).
+     * Retrieves the image URLs from the GoogleCloudStorageService by uploading each image in the array of productImages
+     * associated with the given product ID. Then, for each image URL, creates a new ProductImage object
+     * and adds it to the product's list of images after checking and initializing the list if necessary.
+     *
+     * @param productImages An array of MultipartFile objects representing the images to be uploaded.
+     * @param product The Product object to which the uploaded images will be associated.
+     * @throws IOException If an I/O error occurs during the upload process.
+     */
     private void uploadProductImagesToGCS(MultipartFile[] productImages, Product product) throws IOException {
         // upload product images to GCS
         List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
@@ -177,6 +221,19 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
+    /**
+     * Creates a new post at level 2 with the provided post request, product images, video, and original receipt proof.
+     * Validates the post request, creates a new product at level 2, saves the new post,
+     * uploads the product video and original receipt proof to Google Cloud Storage,
+     * and returns the response of the new post.
+     *
+     * @param postRequest The request containing details of the post to be created.
+     * @param productImages The images of the product associated with the post.
+     * @param productVideo The video of the product associated with the post.
+     * @param originalReceiptProof The original receipt proof of the product associated with the post.
+     * @return The response of the newly created post.
+     * @throws IOException If an I/O error occurs during the process.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -206,12 +263,35 @@ public class PostServiceImpl implements IPostService {
         return postMapper.postToPostResponse(newPost);
     }
 
+    /**
+     * Retrieves all posts in descending order based on their boost status.
+     * Fetches all posts from the database sorted by boosted status in descending order.
+     * Maps the retrieved posts to PostResponse objects using the PostMapper.
+     *
+     * @return A list of PostResponse objects representing all posts sorted by boost status.
+     */
     @Override
     public List<PostResponse> getAllPosts() {
         List<Post> posts = postRepository.findAllOrderByBoostedDesc();
         return postMapper.getAllPosts(posts);
     }
 
+    /**
+     * Updates an existing post with the provided details.
+     * Retrieves the post by its ID from the post repository.
+     * Retrieves the product by its ID from the product repository.
+     * Uploads new product images, video, and original receipt proof to Google Cloud Storage.
+     * Updates the post title, description, product, and timestamps.
+     * Handles boosting the post if requested.
+     *
+     * @param postId The ID of the post to be updated.
+     * @param request The updated details for the post.
+     * @param productImages The new images for the product associated with the post.
+     * @param productVideo The new video for the product associated with the post.
+     * @param originalReceiptProof The new original receipt proof for the product.
+     * @return The response of the updated post.
+     * @throws IOException If an I/O error occurs during the process.
+     */
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
@@ -258,18 +338,38 @@ public class PostServiceImpl implements IPostService {
         return postMapper.postToPostResponse(updatedPost);
     }
 
+    /**
+     * Retrieves a post by its ID from the database.
+     * Throws an {@link AppException} with {@link ErrorCode#POST_NOT_FOUND} if the post with the given ID is not found.
+     *
+     * @param postId The ID of the post to retrieve.
+     * @return The response representing the post.
+     */
     @Override
     public PostResponse getPostById(String postId) {
         var post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         return postMapper.postToPostResponse(post);
     }
 
+    /**
+     * Retrieves all posts associated with a specific brand by the given brand name.
+     *
+     * @param brandName The name of the brand to filter the posts.
+     * @return A list of PostResponse objects representing the posts related to the specified brand.
+     */
     @Override
     public List<PostResponse> getPostsByBrand(String brandName) {
         var posts = postRepository.findAllByBrandName(brandName);
         return postMapper.getAllPosts(posts);
     }
 
+    /**
+     * Searches for posts by the provided keyword in their titles.
+     *
+     * @param keyword The keyword to search for in post titles.
+     * @return A list of PostResponse objects representing the posts that match the keyword.
+     * @throws IllegalArgumentException If the keyword is null or empty.
+     */
     @Override
     public List<PostResponse> searchPostsByTitle(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
@@ -278,11 +378,24 @@ public class PostServiceImpl implements IPostService {
         return postMapper.getAllPosts(postRepository.findByTitleContainingKeyword(keyword));
     }
 
+    /**
+     * Searches for posts based on the availability status.
+     *
+     * @param status The availability status of the posts to search for.
+     * @return A list of PostResponse objects representing the posts with the specified availability status.
+     */
     @Override
     public List<PostResponse> searchPostsByStatus(boolean status) {
         return postMapper.getAllPosts(postRepository.findPostsByIsAvailable(status));
     }
 
+    /**
+     * Retrieves all posts associated with a specific user by the given user ID.
+     *
+     * @param userId The ID of the user to filter the posts.
+     * @return A list of PostResponse objects representing the posts related to the specified user.
+     * @throws AppException If the user with the given ID is not found.
+     */
     @Override
     public List<PostResponse> getPostByUserId(String userId) {
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -298,12 +411,25 @@ public class PostServiceImpl implements IPostService {
         postRepository.deleteById(postId);
     }
 
+    /**
+     * Retrieves all posts associated with a specific brand line by the given brand line name.
+     *
+     * @param brandLineName The name of the brand line to filter the posts.
+     * @return A list of PostResponse objects representing the posts related to the specified brand line.
+     */
     @Override
     public List<PostResponse> getPostByBrandLine(String brandLineName) {
         var posts = postRepository.findAllByBrandLine(brandLineName);
         return postMapper.getAllPosts(posts);
     }
 
+    /**
+     * Retrieves all posts associated with a specific user by the given user ID.
+     *
+     * @param followedUserId The ID of the user to filter the posts.
+     * @return A list of PostResponse objects representing the posts related to the specified user.
+     * @throws AppException If the user with the given ID is not found.
+     */
     @Override
     public List<PostResponse> getPostsByFollowedUser(String followedUserId) {
         var user =
@@ -313,6 +439,12 @@ public class PostServiceImpl implements IPostService {
                 .toList();
     }
 
+    /**
+     * Boosts a post by setting it as boosted and updating the boost end time.
+     *
+     * @param postId The ID of the post to be boosted.
+     * @param hours The number of hours to boost the post for.
+     */
     @Override
     @Modifying
     @Transactional
@@ -327,6 +459,11 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
+    /**
+     * Archives a post by setting its 'isArchived' flag to true.
+     *
+     * @param postId The ID of the post to be archived.
+     */
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
