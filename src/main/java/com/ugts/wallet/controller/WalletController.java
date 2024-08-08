@@ -1,10 +1,69 @@
 package com.ugts.wallet.controller;
 
+import java.util.Set;
+
+import com.ugts.dto.ApiResponse;
+import com.ugts.transaction.dto.TransactionResponse;
+import com.ugts.wallet.dto.WalletResponse;
+import com.ugts.wallet.service.IWalletService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/wallet")
+@RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
-public class WalletController {}
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class WalletController {
+    IWalletService walletService;
+
+    @PostMapping("/register")
+    public ApiResponse<WalletResponse> registerNewWallet() {
+        var result = walletService.registerNewWallet();
+        return ApiResponse.<WalletResponse>builder()
+                .message("Register new wallet success")
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/charge")
+    public ApiResponse<Double> charge(
+            @RequestParam("walletId") String walletId, @RequestParam("amount") double amount) {
+        var result = walletService.charge(walletId, amount);
+        return ApiResponse.<Double>builder()
+                .message("Charge success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/info")
+    public ApiResponse<WalletResponse> getWalletInfo(@RequestParam("walletId") String walletId) {
+        var result = walletService.getWalletInformation(walletId);
+        return ApiResponse.<WalletResponse>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
+    @PutMapping("/pay-order")
+    public ApiResponse<Double> payOrder(
+            @RequestParam("walletId") String walletId,
+            @RequestParam("orderId") String orderId,
+            @RequestParam("payAmount") double payAmount) {
+        var result = walletService.payForOrder(walletId, orderId, payAmount);
+        return ApiResponse.<Double>builder()
+                .message("Pay Success")
+                .result(result)
+                .build();
+    }
+
+    @GetMapping("/transaction-histories")
+    public ApiResponse<Set<TransactionResponse>> getTransactionHistories(@RequestParam("walletId") String walletId) {
+        var result = walletService.getTransactionHistories(walletId);
+        return ApiResponse.<Set<TransactionResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+}

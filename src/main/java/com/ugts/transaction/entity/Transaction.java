@@ -41,7 +41,6 @@ public class Transaction {
 
     String refundBankCode;
 
-    @Lob
     @Column
     private String reason;
 
@@ -59,5 +58,6 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Wallet wallet;
 
+    @Enumerated(EnumType.STRING)
     TransactionType transactionType;
 }

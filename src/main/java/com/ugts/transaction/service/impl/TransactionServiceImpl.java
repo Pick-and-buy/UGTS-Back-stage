@@ -101,7 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
      *
      * @return  the randomly generated bill number as a string
      */
-    private String getRandomBillNumber() {
+    public String getRandomBillNumber() {
         Random random = new Random();
         StringBuilder billNo = new StringBuilder();
         for (int i = 0; i < 8; i++) {

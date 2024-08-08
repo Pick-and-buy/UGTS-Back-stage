@@ -29,5 +29,5 @@ public class Wallet {
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Transaction> transaction = new HashSet<>();
+    private Set<Transaction> transactions = new HashSet<>();
 }

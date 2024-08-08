@@ -106,7 +106,8 @@ public enum ErrorCode {
     BANK_ACCOUNT_ALREADY_EXISTED(1002, "Bank account has already existed!", HttpStatus.BAD_REQUEST),
     INSUFFICIENT_BALANCE(1002, "Insufficient balance", HttpStatus.BAD_REQUEST),
     DEPOSIT_FAIL(1003, "Something wrong to deposit money", HttpStatus.BAD_REQUEST),
-    WITHDRAW_FAIL(1004, "Something wrong to withdraw money", HttpStatus.BAD_REQUEST);
+    WITHDRAW_FAIL(1004, "Something wrong to withdraw money", HttpStatus.BAD_REQUEST),
+    WALLET_NOT_FOUND(1005, "Wallet not found", HttpStatus.BAD_REQUEST);
 
     // Comment
     ;
