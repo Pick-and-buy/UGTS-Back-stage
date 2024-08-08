@@ -27,10 +27,12 @@ import com.ugts.wallet.service.IWalletService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -45,13 +47,25 @@ public class WalletServiceImpl implements IWalletService {
     OrderRepository orderRepository;
     TransactionMapper transactionMapper;
 
+    private User retrieveUser() {
+        var userId = userService.getProfile().getId();
+        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public WalletResponse registerNewWallet() {
-        var userId = userService.getProfile().getId();
-        var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = retrieveUser();
+
+        // Check if the user already has a wallet
+        if(walletRepository.findByUser(user).isPresent()) {
+            throw new AppException(ErrorCode.WALLET_ALREADY_EXISTED);
+        }
         var newWallet = Wallet.builder().user(user).balance(0.0).build();
+
+        // Log the creation of a new wallet
+        log.info("New wallet created for user: `{}`", user.getId());
 
         return walletMapper.walletToWalletResponse(walletRepository.save(newWallet));
     }
@@ -61,8 +75,7 @@ public class WalletServiceImpl implements IWalletService {
     @PreAuthorize("hasRole('USER')")
     public double charge(String walletId, double amount) {
         try {
-            var userId = userService.getProfile().getId();
-            var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            var user = retrieveUser();
 
             var wallet =
                     walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
@@ -89,8 +102,7 @@ public class WalletServiceImpl implements IWalletService {
     @PreAuthorize("hasRole('USER')")
     public double payForOrder(String walletId, String orderId, double payAmount) {
         try {
-            var userId = userService.getProfile().getId();
-            var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            var user = retrieveUser();
 
             var wallet =
                     walletRepository.findById(walletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
