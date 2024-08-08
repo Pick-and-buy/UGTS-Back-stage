@@ -118,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderDetails.setOrder(order);
+        orderRepository.save(order);
 
         notificationService.createNotificationStorage(NotificationEntity.builder()
                 .delivered(false)
