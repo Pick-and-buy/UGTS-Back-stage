@@ -29,14 +29,14 @@ services:
     networks:
       - postgres
 
-  redis:
-    container_name: redis
-    image: docker.io/redis:7.4.0
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./redis-data:/data
+#  redis:
+#    container_name: redis
+#    image: docker.io/redis:7.4.0
+#    restart: always
+#    ports:
+#      - "6379:6379"
+#    volumes:
+#      - ./redis-data:/data
 #    networks:
 #      - redis
 

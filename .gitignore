@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 google-credentials.json
 firebase-service-account.json
+redis-data/dump.rdb
 ### STS ###
 .apt_generated
 .classpath

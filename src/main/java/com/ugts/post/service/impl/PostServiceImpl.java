@@ -1,6 +1,7 @@
 package com.ugts.post.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.ugts.brand.repository.BrandRepository;
@@ -25,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,13 @@ public class PostServiceImpl implements IPostService {
     @PreAuthorize("hasRole('USER')")
     public PostResponse createPostLevel1(CreatePostRequest postRequest, MultipartFile[] productImages)
             throws IOException {
+        checkPostInput(postRequest);
+        Product product = createProduct(postRequest, VerifiedLevel.LEVEL_1);
+        Post newPost = saveNewPost(postRequest, product, productImages);
+        return postMapper.postToPostResponse(newPost);
+    }
+
+    private void checkPostInput(CreatePostRequest postRequest){
         // Validate the CreatePostRequest object
         if (postRequest == null
                 || postRequest.getBrand() == null
@@ -66,7 +75,10 @@ public class PostServiceImpl implements IPostService {
                 || postRequest.getProduct() == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);
         }
+    }
 
+    @Transactional
+    protected Product createProduct(CreatePostRequest postRequest, VerifiedLevel verifiedLevel) {
         // check brand existed
         var brand = brandRepository
                 .findByName(postRequest.getBrand().getName())
@@ -79,7 +91,6 @@ public class PostServiceImpl implements IPostService {
         var category = categoryRepository
                 .findByCategoryName(postRequest.getCategory().getCategoryName())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-
         // create product process
         var product = Product.builder()
                 .name(postRequest.getProduct().getName())
@@ -102,11 +113,12 @@ public class PostServiceImpl implements IPostService {
                 .serialNumber(postRequest.getProduct().getSerialNumber())
                 .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
                 .story(postRequest.getProduct().getStory())
-                .verifiedLevel(VerifiedLevel.LEVEL_1)
+                .verifiedLevel(verifiedLevel)
                 .build();
-
-        var newProduct = productRepository.save(product);
-
+        return productRepository.save(product);
+    }
+    @Transactional
+    protected Post saveNewPost(CreatePostRequest postRequest, Product product, MultipartFile[] productImages) throws IOException {
         // get user from context holder
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
@@ -123,17 +135,33 @@ public class PostServiceImpl implements IPostService {
                 .isAvailable(true)
                 .createdAt(new Date())
                 .updatedAt(new Date())
-                .product(newProduct)
+                .product(product)
                 .build();
+        postRepository.save(post);
 
+        if(postRequest.getBoosted()) {
+            boostPost(post.getId(), 2);
+        }else {
+            post.setBoosted(false);
+            post.setBoostEndTime(null);
+        }
         // save new post into database
         var newPost = postRepository.save(post);
 
         // upload product images to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
+        uploadProductImagesToGCS(productImages, product);
+
+        // save product into database
+        productRepository.save(product);
+        return postRepository.save(newPost);
+
+    }
+    private void uploadProductImagesToGCS(MultipartFile[] productImages, Product product) throws IOException {
+        // upload product images to GCS
+        List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
 
         // add product image for each URL
-        for (String fileUrl : fileUrls) {
+        for (String imageUrl : imageUrls) {
             // check if product image null
             if (product.getImages() == null) {
                 product.setImages(new ArrayList<>());
@@ -141,14 +169,9 @@ public class PostServiceImpl implements IPostService {
 
             // add product image to product
             var productImage =
-                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
+                    ProductImage.builder().product(product).imageUrl(imageUrl).build();
             product.getImages().add(productImage);
         }
-
-        // save product into database
-        productRepository.save(product);
-
-        return postMapper.postToPostResponse(postRepository.save(newPost));
     }
 
     @Override
@@ -160,92 +183,10 @@ public class PostServiceImpl implements IPostService {
             MultipartFile productVideo,
             MultipartFile originalReceiptProof)
             throws IOException {
-        // Validate the CreatePostRequest object
-        if (postRequest == null
-                || postRequest.getBrand() == null
-                || postRequest.getBrandLine() == null
-                || postRequest.getCategory() == null
-                || postRequest.getProduct() == null) {
-            throw new AppException(ErrorCode.INVALID_INPUT);
-        }
 
-        // check brand existed
-        var brand = brandRepository
-                .findByName(postRequest.getBrand().getName())
-                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
-
-        var brandLine = brandLineRepository
-                .findByLineName(postRequest.getBrandLine().getLineName())
-                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
-
-        var category = categoryRepository
-                .findByCategoryName(postRequest.getCategory().getCategoryName())
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
-
-        // create product process
-        var product = Product.builder()
-                .name(postRequest.getProduct().getName())
-                .brand(brand)
-                .brandLine(brandLine)
-                .category(category)
-                .price(postRequest.getProduct().getPrice())
-                .color(postRequest.getProduct().getColor())
-                .size(postRequest.getProduct().getSize())
-                .width(postRequest.getProduct().getWidth())
-                .height(postRequest.getProduct().getHeight())
-                .length(postRequest.getProduct().getLength())
-                .referenceCode(postRequest.getProduct().getReferenceCode())
-                .manufactureYear(postRequest.getProduct().getManufactureYear())
-                .interiorMaterial(postRequest.getProduct().getInteriorMaterial())
-                .exteriorMaterial(postRequest.getProduct().getExteriorMaterial())
-                .condition(postRequest.getCondition())
-                .accessories(postRequest.getProduct().getAccessories())
-                .dateCode(postRequest.getProduct().getDateCode())
-                .serialNumber(postRequest.getProduct().getSerialNumber())
-                .purchasedPlace(postRequest.getProduct().getPurchasedPlace())
-                .story(postRequest.getProduct().getStory())
-                .verifiedLevel(VerifiedLevel.LEVEL_2)
-                .build();
-
-        var newProduct = productRepository.save(product);
-
-        // get user from context holder
-        var contextHolder = SecurityContextHolder.getContext();
-        String phoneNumber = contextHolder.getAuthentication().getName();
-
-        var user = userRepository
-                .findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
-        // create post process
-        var post = Post.builder()
-                .user(user)
-                .title(postRequest.getTitle())
-                .description(postRequest.getDescription())
-                .isAvailable(true)
-                .createdAt(new Date())
-                .updatedAt(new Date())
-                .product(newProduct)
-                .build();
-
-        // save new post into database
-        var newPost = postRepository.save(post);
-
-        // upload product images to GCS
-        List<String> fileUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
-
-        // add product image for each URL
-        for (String fileUrl : fileUrls) {
-            // check if product image null
-            if (product.getImages() == null) {
-                product.setImages(new ArrayList<>());
-            }
-
-            // add product image to product
-            var productImage =
-                    ProductImage.builder().product(product).imageUrl(fileUrl).build();
-            product.getImages().add(productImage);
-        }
+        checkPostInput(postRequest);
+        Product product = createProduct(postRequest, VerifiedLevel.LEVEL_2);
+        Post newPost = saveNewPost(postRequest, product, productImages);
 
         // upload product video to GCS
         String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
@@ -259,12 +200,12 @@ public class PostServiceImpl implements IPostService {
         // save product into database
         productRepository.save(product);
 
-        return postMapper.postToPostResponse(postRepository.save(newPost));
+        return postMapper.postToPostResponse(newPost);
     }
 
     @Override
     public List<PostResponse> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllOrderByBoostedDesc();
         return postMapper.getAllPosts(posts);
     }
 
@@ -285,20 +226,7 @@ public class PostServiceImpl implements IPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         // upload product images to GCS
-        List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
-
-        // add product image for each URL
-        for (String imageUrl : imageUrls) {
-            // check if product image null
-            if (product.getImages() == null) {
-                product.setImages(new ArrayList<>());
-            }
-
-            // add product image to product
-            var productImage =
-                    ProductImage.builder().product(product).imageUrl(imageUrl).build();
-            product.getImages().add(productImage);
-        }
+        uploadProductImagesToGCS(productImages, product);
 
         // upload product video to GCS
         String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
@@ -315,6 +243,13 @@ public class PostServiceImpl implements IPostService {
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
+
+        if(request.getBoosted() && post.getBoostEndTime() == null) {
+            boostPost(post.getId(), 2);
+        }else {
+            post.setBoosted(false);
+            post.setBoostEndTime(null);
+        }
 
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
@@ -373,5 +308,19 @@ public class PostServiceImpl implements IPostService {
         return postRepository.findPostsByFollowedUsers(user.getId()).stream()
                 .map(postMapper::postToPostResponse)
                 .toList();
+    }
+
+    @Override
+    @Modifying
+    @Transactional
+    public void boostPost(String postId, int hours) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+        try{
+         post.setBoosted(true);
+         post.setBoostEndTime(LocalDateTime.now().plusHours(hours));
+         postRepository.save(post);
+        }catch (Exception e){
+         log.error("An error occurred while boost post: {}", e.getMessage());
+     }
     }
 }

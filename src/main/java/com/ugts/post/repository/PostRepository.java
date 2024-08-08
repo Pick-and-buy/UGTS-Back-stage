@@ -1,9 +1,12 @@
 package com.ugts.post.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ugts.post.entity.Post;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -43,4 +46,12 @@ public interface PostRepository extends JpaRepository<Post, String> {
 
     @Query("SELECT p FROM Post p JOIN p.product pr JOIN pr.brandLine bl WHERE bl.lineName = :brandLineName")
     List<Post> findAllByBrandLine(String brandLineName);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.boosted = false, p.boostEndTime = null WHERE p.boostEndTime < ?1 AND p.boosted = true")
+    void resetExpiredBoosts(LocalDateTime now);
+
+    @Query("SELECT p FROM Post p ORDER BY p.boosted DESC, p.boostEndTime DESC")
+    List<Post> findAllOrderByBoostedDesc();
 }

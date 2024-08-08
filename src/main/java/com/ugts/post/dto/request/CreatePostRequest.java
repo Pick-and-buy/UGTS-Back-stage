@@ -24,4 +24,5 @@ public class CreatePostRequest {
     Product product;
     Condition condition;
     VerifiedLevel verifiedLevel;
+    Boolean boosted;
 }
