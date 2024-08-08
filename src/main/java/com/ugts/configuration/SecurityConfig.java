@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/vnpay/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/rating/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
