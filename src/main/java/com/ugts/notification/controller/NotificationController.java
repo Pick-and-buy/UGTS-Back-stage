@@ -27,7 +27,7 @@ public class NotificationController {
     public ApiResponse<Void> changeNotifyStatusToRead(@PathVariable String notifyID) {
         notificationService.markNotificationAsRead(notifyID);
         return ApiResponse.<Void>builder()
-                .message("Success change status notification")
+                .message("Success change status notification to read")
                 .build();
     }
 
@@ -36,6 +36,14 @@ public class NotificationController {
         notificationService.deleteNotificationByUserToId(userId);
         return ApiResponse.<Void>builder()
                 .message("Success clear all notification")
+                .build();
+    }
+
+    @PatchMapping("/read-all/{userId}")
+    public ApiResponse<Void> changeAllNotifyStatusToRead(@PathVariable String userId) {
+        notificationService.markAllNotificationAsRead(userId);
+        return ApiResponse.<Void>builder()
+                .message("Success change status of all notification to read")
                 .build();
     }
 }

@@ -26,27 +26,12 @@ public class NotificationServiceImpl implements INotificationService {
 
     private final NotificationMapper notificationMapper;
 
-    private final KafkaProducer kafkaProducer;
-
-    private final UserRepository userRepository;
-
-    public void notifyUser(String userId, String message, String topic) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        NotificationEntity notification = new NotificationEntity();
-        notification.setUserToId(user.getId());
-        notification.setMessage(message);
-        notification.setTimestamp(new Date());
-        notification.setRead(false);
-        notificationRepository.save(notification);
-        try {
-            kafkaProducer.sendMessage(notification, topic);
-        } catch (Exception e) {
-            log.error("An error occurred while sending notification: {}", e.getMessage());
-        }
-    }
 
     @Override
     public List<NotificationResponse> getUserNotifications(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
         return notificationRepository.findByUserToId(userId).stream()
                 .map(notificationMapper::toNotificationResponse)
                 .toList();
@@ -60,17 +45,6 @@ public class NotificationServiceImpl implements INotificationService {
         return notificationRepository
                 .findByNotificationId(id)
                 .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_EXISTED));
-    }
-
-    public List<NotificationResponse> getNotificationsByUserIDNotRead(String userID) {
-        return notificationRepository.findByUserToIdAndDeliveredFalse(userID).stream()
-                .map(notificationMapper::toNotificationResponse)
-                .toList();
-        //        return notificationRepository.findByUserToIdAndDeliveredFalse(userID);
-    }
-
-    public List<NotificationEntity> getNotificationsByUserID(String userID) {
-        return notificationRepository.findByUserToId(userID);
     }
 
     @Override
@@ -104,7 +78,20 @@ public class NotificationServiceImpl implements INotificationService {
         }
     }
 
-    public void clear() {
-        notificationRepository.deleteAll();
+    @Override
+    @Transactional
+    public void markAllNotificationAsRead(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new AppException(ErrorCode.INVALID_INPUT);
+        }
+        try {
+            List<NotificationEntity> notifications = notificationRepository.findByUserToId(userId);
+            for (NotificationEntity notification : notifications) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
+        } catch (Exception e) {
+            log.error("An error occurred while marking all notification as read: {}", e.getMessage());
+        }
     }
 }
