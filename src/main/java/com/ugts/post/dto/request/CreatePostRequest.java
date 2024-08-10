@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreatePostRequest {
     String id;
-    String title;
+//    String title;
     String description;
     Boolean isAvailable;
     Brand brand;
@@ -25,4 +25,5 @@ public class CreatePostRequest {
     Condition condition;
     VerifiedLevel verifiedLevel;
     Boolean boosted;
+    Double lastPriceForSeller;
 }
