@@ -1,6 +1,6 @@
 package com.ugts.wallet.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import com.ugts.dto.ApiResponse;
 import com.ugts.transaction.dto.TransactionResponse;
@@ -90,9 +90,9 @@ public class WalletController {
      * @return ApiResponse containing a success message and the set of TransactionResponse objects
      */
     @GetMapping("/transaction-histories")
-    public ApiResponse<Set<TransactionResponse>> getTransactionHistories() {
+    public ApiResponse<List<TransactionResponse>> getTransactionHistories() {
         var result = walletService.getTransactionHistories();
-        return ApiResponse.<Set<TransactionResponse>>builder()
+        return ApiResponse.<List<TransactionResponse>>builder()
                 .message("Success")
                 .result(result)
                 .build();

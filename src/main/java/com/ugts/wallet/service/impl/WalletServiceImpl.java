@@ -1,7 +1,7 @@
 package com.ugts.wallet.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import com.ugts.bankaccount.BankAccount;
 import com.ugts.bankaccount.BankAccountRepository;
@@ -14,7 +14,6 @@ import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.enums.TransactionType;
 import com.ugts.transaction.mapper.TransactionMapper;
 import com.ugts.transaction.repository.TransactionRepository;
-import com.ugts.transaction.service.impl.TransactionServiceImpl;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
@@ -43,7 +42,6 @@ public class WalletServiceImpl implements IWalletService {
     TransactionRepository transactionRepository;
     UserService userService;
     WalletMapper walletMapper;
-    TransactionServiceImpl transactionServiceImpl;
     OrderRepository orderRepository;
     TransactionMapper transactionMapper;
 
@@ -154,7 +152,7 @@ public class WalletServiceImpl implements IWalletService {
             wallet.setBalance(newBalance);
 
             var transNo = VnPayConfiguration.getRandomNumber(8);
-            var billNo = transactionServiceImpl.getRandomBillNumber();
+            var billNo = VnPayConfiguration.getRandomNumber(8);
             var order =
                     orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
@@ -183,7 +181,7 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public Set<TransactionResponse> getTransactionHistories() {
+    public List<TransactionResponse> getTransactionHistories() {
         var wallet = retrieveUser().getWallet();
         var transactions = wallet.getTransactions();
         return transactionMapper.toTransactionsResponse(transactions);

@@ -1,8 +1,13 @@
 package com.ugts.transaction.service;
 
-import com.ugts.transaction.dto.TransactionRequest;
+import java.util.List;
+
 import com.ugts.transaction.dto.TransactionResponse;
 
 public interface TransactionService {
-    TransactionResponse createTransaction(TransactionRequest transactionRequest, String orderId);
+    List<TransactionResponse> getAllTransactions();
+
+    List<TransactionResponse> getTransactionsByUserId(String userId);
+
+    TransactionResponse getTransactionById(String postId);
 }

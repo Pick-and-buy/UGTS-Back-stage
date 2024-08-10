@@ -1,17 +1,13 @@
 package com.ugts.notification.service;
 
-import java.util.Date;
 import java.util.List;
 
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
-import com.ugts.kafka.producer.KafkaProducer;
 import com.ugts.notification.dto.NotificationResponse;
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.mapper.NotificationMapper;
 import com.ugts.notification.repository.NotificationRepository;
-import com.ugts.user.entity.User;
-import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +21,6 @@ public class NotificationServiceImpl implements INotificationService {
     private final NotificationRepository notificationRepository;
 
     private final NotificationMapper notificationMapper;
-
 
     @Override
     public List<NotificationResponse> getUserNotifications(String userId) {

@@ -102,6 +102,9 @@ public enum ErrorCode {
     // Rating
     INVALID_STAR_RATING(1001, "Invalid star rating", HttpStatus.BAD_REQUEST),
 
+    // Transaction
+    TRANSACTION_NOT_EXISTED(1001, "Transaction not exist", HttpStatus.BAD_REQUEST),
+
     // Wallet
     BANK_ACCOUNT_NOT_EXISTED(1001, "Bank account not exist", HttpStatus.BAD_REQUEST),
     BANK_ACCOUNT_ALREADY_EXISTED(1002, "Bank account has already existed!", HttpStatus.BAD_REQUEST),
@@ -110,8 +113,6 @@ public enum ErrorCode {
     WITHDRAW_FAIL(1004, "Something wrong to withdraw money", HttpStatus.BAD_REQUEST),
     WALLET_NOT_FOUND(1005, "Wallet not found", HttpStatus.BAD_REQUEST),
     WALLET_ALREADY_EXISTED(1006, "Wallet has already existed!", HttpStatus.BAD_REQUEST);
-
-    // Comment
     ;
     int code;
     String message;
