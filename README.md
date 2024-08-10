@@ -8,15 +8,15 @@
 
 ## Docker guideline
 ### Build docker image
-`docker build -t <account>/ulhts:0.9.0 .`
+`docker build -t <account>/ulhts:0.0.1 .`
 ### Push docker image to Docker Hub
-`docker image push <account>/ulhts:0.9.0`
+`docker image push <account>/ulhts:0.0.1`
 ### Create network:
 `docker network create ulhts-network`
 ### Start MySQL in devteria-network
 `docker run --network ulhts-network --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin -d postgres:14.5`
 ### Run your application in devteria-network
-`docker run --name ulhts --network ulhts-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:postgresql://localhost:5432/ugts_db ulhts:0.9.0`
+`docker run --name ulhts --network ulhts-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:postgresql://localhost:5432/ugts_db ulhts:0.0.1`
 
 ## Install Docker on ubuntu
 
