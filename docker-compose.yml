@@ -137,5 +137,5 @@ volumes:
     driver: local
   kafka-data:
     driver: local
-  redis:
-    driver: bridge
+#  redis:
+#    driver: bridge
