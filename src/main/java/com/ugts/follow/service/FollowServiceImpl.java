@@ -12,7 +12,6 @@ import com.ugts.user.entity.User;
 import com.ugts.user.mapper.UserMapper;
 import com.ugts.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +85,7 @@ public class FollowServiceImpl implements IFollowService {
     }
 
     @Override
-//    @PreAuthorize("hasRole('USER')")
+    //    @PreAuthorize("hasRole('USER')")
     public List<UserResponse> getFollowers(String userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.INVALID_INPUT);

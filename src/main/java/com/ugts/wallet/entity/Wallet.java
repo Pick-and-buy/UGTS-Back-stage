@@ -1,7 +1,7 @@
 package com.ugts.wallet.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ugts.transaction.entity.Transaction;
@@ -29,5 +29,5 @@ public class Wallet {
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Transaction> transactions = new HashSet<>();
+    private List<Transaction> transactions = new LinkedList<>();
 }

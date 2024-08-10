@@ -250,5 +250,4 @@ public class PostController {
         postService.archivePost(postId);
         return ApiResponse.<Void>builder().message("Archive post success").build();
     }
-
 }

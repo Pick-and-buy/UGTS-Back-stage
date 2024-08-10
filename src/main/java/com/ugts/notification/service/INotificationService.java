@@ -3,7 +3,6 @@ package com.ugts.notification.service;
 import java.util.List;
 
 import com.ugts.notification.dto.NotificationResponse;
-import com.ugts.notification.entity.NotificationEntity;
 
 public interface INotificationService {
 
@@ -14,5 +13,4 @@ public interface INotificationService {
     void deleteNotificationByUserToId(String userId);
 
     void markAllNotificationAsRead(String userId);
-
 }

@@ -41,5 +41,4 @@ public class PostResponse {
     LocalDateTime boostEndTime;
 
     Boolean isArchived;
-
 }
