@@ -1,5 +1,23 @@
 # ULHTS-Back-stage
 
+## Start application
+`mvn spring-boot:run`
+
+## Build application
+`mvn clean package`
+
+## Docker guideline
+### Build docker image
+`docker build -t <account>/ulhts:0.9.0 .`
+### Push docker image to Docker Hub
+`docker image push <account>/ulhts:0.9.0`
+### Create network:
+`docker network create ulhts-network`
+### Start MySQL in devteria-network
+`docker run --network ulhts-network --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin -d postgres:14.5`
+### Run your application in devteria-network
+`docker run --name identity-service --network devteria-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service identity-service:0.9.0`
+
 ## Install Docker on ubuntu
 
 # Add Docker's official GPG key:
