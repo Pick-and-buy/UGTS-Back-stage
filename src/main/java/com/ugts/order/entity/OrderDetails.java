@@ -57,4 +57,7 @@ public class OrderDetails {
 
     @OneToOne(fetch = FetchType.LAZY)
     Order order;
+
+    Double lastPriceForSeller;
+
 }

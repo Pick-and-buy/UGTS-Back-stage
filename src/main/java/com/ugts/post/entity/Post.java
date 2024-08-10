@@ -59,4 +59,7 @@ public class Post {
     LocalDateTime boostEndTime;
 
     Boolean isArchived;
+
+    Double lastPriceForSeller;
+
 }

@@ -107,6 +107,7 @@ public class OrderServiceImpl implements OrderService {
                 .packageDate(orderRequest.getPackageDate())
                 .deliveryDate(orderRequest.getDeliveryDate())
                 .receivedDate(orderRequest.getReceivedDate())
+                .lastPriceForSeller(post.getProduct().getPrice())
                 .build();
 
         var order = Order.builder()
@@ -220,6 +221,7 @@ public class OrderServiceImpl implements OrderService {
         order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
         order.getOrderDetails().setAddress(address);
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
+        order.getOrderDetails().setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             var orderDetails = order.getOrderDetails();
@@ -286,7 +288,6 @@ public class OrderServiceImpl implements OrderService {
                     autoRateOrder(order);
                     order.setIsBuyerRate(true);
 
-                    // TODO: notify to seller that buyer has auto rate
                     notificationService.createNotificationStorage(NotificationEntity.builder()
                             .delivered(false)
                             .message(order.getBuyer().getUsername()
@@ -298,7 +299,6 @@ public class OrderServiceImpl implements OrderService {
                             .userFromAvatar(order.getBuyer().getAvatar())
                             .orderId(order.getId())
                             .build());
-                    //                 completeOrder(order);
                 }
             }
         } catch (Exception e) {
@@ -317,18 +317,6 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
         } catch (Exception e) {
             log.error("An error occurred while create rating : {}", e.getMessage());
-        }
-    }
-
-    @Transactional
-    protected void completeOrder(Order order) {
-        try {
-            if (order.getIsBuyerRate() && order.getIsSellerRate()) {
-                order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
-                orderRepository.save(order);
-            }
-        } catch (Exception e) {
-            log.error("An error occurred when trying to complete the order: {}", e.getMessage());
         }
     }
 

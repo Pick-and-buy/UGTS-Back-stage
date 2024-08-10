@@ -166,13 +166,14 @@ public class PostServiceImpl implements IPostService {
         // create post process
         var post = Post.builder()
                 .user(user)
-                .title(postRequest.getTitle())
+                .title(product.getName())
                 .description(postRequest.getDescription())
                 .isAvailable(true)
                 .createdAt(new Date())
                 .updatedAt(new Date())
                 .product(product)
                 .isArchived(false)
+                .lastPriceForSeller(postRequest.getLastPriceForSeller())
                 .build();
         postRepository.save(post);
 

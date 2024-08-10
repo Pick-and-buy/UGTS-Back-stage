@@ -21,6 +21,8 @@ import com.ugts.rating.entity.StarRating;
 import com.ugts.rating.repository.RatingRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.wallet.entity.Wallet;
+import com.ugts.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ public class RatingServiceImpl implements IRatingService {
     private final RatingMapper ratingMapper;
     private final OrderRepository orderRepository;
     private final NotificationServiceImpl notificationService;
+    private final WalletRepository walletRepository;
 
     @Override
     @Transactional
@@ -58,6 +61,7 @@ public class RatingServiceImpl implements IRatingService {
                 .findById(ratingRequest.getOrderId())
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
         String sellerId = order.getPost().getUser().getId();
+        Wallet sellerWallet = order.getPost().getUser().getWallet();
         try {
             // buyer rate seller
             if (ratedUser.getId().equals(sellerId)
@@ -105,6 +109,13 @@ public class RatingServiceImpl implements IRatingService {
                 order.setIsSellerRate(true);
                 if (order.getIsBuyerRate() && order.getIsSellerRate()) {
                     order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
+                    //TODO: move last price for seller into seller's balance
+                   try{
+                       sellerWallet.setBalance(sellerWallet.getBalance() + order.getOrderDetails().getLastPriceForSeller());
+                       walletRepository.save(sellerWallet);
+                   }catch (Exception e){
+                       log.error("An error occurred while update seller's wallet balance : {}", e.getMessage());
+                   }
                 }
             }
         } catch (Exception e) {
