@@ -54,6 +54,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/rating/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/health/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)

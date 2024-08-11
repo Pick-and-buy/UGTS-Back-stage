@@ -1,0 +1,7 @@
+runtime: java17
+instance_class: F1
+#automatic_scaling:
+#    max_total_instances: 1
+#    min_idle_instances: 1
+#    cool_down_period_sec: 60
+#    max_idle_instances: 1
