@@ -14,9 +14,9 @@
 ### Create network:
 `docker network create ulhts-network`
 ### Start POSTGRESQL in ulhts-network
-`docker run --network ulhts-network --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=admin -d postgres:14.5`
+`docker run --network ulhts-network --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.36-debian`
 ### Run your application in ulhts-network
-`docker run --name ulhts --network ulhts-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:postgresql://localhost:5432/ugts_db ulhts:0.0.1`
+`docker run --name ulhts --network ulhts-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/ugts_db ulhts:0.0.1`
 
 ## Install Docker on ubuntu
 
