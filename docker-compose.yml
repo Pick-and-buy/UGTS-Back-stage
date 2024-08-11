@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres:/data/postgres
     networks:
-      - postgres
+      - ulhts
   # open localhost:5050/browser/ to view, enter host name is postgres
   pgadmin:
     container_name: pgadmin
@@ -27,7 +27,7 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     networks:
-      - postgres
+      - ulhts
 
 #  redis:
 #    container_name: redis
@@ -124,6 +124,8 @@ services:
     volumes:
       - kafka-data:/bitnami/kafka
 networks:
+  ulhts:
+    driver: bridge
   postgres:
     driver: bridge
   es-net:

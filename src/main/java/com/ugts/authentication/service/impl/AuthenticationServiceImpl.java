@@ -101,6 +101,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
+        log.info("SignKey: {}", SIGNER_KEY);
+
         var user = userRepository
                 .findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
