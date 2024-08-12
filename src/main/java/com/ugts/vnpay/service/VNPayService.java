@@ -1,5 +1,7 @@
 package com.ugts.vnpay.service;
 
+import com.ugts.common.dto.ApiResponse;
+import com.ugts.transaction.dto.TransactionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface VNPayService {
@@ -7,5 +9,5 @@ public interface VNPayService {
 
     int orderReturn(HttpServletRequest request);
 
-    String getPaymentInfo(HttpServletRequest request);
+    ApiResponse<TransactionResponse> getPaymentInfo(HttpServletRequest request);
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.order.dto.response.OrderResponse;
+import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class TransactionResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss")
     Date createDate;
 
+    TransactionStatus transactionStatus;
     GeneralUserInformationDto user;
     OrderResponse order;
 }

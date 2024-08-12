@@ -19,20 +19,6 @@ public class WalletController {
     IWalletService walletService;
 
     /**
-     * Registers a new wallet and returns an API response with the success message and the created wallet response.
-     *
-     * @return ApiResponse with the success message and the newly created WalletResponse
-     */
-    @PostMapping("/register")
-    public ApiResponse<WalletResponse> registerNewWallet() {
-        var result = walletService.registerNewWallet();
-        return ApiResponse.<WalletResponse>builder()
-                .message("Register new wallet success")
-                .result(result)
-                .build();
-    }
-
-    /**
      * Charges the specified wallet with the given amount and returns an API response indicating the success of the charge operation.
      *
      * @param walletId The ID of the wallet to be charged

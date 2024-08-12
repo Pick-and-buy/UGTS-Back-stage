@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.common.exception.AppException;
 import com.ugts.common.exception.ErrorCode;
-import com.ugts.order.repository.OrderRepository;
+import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.transaction.entity.Transaction;
 import com.ugts.transaction.enums.TransactionStatus;
+import com.ugts.transaction.mapper.TransactionMapper;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
@@ -38,8 +40,9 @@ public class VNPayServiceImpl implements VNPayService {
 
     TransactionRepository transactionRepository;
 
-    OrderRepository orderRepository;
-    private final WalletRepository walletRepository;
+    WalletRepository walletRepository;
+
+    TransactionMapper transactionMapper;
 
     @Override
     @Transactional
@@ -150,7 +153,7 @@ public class VNPayServiceImpl implements VNPayService {
 
     @Override
     @PreAuthorize("hasRole('USER')")
-    public String getPaymentInfo(HttpServletRequest request) {
+    public ApiResponse<TransactionResponse> getPaymentInfo(HttpServletRequest request) {
         int paymentStatus = orderReturn(request);
         var walletId = userService.getProfile().getWallet().getWalletId();
         var currentWallet =
@@ -185,14 +188,22 @@ public class VNPayServiceImpl implements VNPayService {
 
         if (paymentStatus == 1) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-            transactionRepository.save(transaction);
-            return "Thanh toán thành công !!!";
+            var transactionSuccess = transactionRepository.save(transaction);
+            return ApiResponse.<TransactionResponse>builder()
+                    .message("Transaction Success")
+                    .result(transactionMapper.toTransactionResponse(transactionSuccess))
+                    .build();
         } else if (paymentStatus == 0) {
             transaction.setTransactionStatus(TransactionStatus.FAILED);
-            transactionRepository.save(transaction);
-            return "Thanh toán không thành công !!!";
+            var transactionFailed = transactionRepository.save(transaction);
+            return ApiResponse.<TransactionResponse>builder()
+                    .message("Transaction Failed")
+                    .result(transactionMapper.toTransactionResponse(transactionFailed))
+                    .build();
         } else {
-            return "Lỗi !!! Mã Secure Hash không hợp lệ.";
+            return ApiResponse.<TransactionResponse>builder()
+                    .message("Error! Secure Hash is invalid!")
+                    .build();
         }
     }
 }

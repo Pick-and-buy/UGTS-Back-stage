@@ -1,9 +1,7 @@
 package com.ugts.vnpay.controller;
 
 import com.ugts.common.dto.ApiResponse;
-import com.ugts.transaction.repository.TransactionRepository;
-import com.ugts.user.repository.UserRepository;
-import com.ugts.user.service.UserService;
+import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.vnpay.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -19,12 +17,6 @@ public class VNPayController {
 
     VNPayService vnPayService;
 
-    TransactionRepository transactionRepository;
-
-    UserRepository userRepository;
-
-    UserService userService;
-
     @PostMapping(value = "/create-payment", produces = "application/json;charset=UTF-8")
     public ApiResponse<String> CreatePayment(
             @RequestParam("amount") int orderTotal,
@@ -39,8 +31,7 @@ public class VNPayController {
     }
 
     @GetMapping("/payment-info")
-    public ApiResponse<String> getPaymentInfo(HttpServletRequest request) {
-        var result = vnPayService.getPaymentInfo(request);
-        return ApiResponse.<String>builder().message("Success").result(result).build();
+    public ApiResponse<TransactionResponse> getPaymentInfo(HttpServletRequest request) {
+        return vnPayService.getPaymentInfo(request);
     }
 }
