@@ -106,6 +106,11 @@ public class GoogleCloudStorageService {
         return uploadFileToGCSInternal(productVideo, productVideosFolder);
     }
 
+    public String uploadOrderVideoToGCS(MultipartFile productVideo, String orderId) throws IOException {
+        String orderVideosFolder = "order" + "/videos/" + orderId;
+        return uploadFileToGCSInternal(productVideo, orderVideosFolder);
+    }
+
     // Upload originalReceiptProof to GCP
     public String uploadOriginalReceiptProofToGCS(MultipartFile originalReceiptProof, String productId)
             throws IOException {
