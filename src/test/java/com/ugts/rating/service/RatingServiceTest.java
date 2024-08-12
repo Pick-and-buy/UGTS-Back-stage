@@ -16,6 +16,7 @@ import com.ugts.rating.entity.StarRating;
 import com.ugts.rating.repository.RatingRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.wallet.repository.WalletRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -45,6 +46,9 @@ public class RatingServiceTest {
     @Mock
     private NotificationServiceImpl notificationService;
 
+    @Mock
+    WalletRepository walletRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -59,7 +63,8 @@ public class RatingServiceTest {
                 commentValidationService,
                 ratingMapper,
                 orderRepository,
-                notificationService);
+                notificationService,
+                walletRepository);
 
         User ratingUser = new User();
         User ratedUser = new User();

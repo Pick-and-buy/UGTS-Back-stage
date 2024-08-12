@@ -2,6 +2,7 @@ package com.ugts.post.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ugts.comment.dto.GeneralCommentInformationDto;
 import com.ugts.product.dto.response.ProductResponse;
 import com.ugts.user.dto.GeneralUserInformationDto;
+import com.ugts.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,8 @@ public class PostResponse {
     ProductResponse product;
 
     Set<GeneralCommentInformationDto> comments;
+
+    Set<GeneralUserInformationDto> likedUsers;
 
     Boolean boosted;
 
