@@ -1,6 +1,6 @@
 package com.ugts.vnpay.controller;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;

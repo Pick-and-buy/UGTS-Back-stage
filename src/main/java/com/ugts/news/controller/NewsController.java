@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.news.dto.request.NewsRequest;
 import com.ugts.news.dto.response.NewsResponse;
 import com.ugts.news.service.NewsService;

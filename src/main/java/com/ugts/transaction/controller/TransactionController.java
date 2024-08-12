@@ -2,7 +2,7 @@ package com.ugts.transaction.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.transaction.service.TransactionService;
 import lombok.AccessLevel;

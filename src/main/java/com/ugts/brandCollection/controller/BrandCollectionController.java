@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.ugts.brandCollection.dto.request.BrandCollectionRequest;
 import com.ugts.brandCollection.dto.response.BrandCollectionResponse;
 import com.ugts.brandCollection.service.BrandCollectionService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

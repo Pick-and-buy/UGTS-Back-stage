@@ -7,7 +7,7 @@ import com.ugts.authentication.dto.request.*;
 import com.ugts.authentication.dto.response.IntrospectResponse;
 import com.ugts.authentication.dto.response.LoginResponse;
 import com.ugts.authentication.service.AuthenticationService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.user.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

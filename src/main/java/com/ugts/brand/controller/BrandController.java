@@ -13,7 +13,7 @@ import com.ugts.brand.entity.Brand;
 import com.ugts.brand.mapper.BrandMapper;
 import com.ugts.brand.repository.BrandRepository;
 import com.ugts.brand.service.BrandService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

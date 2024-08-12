@@ -3,7 +3,7 @@ package com.ugts.authentication.controller;
 import com.ugts.authentication.dto.request.ForgotPasswordRequest;
 import com.ugts.authentication.dto.request.VerifyOtpRequest;
 import com.ugts.authentication.service.OtpViaEmailService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

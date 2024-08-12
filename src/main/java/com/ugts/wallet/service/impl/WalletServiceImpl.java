@@ -3,10 +3,10 @@ package com.ugts.wallet.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ugts.bankaccount.BankAccount;
-import com.ugts.bankaccount.BankAccountRepository;
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.bankaccount.entity.BankAccount;
+import com.ugts.bankaccount.repository.BankAccountRepository;
+import com.ugts.common.exception.AppException;
+import com.ugts.common.exception.ErrorCode;
 import com.ugts.order.repository.OrderRepository;
 import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.transaction.entity.Transaction;

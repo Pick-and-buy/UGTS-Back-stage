@@ -2,8 +2,8 @@ package com.ugts.transaction.service.impl;
 
 import java.util.List;
 
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.common.exception.AppException;
+import com.ugts.common.exception.ErrorCode;
 import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.transaction.mapper.TransactionMapper;
 import com.ugts.transaction.repository.TransactionRepository;

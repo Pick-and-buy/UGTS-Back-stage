@@ -7,11 +7,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.common.exception.AppException;
+import com.ugts.common.exception.ErrorCode;
 import com.ugts.follow.dto.FollowRequestDto;
 import com.ugts.follow.entity.Follow;
 import com.ugts.follow.repository.FollowRepository;
+import com.ugts.follow.service.impl.FollowServiceImpl;
 import com.ugts.user.dto.response.UserResponse;
 import com.ugts.user.entity.User;
 import com.ugts.user.mapper.UserMapper;

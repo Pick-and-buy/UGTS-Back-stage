@@ -5,7 +5,7 @@ import java.util.List;
 import com.ugts.category.dto.request.CategoryRequest;
 import com.ugts.category.dto.response.CategoryResponse;
 import com.ugts.category.service.CategoryService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -3,7 +3,7 @@ package com.ugts.user.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.user.dto.request.CreateNewAddressRequest;
 import com.ugts.user.dto.request.UpdateAddressRequest;
 import com.ugts.user.dto.request.UserUpdateRequest;

@@ -2,7 +2,7 @@ package com.ugts.wallet.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.transaction.dto.TransactionResponse;
 import com.ugts.wallet.dto.WalletResponse;
 import com.ugts.wallet.service.IWalletService;

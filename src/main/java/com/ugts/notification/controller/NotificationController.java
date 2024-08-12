@@ -2,7 +2,7 @@ package com.ugts.notification.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.notification.dto.NotificationResponse;
 import com.ugts.notification.service.INotificationService;
 import lombok.AccessLevel;
