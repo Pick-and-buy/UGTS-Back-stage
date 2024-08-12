@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import com.ugts.brand.repository.BrandRepository;
+import com.ugts.brandLine.entity.BrandLine;
 import com.ugts.brandLine.repository.BrandLineRepository;
+import com.ugts.category.entity.Category;
 import com.ugts.category.repository.CategoryRepository;
 import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
@@ -18,8 +20,10 @@ import com.ugts.post.mapper.PostMapper;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.post.service.IPostService;
 import com.ugts.product.entity.Product;
+import com.ugts.product.entity.ProductData;
 import com.ugts.product.entity.ProductImage;
 import com.ugts.product.entity.VerifiedLevel;
+import com.ugts.product.repository.ProductDataRepository;
 import com.ugts.product.repository.ProductRepository;
 import com.ugts.user.repository.UserRepository;
 import lombok.AccessLevel;
@@ -54,6 +58,8 @@ public class PostServiceImpl implements IPostService {
     CategoryRepository categoryRepository;
 
     BrandLineRepository brandLineRepository;
+
+    ProductDataRepository productDataRepository;
 
     /**
      * Creates a new post at level 1 with the provided post request and product images.
@@ -136,7 +142,50 @@ public class PostServiceImpl implements IPostService {
                 .story(postRequest.getProduct().getStory())
                 .verifiedLevel(verifiedLevel)
                 .build();
+        productRepository.save(product);
+
+        //TODO: auto fill with product data by name if some field is missing
+        autoCompleteProductData(postRequest, product);
         return productRepository.save(product);
+    }
+    @Transactional
+    @Modifying
+    protected void autoCompleteProductData(CreatePostRequest postRequest, Product product) {
+        // Gọi phương thức repository với các điều kiện tùy chọn
+        Optional<ProductData> productDataOptional = productDataRepository.findSimilarProduct(
+                postRequest.getBrand().getName(),
+                postRequest.getBrandLine().getLineName(),
+                postRequest.getCategory().getCategoryName(),
+                postRequest.getProduct().getName());
+
+        if(productDataOptional.isPresent()){
+            BrandLine brandLine = brandLineRepository.findByLineName(postRequest.getBrandLine().getLineName())
+                    .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+            Category category = categoryRepository.findByCategoryName(postRequest.getCategory().getCategoryName())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
+            // Nếu tìm thấy sản phẩm, cập nhật các trường còn thiếu trong post
+            productDataOptional.ifPresent(productData -> {
+                try{
+                    product.setBrandLine(brandLine);
+                    product.setCategory(category);
+                    product.setStory(productData.getStory());
+                    product.setExteriorMaterial(productData.getExteriorMaterial());
+                    product.setInteriorMaterial(productData.getInteriorMaterial());
+                    product.setColor(productData.getColor());
+                    product.setSize(productData.getSize());
+                    product.setWidth(productData.getWidth());
+                    product.setHeight(productData.getHeight());
+                    product.setLength(productData.getLength());
+                    productRepository.save(product);
+                }catch (Exception e){
+                    log.error("Auto complete product data failed: {}", e.getMessage());
+                }
+            });
+        }
+
+
+
     }
 
     /**
