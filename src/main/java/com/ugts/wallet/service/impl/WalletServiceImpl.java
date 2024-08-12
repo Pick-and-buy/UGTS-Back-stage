@@ -57,7 +57,6 @@ public class WalletServiceImpl implements IWalletService {
         return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
-
     /**
      * Charges the specified amount to the user's wallet.
      *
@@ -130,6 +129,8 @@ public class WalletServiceImpl implements IWalletService {
             var billNo = VnPayConfiguration.getRandomNumber(8);
             var order =
                     orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+            order.getOrderDetails().setIsPaid(true);
 
             var transaction = Transaction.builder()
                     .transNo(transNo)

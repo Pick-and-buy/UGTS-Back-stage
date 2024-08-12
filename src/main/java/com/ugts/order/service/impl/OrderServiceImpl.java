@@ -26,7 +26,6 @@ import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.entity.StarRating;
-import com.ugts.rating.service.IRatingService;
 import com.ugts.user.entity.Address;
 import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
@@ -62,11 +61,9 @@ public class OrderServiceImpl implements OrderService {
 
     UserService userService;
 
-
     private final NotificationServiceImpl notificationService;
 
     GoogleCloudStorageService googleCloudStorageService;
-
 
     /**
      * Creates a new order with the given order request.
@@ -227,7 +224,8 @@ public class OrderServiceImpl implements OrderService {
         order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
         order.getOrderDetails().setAddress(address);
         order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
-        order.getOrderDetails().setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
+        order.getOrderDetails()
+                .setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             var orderDetails = order.getOrderDetails();
@@ -332,16 +330,16 @@ public class OrderServiceImpl implements OrderService {
         var user = userService.getProfile();
         String videoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
 
-        //seller update packing video
+        // seller update packing video
         if (Objects.equals(buyer.getId(), user.getId())) {
             order.getOrderDetails().setPackingVideo(videoUrl);
             orderRepository.save(order);
         }
 
-        //buyer update receive video
-        if(Objects.equals(order.getBuyer().getId(), user.getId())) {
+        // buyer update receive video
+        if (Objects.equals(order.getBuyer().getId(), user.getId())) {
             order.getOrderDetails().setPackingVideo(videoUrl);
-             orderRepository.save(order);
+            orderRepository.save(order);
         }
     }
 

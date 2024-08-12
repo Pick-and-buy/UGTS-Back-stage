@@ -39,5 +39,4 @@ public class ProductData {
     String interiorMaterial;
 
     String story;
-
 }

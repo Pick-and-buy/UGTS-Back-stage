@@ -144,10 +144,11 @@ public class PostServiceImpl implements IPostService {
                 .build();
         productRepository.save(product);
 
-        //TODO: auto fill with product data by name if some field is missing
+        // TODO: auto fill with product data by name if some field is missing
         autoCompleteProductData(postRequest, product);
         return productRepository.save(product);
     }
+
     @Transactional
     @Modifying
     protected void autoCompleteProductData(CreatePostRequest postRequest, Product product) {
@@ -158,15 +159,17 @@ public class PostServiceImpl implements IPostService {
                 postRequest.getCategory().getCategoryName(),
                 postRequest.getProduct().getName());
 
-        if(productDataOptional.isPresent()){
-            BrandLine brandLine = brandLineRepository.findByLineName(postRequest.getBrandLine().getLineName())
+        if (productDataOptional.isPresent()) {
+            BrandLine brandLine = brandLineRepository
+                    .findByLineName(postRequest.getBrandLine().getLineName())
                     .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
-            Category category = categoryRepository.findByCategoryName(postRequest.getCategory().getCategoryName())
+            Category category = categoryRepository
+                    .findByCategoryName(postRequest.getCategory().getCategoryName())
                     .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
             // Nếu tìm thấy sản phẩm, cập nhật các trường còn thiếu trong post
             productDataOptional.ifPresent(productData -> {
-                try{
+                try {
                     product.setBrandLine(brandLine);
                     product.setCategory(category);
                     product.setStory(productData.getStory());
@@ -178,14 +181,11 @@ public class PostServiceImpl implements IPostService {
                     product.setHeight(productData.getHeight());
                     product.setLength(productData.getLength());
                     productRepository.save(product);
-                }catch (Exception e){
+                } catch (Exception e) {
                     log.error("Auto complete product data failed: {}", e.getMessage());
                 }
             });
         }
-
-
-
     }
 
     /**

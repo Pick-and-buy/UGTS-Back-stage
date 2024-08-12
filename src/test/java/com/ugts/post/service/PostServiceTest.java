@@ -95,7 +95,7 @@ public class PostServiceTest {
     @Test
     void createPost_success() throws IOException {
         CreatePostRequest request = new CreatePostRequest();
-//        request("Gucci Handbags Spring 2021 collections");
+        //        request("Gucci Handbags Spring 2021 collections");
         request.setDescription("Sản Phẩm Bán Chạy Nhất 2021");
 
         Brand brandDTO = new Brand();
@@ -166,7 +166,7 @@ public class PostServiceTest {
     @Test
     void createPost_WhenBrandNotExisted_fail() {
         CreatePostRequest request = new CreatePostRequest();
-//        request.setTitle("Gucci Handbags Spring 2021 collections");
+        //        request.setTitle("Gucci Handbags Spring 2021 collections");
         request.setDescription("Sản Phẩm Bán Chạy Nhất 2021");
 
         Brand brandDTO = new Brand();
@@ -227,7 +227,7 @@ public class PostServiceTest {
     @Test
     void createPost_BrandLineNotExisted_fail() {
         CreatePostRequest request = new CreatePostRequest();
-//        request.setTitle("Gucci Handbags Spring 2021 collections");
+        //        request.setTitle("Gucci Handbags Spring 2021 collections");
         request.setDescription("Sản Phẩm Bán Chạy Nhất 2021");
 
         Brand brandDTO = new Brand();
@@ -286,7 +286,7 @@ public class PostServiceTest {
     @Test
     void createPost_WhenCategoryNotExisted_fail() {
         CreatePostRequest request = new CreatePostRequest();
-//        request.setTitle("Gucci Handbags Spring 2021 collections");
+        //        request.setTitle("Gucci Handbags Spring 2021 collections");
         request.setDescription("Sản Phẩm Bán Chạy Nhất 2021");
 
         Brand brandDTO = new Brand();

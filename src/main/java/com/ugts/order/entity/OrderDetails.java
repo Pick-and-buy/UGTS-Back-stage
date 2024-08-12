@@ -63,5 +63,4 @@ public class OrderDetails {
     String packingVideo;
 
     String receivePackageVideo;
-
 }

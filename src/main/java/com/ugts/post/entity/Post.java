@@ -61,5 +61,4 @@ public class Post {
     Boolean isArchived;
 
     Double lastPriceForSeller;
-
 }

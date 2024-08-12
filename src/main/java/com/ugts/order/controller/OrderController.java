@@ -53,11 +53,11 @@ public class OrderController {
 
     @PutMapping("/package-video")
     public ApiResponse<Void> updateOrderVideo(
-            @RequestParam String orderId, @RequestPart(value = "productVideo", required = false) MultipartFile productVideo) throws IOException {
+            @RequestParam String orderId,
+            @RequestPart(value = "productVideo", required = false) MultipartFile productVideo)
+            throws IOException {
         orderService.updateVideoOrder(orderId, productVideo);
-        return ApiResponse.<Void>builder()
-                .message("Update order video success")
-                .build();
+        return ApiResponse.<Void>builder().message("Update order video success").build();
     }
 
     @GetMapping

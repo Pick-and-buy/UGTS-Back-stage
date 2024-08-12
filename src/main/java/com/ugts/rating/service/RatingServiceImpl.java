@@ -109,13 +109,14 @@ public class RatingServiceImpl implements IRatingService {
                 order.setIsSellerRate(true);
                 if (order.getIsBuyerRate() && order.getIsSellerRate()) {
                     order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
-                    //TODO: move last price for seller into seller's balance
-                   try{
-                       sellerWallet.setBalance(sellerWallet.getBalance() + order.getOrderDetails().getLastPriceForSeller());
-                       walletRepository.save(sellerWallet);
-                   }catch (Exception e){
-                       log.error("An error occurred while update seller's wallet balance : {}", e.getMessage());
-                   }
+                    // TODO: move last price for seller into seller's balance
+                    try {
+                        sellerWallet.setBalance(sellerWallet.getBalance()
+                                + order.getOrderDetails().getLastPriceForSeller());
+                        walletRepository.save(sellerWallet);
+                    } catch (Exception e) {
+                        log.error("An error occurred while update seller's wallet balance : {}", e.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {
