@@ -2,7 +2,7 @@ package com.ugts.follow.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.follow.dto.FollowRequestDto;
 import com.ugts.follow.service.IFollowService;
 import com.ugts.user.dto.response.UserResponse;

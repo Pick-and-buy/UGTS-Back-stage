@@ -5,7 +5,7 @@ import java.util.List;
 import com.ugts.comment.dto.request.CommentRequestDto;
 import com.ugts.comment.dto.response.CommentResponseDto;
 import com.ugts.comment.service.ICommentService;
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

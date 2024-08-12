@@ -2,7 +2,7 @@ package com.ugts.homepage.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.homepage.service.IHomepageService;
 import com.ugts.post.dto.response.PostResponse;
 import lombok.RequiredArgsConstructor;

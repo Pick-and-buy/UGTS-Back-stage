@@ -2,7 +2,7 @@ package com.ugts.rating.controller;
 
 import java.util.List;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.dto.RatingResponse;
 import com.ugts.rating.service.IRatingService;

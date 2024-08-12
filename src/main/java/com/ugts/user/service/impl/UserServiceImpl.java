@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.ugts.cloudService.GoogleCloudStorageService;
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.common.cloudService.GoogleCloudStorageService;
+import com.ugts.common.exception.AppException;
+import com.ugts.common.exception.ErrorCode;
 import com.ugts.notification.entity.NotificationEntity;
 import com.ugts.notification.entity.NotificationType;
-import com.ugts.notification.service.NotificationServiceImpl;
+import com.ugts.notification.service.impl.NotificationServiceImpl;
 import com.ugts.post.dto.response.PostResponse;
 import com.ugts.post.entity.Post;
 import com.ugts.post.mapper.PostMapper;

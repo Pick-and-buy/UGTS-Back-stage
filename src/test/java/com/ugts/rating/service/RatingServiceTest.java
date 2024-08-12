@@ -7,13 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import com.ugts.comment.service.impl.CommentValidationServiceImpl;
-import com.ugts.notification.service.NotificationServiceImpl;
+import com.ugts.notification.service.impl.NotificationServiceImpl;
 import com.ugts.order.repository.OrderRepository;
-import com.ugts.rating.RatingMapper;
+import com.ugts.rating.mapper.RatingMapper;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.entity.Rating;
 import com.ugts.rating.entity.StarRating;
 import com.ugts.rating.repository.RatingRepository;
+import com.ugts.rating.service.impl.RatingServiceImpl;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.wallet.repository.WalletRepository;

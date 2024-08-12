@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ugts.brandLine.repository.BrandLineRepository;
-import com.ugts.cloudService.GoogleCloudStorageService;
-import com.ugts.exception.AppException;
-import com.ugts.exception.ErrorCode;
+import com.ugts.common.cloudService.GoogleCloudStorageService;
+import com.ugts.common.exception.AppException;
+import com.ugts.common.exception.ErrorCode;
 import com.ugts.news.dto.request.NewsRequest;
 import com.ugts.news.dto.response.NewsResponse;
 import com.ugts.news.entity.News;

@@ -1,6 +1,6 @@
 package com.ugts.verifyid.controller;
 
-import com.ugts.dto.ApiResponse;
+import com.ugts.common.dto.ApiResponse;
 import com.ugts.verifyid.dto.VerifyInformationRequest;
 import com.ugts.verifyid.service.IVerifyInformation;
 import lombok.RequiredArgsConstructor;
