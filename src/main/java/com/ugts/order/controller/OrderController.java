@@ -1,5 +1,6 @@
 package com.ugts.order.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ugts.dto.ApiResponse;
@@ -12,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,6 +48,15 @@ public class OrderController {
         return ApiResponse.<OrderResponse>builder()
                 .message("Update order details success")
                 .result(result)
+                .build();
+    }
+
+    @PutMapping("/package-video")
+    public ApiResponse<Void> updateOrderVideo(
+            @RequestParam String orderId, @RequestPart(value = "productVideo", required = false) MultipartFile productVideo) throws IOException {
+        orderService.updateVideoOrder(orderId, productVideo);
+        return ApiResponse.<Void>builder()
+                .message("Update order video success")
                 .build();
     }
 

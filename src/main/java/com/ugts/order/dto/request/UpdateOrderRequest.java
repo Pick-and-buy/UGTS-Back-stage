@@ -26,4 +26,6 @@ public class UpdateOrderRequest {
     Date deliveryDate;
     Date receivedDate;
     Post post;
+    String packingVideo;
+    String receivePackageVideo;
 }

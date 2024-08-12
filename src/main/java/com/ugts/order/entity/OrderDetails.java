@@ -60,4 +60,8 @@ public class OrderDetails {
 
     Double lastPriceForSeller;
 
+    String packingVideo;
+
+    String receivePackageVideo;
+
 }

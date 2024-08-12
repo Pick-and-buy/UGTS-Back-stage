@@ -1,11 +1,13 @@
 package com.ugts.order.service.impl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.ugts.cloudService.GoogleCloudStorageService;
 import com.ugts.exception.AppException;
 import com.ugts.exception.ErrorCode;
 import com.ugts.notification.entity.NotificationEntity;
@@ -33,11 +35,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -58,9 +62,11 @@ public class OrderServiceImpl implements OrderService {
 
     UserService userService;
 
-    IRatingService ratingService;
 
     private final NotificationServiceImpl notificationService;
+
+    GoogleCloudStorageService googleCloudStorageService;
+
 
     /**
      * Creates a new order with the given order request.
@@ -303,6 +309,39 @@ public class OrderServiceImpl implements OrderService {
             }
         } catch (Exception e) {
             log.error("An error occurred while create auto rating : {}", e.getMessage());
+        }
+    }
+
+    /**
+     * @param orderId
+     * @param productVideo
+     * @return
+     */
+    @Override
+    @Transactional
+    @Modifying
+    public void updateVideoOrder(String orderId, MultipartFile productVideo) throws IOException {
+        // Get the order
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Get the user who created the order
+        var buyer = userRepository
+                .findById(order.getBuyer().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        // Get user who is updating the order
+        var user = userService.getProfile();
+        String videoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+
+        //seller update packing video
+        if (Objects.equals(buyer.getId(), user.getId())) {
+            order.getOrderDetails().setPackingVideo(videoUrl);
+            orderRepository.save(order);
+        }
+
+        //buyer update receive video
+        if(Objects.equals(order.getBuyer().getId(), user.getId())) {
+            order.getOrderDetails().setPackingVideo(videoUrl);
+             orderRepository.save(order);
         }
     }
 
