@@ -28,6 +28,8 @@ import com.ugts.user.entity.User;
 import com.ugts.user.mapper.UserMapper;
 import com.ugts.user.repository.RoleRepository;
 import com.ugts.user.repository.UserRepository;
+import com.ugts.wallet.entity.Wallet;
+import com.ugts.wallet.repository.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,6 +55,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     InvalidTokenRepository invalidTokenRepository;
 
     UserMapper userMapper;
+
+    WalletRepository walletRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
@@ -95,6 +99,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+
+        // Check if the user already has a wallet
+        if (walletRepository.findByUser(user).isPresent()) {
+            throw new AppException(ErrorCode.WALLET_ALREADY_EXISTED);
+        }
+        var newWallet = Wallet.builder().user(user).balance(0.0).build();
+
+        // Log the creation of a new wallet
+        log.info("New wallet created for user: `{}`", user.getId());
 
         return userMapper.userToUserResponse(user);
     }

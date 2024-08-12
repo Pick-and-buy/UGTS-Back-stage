@@ -57,31 +57,6 @@ public class WalletServiceImpl implements IWalletService {
         return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
-    /**
-     * Registers a new wallet for the user.
-     * Retrieves the user, checks if the user already has a wallet,
-     * creates a new wallet with a balance of 0.0 for the user,
-     * logs the creation of the new wallet, and returns the wallet response after saving the new wallet.
-     *
-     * @return The wallet response after registering the new wallet.
-     */
-    @Override
-    @Transactional
-    @PreAuthorize("hasRole('USER')")
-    public WalletResponse registerNewWallet() {
-        var user = retrieveUser();
-
-        // Check if the user already has a wallet
-        if (walletRepository.findByUser(user).isPresent()) {
-            throw new AppException(ErrorCode.WALLET_ALREADY_EXISTED);
-        }
-        var newWallet = Wallet.builder().user(user).balance(0.0).build();
-
-        // Log the creation of a new wallet
-        log.info("New wallet created for user: `{}`", user.getId());
-
-        return walletMapper.walletToWalletResponse(walletRepository.save(newWallet));
-    }
 
     /**
      * Charges the specified amount to the user's wallet.
