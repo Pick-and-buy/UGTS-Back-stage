@@ -40,4 +40,7 @@ public class OrderDetailsResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd hh:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     Date receivedDate;
+
+    String packingVideo;
+    String receivePackageVideo;
 }
