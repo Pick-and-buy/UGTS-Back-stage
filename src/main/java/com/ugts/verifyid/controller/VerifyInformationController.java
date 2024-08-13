@@ -17,13 +17,7 @@ public class VerifyInformationController {
 
     @PostMapping
     public ApiResponse<Void> verifyInformation(@RequestBody VerifyInformationRequest verifyInformationRequest) {
-        try {
-            verifyInformation.handleVerifyUser(verifyInformationRequest);
-            return ApiResponse.<Void>builder().message("Success verify user").build();
-        } catch (Exception e) {
-            return ApiResponse.<Void>builder()
-                    .message("Something wrong with verify information")
-                    .build();
-        }
+        verifyInformation.handleVerifyUser(verifyInformationRequest);
+        return ApiResponse.<Void>builder().message("Success verify user").build();
     }
 }
