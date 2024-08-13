@@ -8,13 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProductDataRepository extends JpaRepository<ProductData, Integer> {
-    @Query("SELECT p FROM ProductData p " + "WHERE LOWER(p.brand) = LOWER(:brand) "
-            + "AND (:brandLine IS NULL OR LOWER(:brandLine) = 'không rõ' OR LOWER(p.brandLine) = LOWER(:brandLine)) "
-            + "AND (:category IS NULL OR LOWER(:category) = 'không rõ' OR LOWER(p.category) = LOWER(:category)) "
-            + "AND FUNCTION('similarity', LOWER(p.productName), LOWER(:productName)) > 0.7")
+    @Query("SELECT p FROM ProductData p " +
+            "WHERE LOWER(p.productName) ILIKE CONCAT('%', :productName, '%')" +
+            "AND LOWER(p.brand) ILIKE CONCAT('%', :brand, '%')" +
+            "AND LOWER(:brandLine) = 'Không rõ'  OR LOWER(p.brandLine) ILIKE CONCAT('%', :brandLine, '%')" +
+            "AND LOWER(:category) = 'Không rõ' OR LOWER(p.category) ILIKE CONCAT('%', :category, '%')")
     Optional<ProductData> findSimilarProduct(
+            @Param("productName") String productName,
             @Param("brand") String brand,
             @Param("brandLine") String brandLine,
-            @Param("category") String category,
-            @Param("productName") String productName);
+            @Param("category") String category
+            );
 }

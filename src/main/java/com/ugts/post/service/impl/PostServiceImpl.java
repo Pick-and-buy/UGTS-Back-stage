@@ -154,12 +154,11 @@ public class PostServiceImpl implements IPostService {
     protected void autoCompleteProductData(CreatePostRequest postRequest, Product product) {
         // Gọi phương thức repository với các điều kiện tùy chọn
         Optional<ProductData> productDataOptional = productDataRepository.findSimilarProduct(
+                postRequest.getProduct().getName(),
                 postRequest.getBrand().getName(),
                 postRequest.getBrandLine().getLineName(),
-                postRequest.getCategory().getCategoryName(),
-                postRequest.getProduct().getName());
-
-        if (productDataOptional.isPresent()) {
+                postRequest.getCategory().getCategoryName()
+                );
             BrandLine brandLine = brandLineRepository
                     .findByLineName(postRequest.getBrandLine().getLineName())
                     .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
@@ -185,7 +184,6 @@ public class PostServiceImpl implements IPostService {
                     log.error("Auto complete product data failed: {}", e.getMessage());
                 }
             });
-        }
     }
 
     /**
