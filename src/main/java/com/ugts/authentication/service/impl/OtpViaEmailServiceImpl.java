@@ -2,7 +2,6 @@ package com.ugts.authentication.service.impl;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.Random;
 
 import com.ugts.authentication.dto.record.ViaMailBody;
 import com.ugts.authentication.dto.request.ForgotPasswordRequest;

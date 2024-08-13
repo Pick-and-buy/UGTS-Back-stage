@@ -1,8 +1,8 @@
 package com.ugts.authentication.helper;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Random;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class ForgotPasswordHelper {
@@ -12,5 +12,4 @@ public class ForgotPasswordHelper {
     public Integer otpGenerator() {
         return random.nextInt(100000, 999999);
     }
-
 }
