@@ -1,4 +1,4 @@
-package com.ugts.common.configuration;
+package com.ugts.configuration;
 
 import java.io.IOException;
 

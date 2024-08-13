@@ -152,38 +152,36 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     @Modifying
     protected void autoCompleteProductData(CreatePostRequest postRequest, Product product) {
-        // Gọi phương thức repository với các điều kiện tùy chọn
         Optional<ProductData> productDataOptional = productDataRepository.findSimilarProduct(
                 postRequest.getProduct().getName(),
                 postRequest.getBrand().getName(),
                 postRequest.getBrandLine().getLineName(),
                 postRequest.getCategory().getCategoryName()
                 );
-            BrandLine brandLine = brandLineRepository
-                    .findByLineName(postRequest.getBrandLine().getLineName())
-                    .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
-            Category category = categoryRepository
-                    .findByCategoryName(postRequest.getCategory().getCategoryName())
-                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+        BrandLine brandLine = brandLineRepository
+                .findByLineName(postRequest.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+        Category category = categoryRepository
+                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
-            // Nếu tìm thấy sản phẩm, cập nhật các trường còn thiếu trong post
-            productDataOptional.ifPresent(productData -> {
-                try {
-                    product.setBrandLine(brandLine);
-                    product.setCategory(category);
-                    product.setStory(productData.getStory());
-                    product.setExteriorMaterial(productData.getExteriorMaterial());
-                    product.setInteriorMaterial(productData.getInteriorMaterial());
-                    product.setColor(productData.getColor());
-                    product.setSize(productData.getSize());
-                    product.setWidth(productData.getWidth());
-                    product.setHeight(productData.getHeight());
-                    product.setLength(productData.getLength());
-                    productRepository.save(product);
-                } catch (Exception e) {
-                    log.error("Auto complete product data failed: {}", e.getMessage());
-                }
-            });
+        productDataOptional.ifPresent(productData -> {
+            try {
+                product.setBrandLine(brandLine);
+                product.setCategory(category);
+                product.setStory(productData.getStory());
+                product.setExteriorMaterial(productData.getExteriorMaterial());
+                product.setInteriorMaterial(productData.getInteriorMaterial());
+                product.setColor(productData.getColor());
+                product.setSize(productData.getSize());
+                product.setWidth(productData.getWidth());
+                product.setHeight(productData.getHeight());
+                product.setLength(productData.getLength());
+                productRepository.save(product);
+            } catch (Exception e) {
+                log.error("Auto complete product data failed: {}", e.getMessage());
+            }
+        });
     }
 
     /**

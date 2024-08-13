@@ -331,7 +331,7 @@ public class OrderServiceImpl implements OrderService {
         String videoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
 
         // seller update packing video
-        if (Objects.equals(buyer.getId(), user.getId())) {
+        if (Objects.equals(order.getPost().getUser().getId(), user.getId())) {
             order.getOrderDetails().setPackingVideo(videoUrl);
             orderRepository.save(order);
         }

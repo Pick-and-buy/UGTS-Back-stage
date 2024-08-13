@@ -1,4 +1,4 @@
-package com.ugts.common.configuration;
+package com.ugts.configuration;
 
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
