@@ -10,5 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VerifyOtpRequest {
     String email;
+    String phoneNumber;
     Integer otpCode;
 }

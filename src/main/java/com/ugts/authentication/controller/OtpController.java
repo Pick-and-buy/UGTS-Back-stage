@@ -44,10 +44,10 @@ public class OtpController {
     }
 
     @PostMapping("/verify-sms-otp")
-    public ApiResponse<String> validateSmsOtp(@RequestParam Integer otp, @RequestParam String phoneNumber) {
-        var result = twilioService.validateOtp(otp, phoneNumber);
+    public ApiResponse<String> validateSmsOtp(@RequestBody VerifyOtpRequest verifyOtpRequest) {
+        var result = twilioService.validateOtp(verifyOtpRequest);
         return ApiResponse.<String>builder()
-                .message("Valid OTP!")
+                .message("Validated OTP!")
                 .result(result)
                 .build();
     }
