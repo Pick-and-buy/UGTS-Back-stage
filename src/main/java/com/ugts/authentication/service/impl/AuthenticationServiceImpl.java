@@ -105,7 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.WALLET_ALREADY_EXISTED);
         }
         var newWallet = Wallet.builder().user(user).balance(0.0).build();
-
+        walletRepository.save(newWallet);
         // Log the creation of a new wallet
         log.info("New wallet created for user: `{}`", user.getId());
 
