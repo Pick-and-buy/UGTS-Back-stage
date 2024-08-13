@@ -373,6 +373,9 @@ public class PostServiceImpl implements IPostService {
                     googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
             product.setOriginalReceiptProof(originalReceiptProofUrls);
         }
+        if(productVideo != null && originalReceiptProof != null) {
+            product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
+        }
 
         var updatedProduct = productRepository.save(product);
 
