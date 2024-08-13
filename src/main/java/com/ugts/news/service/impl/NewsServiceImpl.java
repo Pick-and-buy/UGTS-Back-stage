@@ -89,10 +89,11 @@ public class NewsServiceImpl implements NewsService {
                 .findByLineName(request.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
-        String newsBannerUrl = googleCloudStorageService.uploadNewsBannerToGCS(file, newsId);
-
+       if(file != null) {
+           String newsBannerUrl = googleCloudStorageService.uploadNewsBannerToGCS(file, newsId);
+           news.setBanner(newsBannerUrl);
+       }
         news.setBrandLine(brandLine);
-        news.setBanner(newsBannerUrl);
         news.setTitle(request.getTitle());
         news.setContent(request.getContent());
         news.setSubTitle1(request.getSubTitle1());

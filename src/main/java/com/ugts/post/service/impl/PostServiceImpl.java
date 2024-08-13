@@ -251,7 +251,7 @@ public class PostServiceImpl implements IPostService {
      * @param product The Product object to which the uploaded images will be associated.
      * @throws IOException If an I/O error occurs during the upload process.
      */
-    private void uploadProductImagesToGCS(MultipartFile[] productImages, Product product) throws IOException {
+    protected void uploadProductImagesToGCS(MultipartFile[] productImages, Product product) throws IOException {
         // upload product images to GCS
         List<String> imageUrls = googleCloudStorageService.uploadProductImagesToGCS(productImages, product.getId());
 
@@ -357,16 +357,22 @@ public class PostServiceImpl implements IPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         // upload product images to GCS
-        uploadProductImagesToGCS(productImages, product);
+        if(productImages != null) {
+            uploadProductImagesToGCS(productImages, product);
+        }
 
         // upload product video to GCS
-        String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
-        product.setProductVideo(videoUrl);
+        if(productVideo != null) {
+            String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+            product.setProductVideo(videoUrl);
+        }
 
         // upload originalReceiptProofUrls to GCS
-        String originalReceiptProofUrls =
-                googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
-        product.setOriginalReceiptProof(originalReceiptProofUrls);
+        if(originalReceiptProof != null) {
+            String originalReceiptProofUrls =
+                    googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+            product.setOriginalReceiptProof(originalReceiptProofUrls);
+        }
 
         var updatedProduct = productRepository.save(product);
 
