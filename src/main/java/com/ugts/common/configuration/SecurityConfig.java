@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_ENDPOINT = {"/api/v1/auth/**", "/api/v1/otp/**"};
+    private static final String[] PUBLIC_ENDPOINT = {"/api/v1/auth/**", "/api/v1/otp/**", "/api/v1/router/**"};
 
     private final CustomJwtDecoder customJwtDecoder;
 
