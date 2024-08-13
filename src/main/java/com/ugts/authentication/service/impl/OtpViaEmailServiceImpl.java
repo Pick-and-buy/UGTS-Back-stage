@@ -8,6 +8,7 @@ import com.ugts.authentication.dto.record.ViaMailBody;
 import com.ugts.authentication.dto.request.ForgotPasswordRequest;
 import com.ugts.authentication.dto.request.VerifyOtpRequest;
 import com.ugts.authentication.entity.OtpViaEmail;
+import com.ugts.authentication.helper.ForgotPasswordHelper;
 import com.ugts.authentication.repository.OtpViaEmailRepository;
 import com.ugts.authentication.service.OtpViaEmailService;
 import com.ugts.common.exception.AppException;
@@ -29,7 +30,7 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
 
     OtpViaEmailRepository otpViaEmailRepository;
 
-    Random random = new Random();
+    ForgotPasswordHelper forgotPasswordHelper;
 
     @Override
     public void sendOtpCode(ForgotPasswordRequest request) {
@@ -37,7 +38,7 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        int otpCode = otpGenerator();
+        int otpCode = forgotPasswordHelper.otpGenerator();
         ViaMailBody mailBody = ViaMailBody.builder()
                 .to(request.getEmail())
                 .text("This is the OTP for forgot password: " + otpCode)
@@ -83,9 +84,5 @@ public class OtpViaEmailServiceImpl implements OtpViaEmailService {
         message.setText(mailBody.text());
 
         mailSender.send(message);
-    }
-
-    public Integer otpGenerator() {
-        return random.nextInt(100000, 999999);
     }
 }
