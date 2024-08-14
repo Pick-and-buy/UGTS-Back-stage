@@ -252,7 +252,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
-        if (Boolean.FALSE.equals(userRepository.existsByEmail(request.getEmail()))) {
+        if (Boolean.FALSE.equals(userRepository.existsByEmail(request.getEmail())) ||
+                Boolean.FALSE.equals(userRepository.existsByPhoneNumber(request.getPhoneNumber()))) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
         if (!request.getPassword().equals(request.getConfirmPassword())) {
