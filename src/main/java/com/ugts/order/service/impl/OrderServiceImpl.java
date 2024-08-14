@@ -26,6 +26,10 @@ import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.entity.StarRating;
+import com.ugts.transaction.entity.Transaction;
+import com.ugts.transaction.enums.TransactionStatus;
+import com.ugts.transaction.enums.TransactionType;
+import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.Address;
 import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
@@ -67,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
     GoogleCloudStorageService googleCloudStorageService;
 
     WalletRepository walletRepository;
+
+    TransactionRepository transactionRepository;
 
 
     /**
@@ -115,8 +121,8 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryDate(orderRequest.getDeliveryDate())
                 .receivedDate(orderRequest.getReceivedDate())
                 .lastPriceForSeller(post.getProduct().getPrice())
-                .lastPriceForBuyer(orderRequest.getShippingCost() + post.getProduct().getPrice())
-                .shippingCost(orderRequest.getShippingCost())
+                .lastPriceForBuyer(Double.valueOf(orderRequest.getShippingCost() + post.getProduct().getPrice()))
+                .shippingCost(Double.valueOf(orderRequest.getShippingCost()))
                 .build();
 
         var order = Order.builder()
@@ -195,6 +201,19 @@ public class OrderServiceImpl implements OrderService {
                 var currentBalance = user.getWallet().getBalance();
                 double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
                 wallet.setBalance(newBalance);
+
+                var transaction = Transaction.builder()
+                        .amount(orderDetails.getLastPriceForBuyer())
+                        .currency("VND")
+                        .reason("Refund for cancelled order")
+                        .createDate(LocalDateTime.now())
+                        .transactionStatus(TransactionStatus.SUCCESS)
+                        .user(user)
+                        .order(order)
+                        .wallet(wallet)
+                        .transactionType(TransactionType.REFUND)
+                        .build();
+                transactionRepository.save(transaction);
             }
             walletRepository.save(wallet);
             postRepository.save(post);
