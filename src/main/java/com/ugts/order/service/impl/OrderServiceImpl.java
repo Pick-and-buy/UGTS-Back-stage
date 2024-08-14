@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryDate(orderRequest.getDeliveryDate())
                 .receivedDate(orderRequest.getReceivedDate())
                 .lastPriceForSeller(post.getProduct().getPrice())
-                .lastPriceForBuyer(Double.valueOf(orderRequest.getShippingCost() + post.getProduct().getPrice()))
+                .lastPriceForBuyer(Double.parseDouble(orderRequest.getShippingCost()) + post.getProduct().getPrice())
                 .shippingCost(Double.valueOf(orderRequest.getShippingCost()))
                 .build();
 
