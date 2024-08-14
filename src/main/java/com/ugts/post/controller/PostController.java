@@ -100,7 +100,7 @@ public class PostController {
                 .build();
     }
 
-    @GetMapping
+    @GetMapping("boosted-post")
     public ApiResponse<List<PostResponse>> getAllBoostedPosts() {
         var result = postService.getAllBoostedPosts();
         return ApiResponse.<List<PostResponse>>builder()
