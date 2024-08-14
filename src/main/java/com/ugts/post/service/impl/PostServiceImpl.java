@@ -156,8 +156,7 @@ public class PostServiceImpl implements IPostService {
                 postRequest.getProduct().getName(),
                 postRequest.getBrand().getName(),
                 postRequest.getBrandLine().getLineName(),
-                postRequest.getCategory().getCategoryName()
-                );
+                postRequest.getCategory().getCategoryName());
         BrandLine brandLine = brandLineRepository
                 .findByLineName(postRequest.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
@@ -355,23 +354,23 @@ public class PostServiceImpl implements IPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         // upload product images to GCS
-        if(productImages != null) {
+        if (productImages != null) {
             uploadProductImagesToGCS(productImages, product);
         }
 
         // upload product video to GCS
-        if(productVideo != null) {
+        if (productVideo != null) {
             String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
             product.setProductVideo(videoUrl);
         }
 
         // upload originalReceiptProofUrls to GCS
-        if(originalReceiptProof != null) {
+        if (originalReceiptProof != null) {
             String originalReceiptProofUrls =
                     googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
             product.setOriginalReceiptProof(originalReceiptProofUrls);
         }
-        if(productVideo != null && originalReceiptProof != null) {
+        if (productVideo != null && originalReceiptProof != null) {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
         }
 
