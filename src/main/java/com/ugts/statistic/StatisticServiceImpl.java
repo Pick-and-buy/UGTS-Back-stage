@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,14 @@ public class StatisticServiceImpl implements StatisticService {
 
     LocalDate endDate = LocalDate.now();
 
+    /**
+     * Calculates the total amount of successful transactions that occurred on a specific date.
+     *
+     * @param date The date for which the total amount of successful transactions is calculated
+     * @return The total amount of successful transactions on the given date
+     */
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public double getTotalAmountOfSuccessfulTransactionsInADay(LocalDate date) {
         TypedQuery<Double> query = entityManager.createQuery(
                 "SELECT SUM(t.amount) FROM Transaction t WHERE t.createDate = :date AND t.transactionStatus = :status",
@@ -35,7 +43,13 @@ public class StatisticServiceImpl implements StatisticService {
         return query.getSingleResult();
     }
 
+    /**
+     * Calculates the total amount of successful transactions that occurred within the last week.
+     *
+     * @return The total amount of successful transactions in the past week
+     */
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public double getTotalAmountOfSuccessfulTransactionsInAWeek() {
         LocalDate startDate = LocalDate.now().minusDays(7);
 
@@ -50,7 +64,13 @@ public class StatisticServiceImpl implements StatisticService {
         return query.getSingleResult();
     }
 
+    /**
+     * Calculates the total amount of successful transactions that occurred within the last month.
+     *
+     * @return The total amount of successful transactions in the past month
+     */
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public double getTotalAmountOfSuccessfulTransactionsInAMonth() {
         LocalDate startDate = LocalDate.now().minusMonths(1);
 
@@ -65,7 +85,13 @@ public class StatisticServiceImpl implements StatisticService {
         return query.getSingleResult();
     }
 
+    /**
+     * Calculates the total amount of successful transactions that occurred within the last year.
+     *
+     * @return The total amount of successful transactions in the past year
+     */
     @Override
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public double getTotalAmountOfSuccessfulTransactionsInAYear() {
         LocalDate startDate = LocalDate.now().minusYears(1);
 
