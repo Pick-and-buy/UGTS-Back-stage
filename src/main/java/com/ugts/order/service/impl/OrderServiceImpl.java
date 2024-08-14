@@ -191,9 +191,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             post.setIsAvailable(true);
-            var currentBalance = user.getWallet().getBalance();
-            double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
-            wallet.setBalance(newBalance);
+            if(user.getId().equals(order.getBuyer().getId())) {
+                var currentBalance = user.getWallet().getBalance();
+                double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
+                wallet.setBalance(newBalance);
+            }
             walletRepository.save(wallet);
             postRepository.save(post);
         }
