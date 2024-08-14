@@ -54,4 +54,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
 
     @Query("SELECT p FROM Post p ORDER BY p.boosted DESC, p.boostEndTime DESC")
     List<Post> findAllOrderByBoostedDesc();
+
+    @Query("SELECT p FROM Post p WHERE p.boosted = true")
+    List<Post> findAllBoostedPost();
 }

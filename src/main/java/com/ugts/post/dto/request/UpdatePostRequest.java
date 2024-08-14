@@ -10,8 +10,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdatePostRequest {
     String id;
-    String title;
+//    String title;
     String description;
     Product product;
     Boolean boosted;
+    Double lastPriceForSeller;
 }

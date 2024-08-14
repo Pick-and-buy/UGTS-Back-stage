@@ -30,6 +30,7 @@ import com.ugts.user.entity.Address;
 import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
+import com.ugts.wallet.repository.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -64,6 +65,9 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationServiceImpl notificationService;
 
     GoogleCloudStorageService googleCloudStorageService;
+
+    WalletRepository walletRepository;
+
 
     /**
      * Creates a new order with the given order request.
@@ -111,6 +115,8 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryDate(orderRequest.getDeliveryDate())
                 .receivedDate(orderRequest.getReceivedDate())
                 .lastPriceForSeller(post.getProduct().getPrice())
+                .lastPriceForBuyer(orderRequest.getShippingCost() + post.getProduct().getPrice())
+                .shippingCost(orderRequest.getShippingCost())
                 .build();
 
         var order = Order.builder()
@@ -179,8 +185,16 @@ public class OrderServiceImpl implements OrderService {
         var orderDetails = order.getOrderDetails();
         orderDetails.setStatus(orderRequest.getOrderStatus());
 
+        String userWalletId = user.getWallet().getWalletId();
+        var wallet =
+                walletRepository.findById(userWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+
         if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             post.setIsAvailable(true);
+            var currentBalance = user.getWallet().getBalance();
+            double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
+            wallet.setBalance(newBalance);
+            walletRepository.save(wallet);
             postRepository.save(post);
         }
 

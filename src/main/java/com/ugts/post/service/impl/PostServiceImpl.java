@@ -322,6 +322,12 @@ public class PostServiceImpl implements IPostService {
         return postMapper.getAllPosts(posts);
     }
 
+    public List<PostResponse> getAllBoostedPosts() {
+        List<Post> posts = postRepository.findAllBoostedPost();
+        return postMapper.getAllPosts(posts);
+    }
+
+
     /**
      * Updates an existing post with the provided details.
      * Retrieves the post by its ID from the post repository.
@@ -377,10 +383,11 @@ public class PostServiceImpl implements IPostService {
 
         var updatedProduct = productRepository.save(product);
 
-        post.setTitle(request.getTitle());
+        post.setTitle(request.getProduct().getName());
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
+        post.setLastPriceForSeller(request.getLastPriceForSeller());
 
         if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);

@@ -100,6 +100,15 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping
+    public ApiResponse<List<PostResponse>> getAllBoostedPosts() {
+        var result = postService.getAllBoostedPosts();
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Get All Post Success")
+                .result(result)
+                .build();
+    }
+
     /**
      * Updates an existing post identified by the provided postId.
      * Parses the 'updateRequest' JSON string into an UpdatePostRequest object.

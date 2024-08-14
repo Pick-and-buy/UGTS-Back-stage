@@ -63,4 +63,9 @@ public class OrderDetails {
     String packingVideo;
 
     String receivePackageVideo;
+
+    Double lastPriceForBuyer;
+
+    Double shippingCost;
+
 }

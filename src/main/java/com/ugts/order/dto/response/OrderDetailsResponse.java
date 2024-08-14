@@ -42,5 +42,10 @@ public class OrderDetailsResponse {
     Date receivedDate;
 
     String packingVideo;
+
     String receivePackageVideo;
+
+    Double lastPriceForBuyer;
+
+    Double shippingCost;
 }
