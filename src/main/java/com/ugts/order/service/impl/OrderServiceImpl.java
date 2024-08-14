@@ -337,8 +337,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // buyer update receive video
-        if (Objects.equals(order.getBuyer().getId(), user.getId())) {
-            order.getOrderDetails().setPackingVideo(videoUrl);
+        if (Objects.equals(buyer.getId(), user.getId())) {
+            order.getOrderDetails().setReceivePackageVideo(videoUrl);
             orderRepository.save(order);
         }
     }
