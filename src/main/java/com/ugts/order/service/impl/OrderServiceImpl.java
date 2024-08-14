@@ -326,20 +326,23 @@ public class OrderServiceImpl implements OrderService {
         var buyer = userRepository
                 .findById(order.getBuyer().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        // Get user who is updating the order
-        var user = userService.getProfile();
-        String videoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+        if(productVideo != null) {
+            // Get user who is updating the order
+            var user = userService.getProfile();
 
-        // seller update packing video
-        if (Objects.equals(order.getPost().getUser().getId(), user.getId())) {
-            order.getOrderDetails().setPackingVideo(videoUrl);
-            orderRepository.save(order);
-        }
+            // seller update packing video
+            if (Objects.equals(order.getPost().getUser().getId(), user.getId())) {
+                String sellerVideoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+                order.getOrderDetails().setPackingVideo(sellerVideoUrl);
+                orderRepository.save(order);
+            }
 
-        // buyer update receive video
-        if (Objects.equals(buyer.getId(), user.getId())) {
-            order.getOrderDetails().setReceivePackageVideo(videoUrl);
-            orderRepository.save(order);
+            // buyer update receive video
+            if (Objects.equals(buyer.getId(), user.getId())) {
+                String buyerVideoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+                order.getOrderDetails().setReceivePackageVideo(buyerVideoUrl);
+                orderRepository.save(order);
+            }
         }
     }
 
