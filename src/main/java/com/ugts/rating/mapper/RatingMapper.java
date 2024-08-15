@@ -18,6 +18,7 @@ public class RatingMapper {
         ratingResponse.setRatingUser(ratingUser);
         ratingResponse.setRatedUserId(rating.getRatedUser().getId());
         ratingResponse.setRatedAt(rating.getRatedAt());
+        ratingResponse.setOrderId(rating.getOrderId());
         switch (rating.getStars()) {
             case ONE_STAR:
                 ratingResponse.setStars(1);
