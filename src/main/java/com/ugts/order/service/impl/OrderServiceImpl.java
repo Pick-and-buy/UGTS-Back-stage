@@ -31,9 +31,11 @@ import com.ugts.transaction.enums.TransactionStatus;
 import com.ugts.transaction.enums.TransactionType;
 import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.Address;
+import com.ugts.user.entity.User;
 import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
+import com.ugts.wallet.entity.Wallet;
 import com.ugts.wallet.repository.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -160,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
+    @Modifying
     @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse updateOrderStatus(String orderId, UpdateOrderRequest orderRequest) {
         // Get the order
@@ -176,12 +179,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Get user who is updating the order
-        var contextHolder = SecurityContextHolder.getContext();
-        String phoneNumber = contextHolder.getAuthentication().getName();
-
-        var user = userRepository
-                .findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = getUserUpdateOrder();
 
         // Verify that the user is authorized to update the order
         if (!Objects.equals(seller.getId(), user.getId())) {
@@ -189,33 +187,17 @@ public class OrderServiceImpl implements OrderService {
         }
 
         var orderDetails = order.getOrderDetails();
-        orderDetails.setStatus(orderRequest.getOrderStatus());
 
-        String userWalletId = user.getWallet().getWalletId();
-        var wallet =
-                walletRepository.findById(userWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+        String buyerWalletId = order.getBuyer().getWallet().getWalletId();
+        var buyerWallet =
+                walletRepository.findById(buyerWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
 
         if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             post.setIsAvailable(true);
-            if(user.getId().equals(order.getBuyer().getId())) {
-                var currentBalance = user.getWallet().getBalance();
-                double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
-                wallet.setBalance(newBalance);
+            orderDetails.setStatus(OrderStatus.CANCELLED);
 
-                var transaction = Transaction.builder()
-                        .amount(orderDetails.getLastPriceForBuyer())
-                        .currency("VND")
-                        .reason("Refund for cancelled order")
-                        .createDate(LocalDateTime.now())
-                        .transactionStatus(TransactionStatus.SUCCESS)
-                        .user(user)
-                        .order(order)
-                        .wallet(wallet)
-                        .transactionType(TransactionType.REFUND)
-                        .build();
-                transactionRepository.save(transaction);
-            }
-            walletRepository.save(wallet);
+            refundForBuyer(order, user, orderDetails, buyerWallet);
+
             postRepository.save(post);
         }
 
@@ -224,8 +206,18 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
+    protected User getUserUpdateOrder(){
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
+
+        return userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+    //buyer
     @Override
     @Transactional
+    @Modifying
     @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest updateOrderRequest) {
         // Get the order
@@ -237,7 +229,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Get user who is updating the order
-        var user = userService.getProfile();
+        var user = getUserUpdateOrder();
 
         // Verify that the user is authorized to update the order
         if (!Objects.equals(buyer.getId(), user.getId())) {
@@ -253,27 +245,55 @@ public class OrderServiceImpl implements OrderService {
 
         addressRepository.save(address);
 
-        order.getOrderDetails().setFirstName(updateOrderRequest.getFirstName());
-        order.getOrderDetails().setLastName(updateOrderRequest.getLastName());
-        order.getOrderDetails().setEmail(updateOrderRequest.getEmail());
-        order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
-        order.getOrderDetails().setAddress(address);
-        order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
-        order.getOrderDetails()
-                .setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
+        var orderDetails = order.getOrderDetails();
+        orderDetails.setFirstName(updateOrderRequest.getFirstName());
+        orderDetails.setLastName(updateOrderRequest.getLastName());
+        orderDetails.setEmail(updateOrderRequest.getEmail());
+        orderDetails.setPhoneNumber(updateOrderRequest.getPhoneNumber());
+        orderDetails.setAddress(address);
+        orderDetails.setPaymentMethod(order.getOrderDetails().getPaymentMethod());
+        orderDetails.setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
-            var orderDetails = order.getOrderDetails();
-            orderDetails.setStatus(updateOrderRequest.getOrderStatus());
-            orderDetailsRepository.save(orderDetails);
+            orderDetails.setStatus(OrderStatus.CANCELLED);
+
+            String buyerWalletId = buyer.getWallet().getWalletId();
+            var buyerWallet =
+                    walletRepository.findById(buyerWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+
+            refundForBuyer(order, user, orderDetails, buyerWallet);
 
             var post = order.getPost();
             post.setIsAvailable(true);
             postRepository.save(post);
-        }
+            orderDetailsRepository.save(orderDetails);
 
+        }
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
+
+    @Transactional
+    @Modifying
+    protected void refundForBuyer(Order order, User user, OrderDetails orderDetails, Wallet buyerWallet) {
+        var currentBalance = buyerWallet.getBalance();
+        double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
+        buyerWallet.setBalance(newBalance);
+
+        var transaction = Transaction.builder()
+                .amount(orderDetails.getLastPriceForBuyer())
+                .currency("VND")
+                .reason("Refund for buyer cancelled order")
+                .createDate(LocalDateTime.now())
+                .transactionStatus(TransactionStatus.SUCCESS)
+                .user(user)
+                .order(order)
+                .wallet(buyerWallet)
+                .transactionType(TransactionType.REFUND)
+                .build();
+        transactionRepository.save(transaction);
+        walletRepository.save(buyerWallet);
+    }
+
 
     /**
      * Retrieves all orders from the order repository and maps them to a list of OrderResponse objects.
