@@ -380,7 +380,25 @@ public class PostServiceImpl implements IPostService {
         if(productVideo != null && originalReceiptProof != null) {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
         }
+        product.setColor(request.getProduct().getColor());
+        product.setSize(request.getProduct().getSize());
+        product.setBrand(request.getProduct().getBrand());
+        product.setCategory(request.getProduct().getCategory());
+        product.setPrice(request.getProduct().getPrice());
+        product.setWidth(request.getProduct().getWidth());
+        product.setHeight(request.getProduct().getHeight());
+        product.setLength(request.getProduct().getLength());
         product.setName(request.getProduct().getName());
+        product.setCondition(request.getProduct().getCondition());
+        product.setAccessories(request.getProduct().getAccessories());
+        product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
+        product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
+        product.setBrandLine(request.getProduct().getBrandLine());
+        product.setDateCode(request.getProduct().getDateCode());
+        product.setReferenceCode(request.getProduct().getReferenceCode());
+        product.setSerialNumber(request.getProduct().getSerialNumber());
+        product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+        product.setManufactureYear(request.getProduct().getManufactureYear());
         var updatedProduct = productRepository.save(product);
 
         post.setTitle(request.getProduct().getName());
