@@ -387,7 +387,7 @@ public class PostServiceImpl implements IPostService {
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
-        post.setLastPriceForSeller(request.getLastPriceForSeller());
+        post.setLastPriceForSeller(Double.parseDouble(request.getLastPriceForSeller()));
 
         if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);

@@ -14,5 +14,5 @@ public class UpdatePostRequest {
     String description;
     Product product;
     Boolean boosted;
-    Double lastPriceForSeller;
+    String lastPriceForSeller;
 }
