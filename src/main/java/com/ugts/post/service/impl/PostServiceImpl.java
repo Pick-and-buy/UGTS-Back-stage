@@ -380,7 +380,7 @@ public class PostServiceImpl implements IPostService {
         if(productVideo != null && originalReceiptProof != null) {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
         }
-
+        product.setName(request.getProduct().getName());
         var updatedProduct = productRepository.save(product);
 
         post.setTitle(request.getProduct().getName());
