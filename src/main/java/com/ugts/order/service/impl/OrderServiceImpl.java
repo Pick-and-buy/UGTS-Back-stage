@@ -201,6 +201,7 @@ public class OrderServiceImpl implements OrderService {
             postRepository.save(post);
         }
 
+        orderDetails.setStatus(orderRequest.getOrderStatus());
         orderDetailsRepository.save(orderDetails);
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
