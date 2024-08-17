@@ -218,7 +218,7 @@ public class PostServiceImpl implements IPostService {
                 .updatedAt(new Date())
                 .product(product)
                 .isArchived(false)
-                .lastPriceForSeller(postRequest.getLastPriceForSeller())
+                .lastPriceForSeller(Double.parseDouble(postRequest.getLastPriceForSeller()))
                 .build();
         postRepository.save(post);
 

@@ -223,7 +223,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest updateOrderRequest) {
         // Get the order
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-
+        // Get the post associated with the order
+        var post = postRepository
+                .findById(order.getPost().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         // Get the user who created the order
         var buyer = userRepository
                 .findById(order.getBuyer().getId())
@@ -253,10 +256,11 @@ public class OrderServiceImpl implements OrderService {
         orderDetails.setPhoneNumber(updateOrderRequest.getPhoneNumber());
         orderDetails.setAddress(address);
         orderDetails.setPaymentMethod(order.getOrderDetails().getPaymentMethod());
-        orderDetails.setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
+        orderDetails.setLastPriceForSeller(post.getLastPriceForSeller());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             orderDetails.setStatus(OrderStatus.CANCELLED);
+            orderDetailsRepository.save(orderDetails);
 
             String buyerWalletId = buyer.getWallet().getWalletId();
             var buyerWallet =
@@ -264,11 +268,8 @@ public class OrderServiceImpl implements OrderService {
 
             refundForBuyer(order, user, orderDetails, buyerWallet);
 
-            var post = order.getPost();
             post.setIsAvailable(true);
             postRepository.save(post);
-            orderDetailsRepository.save(orderDetails);
-
         }
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
