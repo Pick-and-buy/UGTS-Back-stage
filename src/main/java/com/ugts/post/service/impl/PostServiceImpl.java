@@ -365,20 +365,14 @@ public class PostServiceImpl implements IPostService {
             uploadProductImagesToGCS(productImages, product);
         }
 
-        // upload product video to GCS
-        if(productVideo != null) {
+        if(productVideo != null && originalReceiptProof != null) {
             String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
             product.setProductVideo(videoUrl);
-        }
-
-        // upload originalReceiptProofUrls to GCS
-        if(originalReceiptProof != null) {
             String originalReceiptProofUrls =
                     googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
             product.setOriginalReceiptProof(originalReceiptProofUrls);
-        }
-        if(productVideo != null && originalReceiptProof != null) {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
+            productRepository.save(product);
         }
         product.setColor(request.getProduct().getColor());
         product.setSize(request.getProduct().getSize());
@@ -407,13 +401,10 @@ public class PostServiceImpl implements IPostService {
         post.setUpdatedAt(new Date());
         post.setLastPriceForSeller(Double.parseDouble(request.getLastPriceForSeller()));
 
+        // handle boost (boost lan dau)
         if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);
-        } else {
-            post.setBoosted(false);
-            post.setBoostEndTime(null);
         }
-
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }
