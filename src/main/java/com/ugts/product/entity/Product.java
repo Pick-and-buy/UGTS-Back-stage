@@ -24,7 +24,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     String name;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -90,9 +90,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     VerifiedLevel verifiedLevel;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     String productVideo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     String originalReceiptProof;
 }
