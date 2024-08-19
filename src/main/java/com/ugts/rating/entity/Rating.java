@@ -25,6 +25,7 @@ public class Rating {
     private StarRating stars;
 
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String comment;
 
     // user duoc minh rate
