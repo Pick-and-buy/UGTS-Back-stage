@@ -24,7 +24,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     String name;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -80,17 +80,19 @@ public class Product {
     String accessories;
     String dateCode;
     String serialNumber;
+
+    @Column(columnDefinition = "TEXT")
     String purchasedPlace;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     String story;
 
     @Enumerated(EnumType.STRING)
     VerifiedLevel verifiedLevel;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     String productVideo;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     String originalReceiptProof;
 }

@@ -43,6 +43,7 @@ public class Post {
 
     String title;
 
+    @Column(columnDefinition = "TEXT")
     String description;
 
     Boolean isAvailable;
