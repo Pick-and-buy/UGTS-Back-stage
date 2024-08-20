@@ -25,5 +25,5 @@ public class CreatePostRequest {
     Condition condition;
     VerifiedLevel verifiedLevel;
     Boolean boosted;
-    Double lastPriceForSeller;
+    String lastPriceForSeller;
 }

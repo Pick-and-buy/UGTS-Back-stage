@@ -218,7 +218,7 @@ public class PostServiceImpl implements IPostService {
                 .updatedAt(new Date())
                 .product(product)
                 .isArchived(false)
-                .lastPriceForSeller(postRequest.getLastPriceForSeller())
+                .lastPriceForSeller(Double.parseDouble(postRequest.getLastPriceForSeller()))
                 .build();
         postRepository.save(post);
 
@@ -365,37 +365,46 @@ public class PostServiceImpl implements IPostService {
             uploadProductImagesToGCS(productImages, product);
         }
 
-        // upload product video to GCS
-        if(productVideo != null) {
+        if(productVideo != null && originalReceiptProof != null) {
             String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
             product.setProductVideo(videoUrl);
-        }
-
-        // upload originalReceiptProofUrls to GCS
-        if(originalReceiptProof != null) {
             String originalReceiptProofUrls =
                     googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
             product.setOriginalReceiptProof(originalReceiptProofUrls);
-        }
-        if(productVideo != null && originalReceiptProof != null) {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
+            productRepository.save(product);
         }
-
+        product.setColor(request.getProduct().getColor());
+        product.setSize(request.getProduct().getSize());
+        product.setBrand(request.getProduct().getBrand());
+        product.setCategory(request.getProduct().getCategory());
+        product.setPrice(request.getProduct().getPrice());
+        product.setWidth(request.getProduct().getWidth());
+        product.setHeight(request.getProduct().getHeight());
+        product.setLength(request.getProduct().getLength());
+        product.setName(request.getProduct().getName());
+        product.setCondition(request.getProduct().getCondition());
+        product.setAccessories(request.getProduct().getAccessories());
+        product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
+        product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
+        product.setBrandLine(request.getProduct().getBrandLine());
+        product.setDateCode(request.getProduct().getDateCode());
+        product.setReferenceCode(request.getProduct().getReferenceCode());
+        product.setSerialNumber(request.getProduct().getSerialNumber());
+        product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+        product.setManufactureYear(request.getProduct().getManufactureYear());
         var updatedProduct = productRepository.save(product);
 
         post.setTitle(request.getProduct().getName());
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
-        post.setLastPriceForSeller(request.getLastPriceForSeller());
+        post.setLastPriceForSeller(Double.parseDouble(request.getLastPriceForSeller()));
 
+        // handle boost (boost lan dau)
         if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);
-        } else {
-            post.setBoosted(false);
-            post.setBoostEndTime(null);
         }
-
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }

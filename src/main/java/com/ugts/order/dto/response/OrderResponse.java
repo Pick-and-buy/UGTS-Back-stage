@@ -16,4 +16,6 @@ public class OrderResponse {
     GeneralUserInformationDto buyer;
     GeneralPostInformationDto post;
     OrderDetailsResponse orderDetails;
+    Boolean isBuyerRate;
+    Boolean isSellerRate;
 }

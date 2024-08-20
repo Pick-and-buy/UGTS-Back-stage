@@ -68,14 +68,7 @@ public class RatingServiceImpl implements IRatingService {
             if (ratedUser.getId().equals(sellerId)
                     && !order.getIsBuyerRate()
                     && ratingRequest.getRatingUserId().equals(order.getBuyer().getId())) {
-                String filteredContent = commentValidationService.filterBadWords(ratingRequest.getComment());
-                createRating(Rating.builder()
-                        .stars(ratingRequest.getStars())
-                        .comment(filteredContent)
-                        .ratingUser(ratingUser)
-                        .ratedUser(ratedUser)
-                        .ratedAt(new Date())
-                        .build());
+                createRate(ratingRequest, ratingUser, ratedUser, order);
                 order.setIsBuyerRate(true);
                 // TODO: notify to seller that buyer has rate
                 notificationService.createNotificationStorage(NotificationEntity.builder()
@@ -99,14 +92,7 @@ public class RatingServiceImpl implements IRatingService {
             if (order.getIsBuyerRate()
                     && !order.getIsSellerRate()
                     && ratingRequest.getRatingUserId().equals(sellerId)) {
-                String filteredContent = commentValidationService.filterBadWords(ratingRequest.getComment());
-                createRating(Rating.builder()
-                        .stars(ratingRequest.getStars())
-                        .comment(filteredContent)
-                        .ratingUser(ratingUser)
-                        .ratedUser(ratedUser)
-                        .ratedAt(new Date())
-                        .build());
+                createRate(ratingRequest, ratingUser, ratedUser, order);
                 order.setIsSellerRate(true);
                 if (order.getIsBuyerRate() && order.getIsSellerRate()) {
                     order.getOrderDetails().setStatus(OrderStatus.COMPLETED);
@@ -125,7 +111,15 @@ public class RatingServiceImpl implements IRatingService {
         }
     }
 
-    public void createRating(Rating rating) {
+    private void createRate(RatingRequest ratingRequest, User ratingUser, User ratedUser, Order order) {
+        String filteredContent = commentValidationService.filterBadWords(ratingRequest.getComment());
+        Rating rating = new Rating();
+        rating.setStars(ratingRequest.getStars());
+        rating.setComment(filteredContent);
+        rating.setRatingUser(ratingUser);
+        rating.setRatedUser(ratedUser);
+        rating.setRatedAt(new Date());
+        rating.setOrderId(order.getId());
         ratingRepository.save(rating);
     }
 

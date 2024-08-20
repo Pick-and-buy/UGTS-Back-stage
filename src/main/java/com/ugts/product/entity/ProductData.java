@@ -38,5 +38,6 @@ public class ProductData {
 
     String interiorMaterial;
 
+    @Column(columnDefinition = "TEXT")
     String story;
 }
