@@ -1,5 +1,6 @@
 package com.ugts.post.dto.request;
 
+import com.ugts.product.entity.Condition;
 import com.ugts.product.entity.Product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,6 +13,7 @@ public class UpdatePostRequest {
     String id;
     String description;
     Product product;
+    Condition condition;
     Boolean boosted;
     String lastPriceForSeller;
 }

@@ -383,7 +383,7 @@ public class PostServiceImpl implements IPostService {
         product.setHeight(request.getProduct().getHeight());
         product.setLength(request.getProduct().getLength());
         product.setName(request.getProduct().getName());
-        product.setCondition(request.getProduct().getCondition());
+        product.setCondition(request.getCondition());
         product.setAccessories(request.getProduct().getAccessories());
         product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
