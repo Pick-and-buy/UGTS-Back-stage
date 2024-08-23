@@ -21,7 +21,7 @@ public class TransactionResponse {
     String transNo;
     String bankCode;
     String cardType;
-    Double amount;
+    double amount;
     String currency;
     String bankAccountNo;
     String bankAccount;
