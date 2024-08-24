@@ -15,9 +15,6 @@ public class UpdatePostRequest {
     String id;
     String description;
     Product product;
-    Brand brand;
-    Category category;
-    BrandLine brandLine;
     Boolean boosted;
     String lastPriceForSeller;
 }
