@@ -356,6 +356,18 @@ public class PostServiceImpl implements IPostService {
             throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
+        var brand = brandRepository
+                .findByName(request.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        var brandLine = brandLineRepository
+                .findByLineName(request.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(request.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
         var product = productRepository
                 .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
@@ -374,10 +386,12 @@ public class PostServiceImpl implements IPostService {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
             productRepository.save(product);
         }
+
         product.setColor(request.getProduct().getColor());
         product.setSize(request.getProduct().getSize());
-        product.setBrand(request.getProduct().getBrand());
-        product.setCategory(request.getProduct().getCategory());
+        product.setBrand(brand);
+        product.setCategory(category);
+        product.setBrandLine(brandLine);
         product.setPrice(request.getProduct().getPrice());
         product.setWidth(request.getProduct().getWidth());
         product.setHeight(request.getProduct().getHeight());
@@ -387,7 +401,6 @@ public class PostServiceImpl implements IPostService {
         product.setAccessories(request.getProduct().getAccessories());
         product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
-        product.setBrandLine(request.getProduct().getBrandLine());
         product.setDateCode(request.getProduct().getDateCode());
         product.setReferenceCode(request.getProduct().getReferenceCode());
         product.setSerialNumber(request.getProduct().getSerialNumber());
