@@ -31,7 +31,7 @@ public class Transaction {
 
     String cardType;
 
-    Double amount;
+    double amount;
 
     String currency;
 

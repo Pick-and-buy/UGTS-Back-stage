@@ -376,8 +376,8 @@ public class PostServiceImpl implements IPostService {
         }
         product.setColor(request.getProduct().getColor());
         product.setSize(request.getProduct().getSize());
-        product.setBrand(request.getProduct().getBrand());
-        product.setCategory(request.getProduct().getCategory());
+        product.setBrand(request.getBrand());
+        product.setCategory(request.getCategory());
         product.setPrice(request.getProduct().getPrice());
         product.setWidth(request.getProduct().getWidth());
         product.setHeight(request.getProduct().getHeight());
@@ -387,12 +387,13 @@ public class PostServiceImpl implements IPostService {
         product.setAccessories(request.getProduct().getAccessories());
         product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
-        product.setBrandLine(request.getProduct().getBrandLine());
+        product.setBrandLine(request.getBrandLine());
         product.setDateCode(request.getProduct().getDateCode());
         product.setReferenceCode(request.getProduct().getReferenceCode());
         product.setSerialNumber(request.getProduct().getSerialNumber());
         product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
         product.setManufactureYear(request.getProduct().getManufactureYear());
+
         var updatedProduct = productRepository.save(product);
 
         post.setTitle(request.getProduct().getName());
