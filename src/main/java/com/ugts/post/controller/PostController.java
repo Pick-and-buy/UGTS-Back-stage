@@ -255,7 +255,7 @@ public class PostController {
      * @return An ApiResponse indicating the success of archiving the post.
      */
     @PutMapping("/archive-post/{postId}")
-    public ApiResponse<Void> archivePost(@PathVariable String postId,@RequestBody String isArchive) {
+    public ApiResponse<Void> archivePost(@PathVariable String postId, @RequestParam String isArchive) {
         postService.archivePost(postId, isArchive);
         return ApiResponse.<Void>builder().message("Archive post success").build();
     }
