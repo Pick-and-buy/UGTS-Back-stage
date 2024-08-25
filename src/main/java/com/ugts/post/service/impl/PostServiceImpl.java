@@ -551,9 +551,9 @@ public class PostServiceImpl implements IPostService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void archivePost(String postId) {
+    public void archivePost(String postId, String isArchive) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        post.setIsArchived(true);
+        post.setIsArchived(Boolean.parseBoolean(isArchive));
         postRepository.save(post);
     }
 }
