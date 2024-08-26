@@ -27,7 +27,8 @@ public class NewsController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<NewsResponse> createNews(
-            @RequestPart("request") String createRequestJson, @RequestPart("banner") MultipartFile banner)
+            @RequestPart("request") String createRequestJson,
+            @RequestPart(value = "banner", required = false) MultipartFile banner)
             throws IOException {
 
         NewsRequest request = objectMapper.readValue(createRequestJson, NewsRequest.class);

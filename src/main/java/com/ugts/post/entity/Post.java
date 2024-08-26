@@ -48,7 +48,7 @@ public class Post {
 
     Boolean isAvailable;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Product product;
 
     Date createdAt;
