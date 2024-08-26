@@ -79,6 +79,19 @@ public class WalletServiceImpl implements IWalletService {
             double newBalance = currentBalance + amount;
             wallet.setBalance(newBalance);
 
+            var transaction = Transaction.builder()
+                    .cardType("Wallet")
+                    .amount(amount)
+                    .currency("VND")
+                    .reason("Charge the money")
+                    .createDate(LocalDateTime.now())
+                    .transactionStatus(TransactionStatus.SUCCESS)
+                    .user(user)
+                    .wallet(wallet)
+                    .transactionType(TransactionType.DEPOSIT_TO_WALLET)
+                    .build();
+            transactionRepository.save(transaction);
+
             return newBalance;
         } catch (RuntimeException e) {
             throw new RuntimeException("some thing wrong when try to charge into wallet", e);
@@ -139,7 +152,7 @@ public class WalletServiceImpl implements IWalletService {
                     .amount(payAmount)
                     .currency("VND")
                     .reason("Pay For Order")
-                    .createDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now().toLocalDate())
                     .transactionStatus(TransactionStatus.SUCCESS)
                     .user(user)
                     .order(order)
@@ -194,7 +207,7 @@ public class WalletServiceImpl implements IWalletService {
         // Transaction detail
         Transaction transaction = new Transaction();
         transaction.setTransactionType(TransactionType.WITHDRAW_TO_BANK);
-        transaction.setCreateDate(LocalDateTime.now());
+        transaction.setCreateDate(LocalDateTime.now().toLocalDate());
         transaction.setAmount(amount);
         transaction.setWallet(wallet);
         transaction.setUser(withdrawUser);

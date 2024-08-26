@@ -14,6 +14,9 @@ import lombok.experimental.FieldDefaults;
 public class UpdatePostRequest {
     String id;
     String description;
+    Brand brand;
+    BrandLine brandLine;
+    Category category;
     Product product;
     Category category;
     Brand brand;

@@ -48,5 +48,5 @@ public interface IPostService {
 
     void boostPost(String postId, int hours);
 
-    void archivePost(String postId);
+    void archivePost(String postId, String isArchive);
 }

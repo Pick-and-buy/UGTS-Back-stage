@@ -156,8 +156,7 @@ public class PostServiceImpl implements IPostService {
                 postRequest.getProduct().getName(),
                 postRequest.getBrand().getName(),
                 postRequest.getBrandLine().getLineName(),
-                postRequest.getCategory().getCategoryName()
-                );
+                postRequest.getCategory().getCategoryName());
         BrandLine brandLine = brandLineRepository
                 .findByLineName(postRequest.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
@@ -356,13 +355,37 @@ public class PostServiceImpl implements IPostService {
             throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
+        var brand = brandRepository
+                .findByName(request.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        var brandLine = brandLineRepository
+                .findByLineName(request.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(request.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
         var product = productRepository
                 .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         // upload product images to GCS
-        if(productImages != null) {
+        if (productImages != null) {
             uploadProductImagesToGCS(productImages, product);
+        }
+        // upload product video to GCS
+        if (productVideo != null) {
+            String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+            product.setProductVideo(videoUrl);
+        }
+
+        // upload originalReceiptProofUrls to GCS
+        if (originalReceiptProof != null) {
+            String originalReceiptProofUrls =
+                    googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+            product.setOriginalReceiptProof(originalReceiptProofUrls);
         }
 
         if(productVideo != null && originalReceiptProof != null) {
@@ -374,10 +397,12 @@ public class PostServiceImpl implements IPostService {
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
             productRepository.save(product);
         }
+
         product.setColor(request.getProduct().getColor());
         product.setSize(request.getProduct().getSize());
-        product.setBrand(request.getProduct().getBrand());
-        product.setCategory(request.getProduct().getCategory());
+        product.setBrand(brand);
+        product.setCategory(category);
+        product.setBrandLine(brandLine);
         product.setPrice(request.getProduct().getPrice());
         product.setWidth(request.getProduct().getWidth());
         product.setHeight(request.getProduct().getHeight());
@@ -387,7 +412,6 @@ public class PostServiceImpl implements IPostService {
         product.setAccessories(request.getProduct().getAccessories());
         product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
         product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
-        product.setBrandLine(request.getProduct().getBrandLine());
         product.setDateCode(request.getProduct().getDateCode());
         product.setReferenceCode(request.getProduct().getReferenceCode());
         product.setSerialNumber(request.getProduct().getSerialNumber());
@@ -538,9 +562,9 @@ public class PostServiceImpl implements IPostService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void archivePost(String postId) {
+    public void archivePost(String postId, String isArchive) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        post.setIsArchived(true);
+        post.setIsArchived(Boolean.parseBoolean(isArchive));
         postRepository.save(post);
     }
 }
