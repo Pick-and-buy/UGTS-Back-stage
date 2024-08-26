@@ -5,6 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ugts.order.dto.response.OrderResponse;
 import com.ugts.transaction.enums.TransactionStatus;
+import com.ugts.transaction.enums.TransactionType;
 import com.ugts.user.dto.GeneralUserInformationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,4 +35,6 @@ public class TransactionResponse {
     TransactionStatus transactionStatus;
     GeneralUserInformationDto user;
     OrderResponse order;
+    TransactionType transactionType;
+
 }
