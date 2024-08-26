@@ -1,11 +1,11 @@
 runtime: java17
 instance_class: F1
 
-#env_variables:
-#    CLOUD_SQL_USERNAME: postgres
-#    CLOUD_SQL_PASSWORD: admin
-#    CLOUD_SQL_DATABASE_NAME: ugts_db
-#    CLOUD_SQL_CONNECTION_NAME: buoyant-planet-432115-a7:us-central1:capstone-sep490-g35
+env_variables:
+   CLOUD_SQL_USERNAME: postgres
+   CLOUD_SQL_PASSWORD: admin
+   CLOUD_SQL_DATABASE_NAME: ugts_db
+   CLOUD_SQL_CONNECTION_NAME: buoyant-planet-432115-a7:us-central1:capstone-sep490-g35
 #automatic_scaling:
 #    max_total_instances: 1
 #    min_idle_instances: 1

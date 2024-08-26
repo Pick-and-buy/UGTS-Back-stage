@@ -24,6 +24,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
+    @Column
     String name;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -44,31 +45,54 @@ public class Product {
     Category category;
 
     double price;
+
+    @Column(length = 500)
     String color;
+
+    @Column(length = 500)
     String size;
+
+    @Column(length = 500)
     String width;
+
+    @Column(length = 500)
     String height;
+
+    @Column(length = 500)
     String length;
+
+    @Column(length = 500)
     String referenceCode;
+
+    @Column(length = 500)
     String manufactureYear;
+
+    @Column(length = 500)
     String exteriorMaterial;
+
+    @Column(length = 500)
     String interiorMaterial;
 
     @Enumerated(EnumType.STRING)
     Condition condition;
 
+    @Column(length = 500)
     String accessories;
     String dateCode;
     String serialNumber;
+
+    @Column(columnDefinition = "TEXT")
     String purchasedPlace;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     String story;
 
     @Enumerated(EnumType.STRING)
     VerifiedLevel verifiedLevel;
 
+    @Column(length = 500)
     String productVideo;
 
+    @Column(length = 500)
     String originalReceiptProof;
 }

@@ -34,42 +34,42 @@ public class News {
 
     Date updatedAt;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String content;
 
     String subTitle1;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent1;
 
     String subTitle2;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent2;
 
     String subTitle3;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent3;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent4;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent5;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent6;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent7;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent8;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent9;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     String subContent10;
 }

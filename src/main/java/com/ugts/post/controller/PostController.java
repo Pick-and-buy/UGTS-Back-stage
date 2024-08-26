@@ -100,6 +100,15 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("boosted-post")
+    public ApiResponse<List<PostResponse>> getAllBoostedPosts() {
+        var result = postService.getAllBoostedPosts();
+        return ApiResponse.<List<PostResponse>>builder()
+                .message("Get All Post Success")
+                .result(result)
+                .build();
+    }
+
     /**
      * Updates an existing post identified by the provided postId.
      * Parses the 'updateRequest' JSON string into an UpdatePostRequest object.
@@ -246,8 +255,8 @@ public class PostController {
      * @return An ApiResponse indicating the success of archiving the post.
      */
     @PutMapping("/archive-post/{postId}")
-    public ApiResponse<Void> archivePost(@PathVariable String postId) {
-        postService.archivePost(postId);
+    public ApiResponse<Void> archivePost(@PathVariable String postId, @RequestParam String isArchive) {
+        postService.archivePost(postId, isArchive);
         return ApiResponse.<Void>builder().message("Archive post success").build();
     }
 }

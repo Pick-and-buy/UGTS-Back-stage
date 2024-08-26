@@ -20,4 +20,5 @@ public class CreateOrderRequest {
     Date deliveryDate;
     Date receivedDate;
     Post post;
+    String shippingCost;
 }

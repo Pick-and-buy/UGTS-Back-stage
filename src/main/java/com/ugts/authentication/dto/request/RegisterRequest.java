@@ -43,7 +43,6 @@ public class RegisterRequest {
     @Email(message = "EMAIL_INVALID", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     String email;
 
-    @Size(min = 10, max = 10, message = "PHONE_NUMBER_INVALID")
     String phoneNumber;
 
     @DobConstraint(min = 14, message = "INVALID_DOB")

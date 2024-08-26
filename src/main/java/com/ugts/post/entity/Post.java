@@ -43,11 +43,12 @@ public class Post {
 
     String title;
 
+    @Column(columnDefinition = "TEXT")
     String description;
 
     Boolean isAvailable;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     Product product;
 
     Date createdAt;

@@ -217,7 +217,7 @@ public class PostServiceImpl implements IPostService {
                 .updatedAt(new Date())
                 .product(product)
                 .isArchived(false)
-                .lastPriceForSeller(postRequest.getLastPriceForSeller())
+                .lastPriceForSeller(Double.parseDouble(postRequest.getLastPriceForSeller()))
                 .build();
         postRepository.save(post);
 
@@ -321,6 +321,12 @@ public class PostServiceImpl implements IPostService {
         return postMapper.getAllPosts(posts);
     }
 
+    public List<PostResponse> getAllBoostedPosts() {
+        List<Post> posts = postRepository.findAllBoostedPost();
+        return postMapper.getAllPosts(posts);
+    }
+
+
     /**
      * Updates an existing post with the provided details.
      * Retrieves the post by its ID from the post repository.
@@ -349,6 +355,18 @@ public class PostServiceImpl implements IPostService {
             throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
+        var brand = brandRepository
+                .findByName(request.getBrand().getName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_EXISTED));
+
+        var brandLine = brandLineRepository
+                .findByLineName(request.getBrandLine().getLineName())
+                .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+
+        var category = categoryRepository
+                .findByCategoryName(request.getCategory().getCategoryName())
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
+
         var product = productRepository
                 .findById(request.getProduct().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
@@ -357,7 +375,6 @@ public class PostServiceImpl implements IPostService {
         if (productImages != null) {
             uploadProductImagesToGCS(productImages, product);
         }
-
         // upload product video to GCS
         if (productVideo != null) {
             String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
@@ -370,24 +387,48 @@ public class PostServiceImpl implements IPostService {
                     googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
             product.setOriginalReceiptProof(originalReceiptProofUrls);
         }
-        if (productVideo != null && originalReceiptProof != null) {
+
+        if(productVideo != null && originalReceiptProof != null) {
+            String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
+            product.setProductVideo(videoUrl);
+            String originalReceiptProofUrls =
+                    googleCloudStorageService.uploadOriginalReceiptProofToGCS(originalReceiptProof, product.getId());
+            product.setOriginalReceiptProof(originalReceiptProofUrls);
             product.setVerifiedLevel(VerifiedLevel.LEVEL_2);
+            productRepository.save(product);
         }
 
+        product.setColor(request.getProduct().getColor());
+        product.setSize(request.getProduct().getSize());
+        product.setBrand(brand);
+        product.setCategory(category);
+        product.setBrandLine(brandLine);
+        product.setPrice(request.getProduct().getPrice());
+        product.setWidth(request.getProduct().getWidth());
+        product.setHeight(request.getProduct().getHeight());
+        product.setLength(request.getProduct().getLength());
+        product.setName(request.getProduct().getName());
+        product.setCondition(request.getProduct().getCondition());
+        product.setAccessories(request.getProduct().getAccessories());
+        product.setExteriorMaterial(request.getProduct().getExteriorMaterial());
+        product.setInteriorMaterial(request.getProduct().getInteriorMaterial());
+        product.setDateCode(request.getProduct().getDateCode());
+        product.setReferenceCode(request.getProduct().getReferenceCode());
+        product.setSerialNumber(request.getProduct().getSerialNumber());
+        product.setPurchasedPlace(request.getProduct().getPurchasedPlace());
+        product.setManufactureYear(request.getProduct().getManufactureYear());
         var updatedProduct = productRepository.save(product);
 
-        post.setTitle(request.getTitle());
+        post.setTitle(request.getProduct().getName());
         post.setDescription(request.getDescription());
         post.setProduct(updatedProduct);
         post.setUpdatedAt(new Date());
+        post.setLastPriceForSeller(Double.parseDouble(request.getLastPriceForSeller()));
 
+        // handle boost (boost lan dau)
         if (request.getBoosted() && post.getBoostEndTime() == null) {
             boostPost(post.getId(), 2);
-        } else {
-            post.setBoosted(false);
-            post.setBoostEndTime(null);
         }
-
         Post updatedPost = postRepository.save(post);
         return postMapper.postToPostResponse(updatedPost);
     }
@@ -521,9 +562,9 @@ public class PostServiceImpl implements IPostService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void archivePost(String postId) {
+    public void archivePost(String postId, String isArchive) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
-        post.setIsArchived(true);
+        post.setIsArchived(Boolean.parseBoolean(isArchive));
         postRepository.save(post);
     }
 }

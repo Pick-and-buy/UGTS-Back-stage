@@ -26,10 +26,17 @@ import com.ugts.order.service.OrderService;
 import com.ugts.post.repository.PostRepository;
 import com.ugts.rating.dto.RatingRequest;
 import com.ugts.rating.entity.StarRating;
+import com.ugts.transaction.entity.Transaction;
+import com.ugts.transaction.enums.TransactionStatus;
+import com.ugts.transaction.enums.TransactionType;
+import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.Address;
+import com.ugts.user.entity.User;
 import com.ugts.user.repository.AddressRepository;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.user.service.UserService;
+import com.ugts.wallet.entity.Wallet;
+import com.ugts.wallet.repository.WalletRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -64,6 +71,11 @@ public class OrderServiceImpl implements OrderService {
     private final NotificationServiceImpl notificationService;
 
     GoogleCloudStorageService googleCloudStorageService;
+
+    WalletRepository walletRepository;
+
+    TransactionRepository transactionRepository;
+
 
     /**
      * Creates a new order with the given order request.
@@ -111,6 +123,8 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryDate(orderRequest.getDeliveryDate())
                 .receivedDate(orderRequest.getReceivedDate())
                 .lastPriceForSeller(post.getProduct().getPrice())
+                .lastPriceForBuyer(Double.parseDouble(orderRequest.getShippingCost()) + post.getProduct().getPrice())
+                .shippingCost(Double.valueOf(orderRequest.getShippingCost()))
                 .build();
 
         var order = Order.builder()
@@ -148,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
+    @Modifying
     @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse updateOrderStatus(String orderId, UpdateOrderRequest orderRequest) {
         // Get the order
@@ -164,12 +179,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Get user who is updating the order
-        var contextHolder = SecurityContextHolder.getContext();
-        String phoneNumber = contextHolder.getAuthentication().getName();
-
-        var user = userRepository
-                .findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        var user = getUserUpdateOrder();
 
         // Verify that the user is authorized to update the order
         if (!Objects.equals(seller.getId(), user.getId())) {
@@ -177,32 +187,53 @@ public class OrderServiceImpl implements OrderService {
         }
 
         var orderDetails = order.getOrderDetails();
-        orderDetails.setStatus(orderRequest.getOrderStatus());
+
+        String buyerWalletId = order.getBuyer().getWallet().getWalletId();
+        var buyerWallet =
+                walletRepository.findById(buyerWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
 
         if (orderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
             post.setIsAvailable(true);
+            orderDetails.setStatus(OrderStatus.CANCELLED);
+
+            refundForBuyer(order, user, orderDetails, buyerWallet);
+
             postRepository.save(post);
         }
 
+        orderDetails.setStatus(orderRequest.getOrderStatus());
         orderDetailsRepository.save(orderDetails);
 
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
+    protected User getUserUpdateOrder(){
+        var contextHolder = SecurityContextHolder.getContext();
+        String phoneNumber = contextHolder.getAuthentication().getName();
+
+        return userRepository
+                .findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+    //buyer
     @Override
     @Transactional
+    @Modifying
     @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest updateOrderRequest) {
         // Get the order
         var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-
+        // Get the post associated with the order
+        var post = postRepository
+                .findById(order.getPost().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
         // Get the user who created the order
         var buyer = userRepository
                 .findById(order.getBuyer().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         // Get user who is updating the order
-        var user = userService.getProfile();
+        var user = getUserUpdateOrder();
 
         // Verify that the user is authorized to update the order
         if (!Objects.equals(buyer.getId(), user.getId())) {
@@ -218,27 +249,53 @@ public class OrderServiceImpl implements OrderService {
 
         addressRepository.save(address);
 
-        order.getOrderDetails().setFirstName(updateOrderRequest.getFirstName());
-        order.getOrderDetails().setLastName(updateOrderRequest.getLastName());
-        order.getOrderDetails().setEmail(updateOrderRequest.getEmail());
-        order.getOrderDetails().setPhoneNumber(updateOrderRequest.getPhoneNumber());
-        order.getOrderDetails().setAddress(address);
-        order.getOrderDetails().setPaymentMethod(order.getOrderDetails().getPaymentMethod());
-        order.getOrderDetails()
-                .setLastPriceForSeller(updateOrderRequest.getPost().getLastPriceForSeller());
+        var orderDetails = order.getOrderDetails();
+        orderDetails.setFirstName(updateOrderRequest.getFirstName());
+        orderDetails.setLastName(updateOrderRequest.getLastName());
+        orderDetails.setEmail(updateOrderRequest.getEmail());
+        orderDetails.setPhoneNumber(updateOrderRequest.getPhoneNumber());
+        orderDetails.setAddress(address);
+        orderDetails.setPaymentMethod(order.getOrderDetails().getPaymentMethod());
+        orderDetails.setLastPriceForSeller(post.getLastPriceForSeller());
 
         if (updateOrderRequest.getOrderStatus() == OrderStatus.CANCELLED) {
-            var orderDetails = order.getOrderDetails();
-            orderDetails.setStatus(updateOrderRequest.getOrderStatus());
+            orderDetails.setStatus(OrderStatus.CANCELLED);
             orderDetailsRepository.save(orderDetails);
 
-            var post = order.getPost();
+            String buyerWalletId = buyer.getWallet().getWalletId();
+            var buyerWallet =
+                    walletRepository.findById(buyerWalletId).orElseThrow(() -> new AppException(ErrorCode.WALLET_NOT_FOUND));
+
+            refundForBuyer(order, user, orderDetails, buyerWallet);
+
             post.setIsAvailable(true);
             postRepository.save(post);
         }
-
         return orderMapper.toOrderResponse(orderRepository.save(order));
     }
+
+    @Transactional
+    @Modifying
+    protected void refundForBuyer(Order order, User user, OrderDetails orderDetails, Wallet buyerWallet) {
+        var currentBalance = buyerWallet.getBalance();
+        double newBalance = currentBalance + orderDetails.getLastPriceForBuyer();
+        buyerWallet.setBalance(newBalance);
+
+        var transaction = Transaction.builder()
+                .amount(orderDetails.getLastPriceForBuyer())
+                .currency("VND")
+                .reason("Refund for buyer cancelled order")
+                .createDate(LocalDateTime.now())
+                .transactionStatus(TransactionStatus.SUCCESS)
+                .user(user)
+                .order(order)
+                .wallet(buyerWallet)
+                .transactionType(TransactionType.REFUND)
+                .build();
+        transactionRepository.save(transaction);
+        walletRepository.save(buyerWallet);
+    }
+
 
     /**
      * Retrieves all orders from the order repository and maps them to a list of OrderResponse objects.
@@ -326,20 +383,23 @@ public class OrderServiceImpl implements OrderService {
         var buyer = userRepository
                 .findById(order.getBuyer().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        // Get user who is updating the order
-        var user = userService.getProfile();
-        String videoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+        if(productVideo != null) {
+            // Get user who is updating the order
+            var user = userService.getProfile();
 
-        // seller update packing video
-        if (Objects.equals(order.getPost().getUser().getId(), user.getId())) {
-            order.getOrderDetails().setPackingVideo(videoUrl);
-            orderRepository.save(order);
-        }
+            // seller update packing video
+            if (Objects.equals(order.getPost().getUser().getId(), user.getId())) {
+                String sellerVideoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+                order.getOrderDetails().setPackingVideo(sellerVideoUrl);
+                orderRepository.save(order);
+            }
 
-        // buyer update receive video
-        if (Objects.equals(order.getBuyer().getId(), user.getId())) {
-            order.getOrderDetails().setPackingVideo(videoUrl);
-            orderRepository.save(order);
+            // buyer update receive video
+            if (Objects.equals(buyer.getId(), user.getId())) {
+                String buyerVideoUrl = googleCloudStorageService.uploadOrderVideoToGCS(productVideo, order.getId());
+                order.getOrderDetails().setReceivePackageVideo(buyerVideoUrl);
+                orderRepository.save(order);
+            }
         }
     }
 

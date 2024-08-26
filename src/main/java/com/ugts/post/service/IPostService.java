@@ -19,6 +19,8 @@ public interface IPostService {
             throws IOException;
 
     List<PostResponse> getAllPosts();
+    List<PostResponse> getAllBoostedPosts();
+
 
     PostResponse updatePost(
             String id,
@@ -46,5 +48,5 @@ public interface IPostService {
 
     void boostPost(String postId, int hours);
 
-    void archivePost(String postId);
+    void archivePost(String postId, String isArchive);
 }

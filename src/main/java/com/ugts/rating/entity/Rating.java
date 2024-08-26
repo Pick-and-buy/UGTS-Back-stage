@@ -25,6 +25,7 @@ public class Rating {
     private StarRating stars;
 
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String comment;
 
     // user duoc minh rate
@@ -39,4 +40,6 @@ public class Rating {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Saigon")
     Date ratedAt;
+
+    String orderId;
 }
