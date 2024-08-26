@@ -1,5 +1,6 @@
 package com.ugts.wallet.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class WalletServiceImpl implements IWalletService {
                     .amount(amount)
                     .currency("VND")
                     .reason("Charge the money")
-                    .createDate(LocalDateTime.now())
+                    .createDate(LocalDate.now())
                     .transactionStatus(TransactionStatus.SUCCESS)
                     .user(user)
                     .wallet(wallet)

@@ -18,9 +18,6 @@ public class UpdatePostRequest {
     BrandLine brandLine;
     Category category;
     Product product;
-    Category category;
-    Brand brand;
-    BrandLine brandLine;
     Boolean boosted;
     String lastPriceForSeller;
 }

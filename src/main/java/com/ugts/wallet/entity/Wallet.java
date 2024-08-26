@@ -22,7 +22,7 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.UUID)
     String walletId;
 
-    private Double balance;
+    private double balance;
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;

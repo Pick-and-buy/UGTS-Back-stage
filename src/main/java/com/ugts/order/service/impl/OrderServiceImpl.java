@@ -1,6 +1,7 @@
 package com.ugts.order.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -285,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(orderDetails.getLastPriceForBuyer())
                 .currency("VND")
                 .reason("Refund for buyer cancelled order")
-                .createDate(LocalDateTime.now())
+                .createDate(LocalDate.now())
                 .transactionStatus(TransactionStatus.SUCCESS)
                 .user(user)
                 .order(order)

@@ -15,6 +15,7 @@ import com.ugts.rating.entity.StarRating;
 import com.ugts.rating.mapper.RatingMapper;
 import com.ugts.rating.repository.RatingRepository;
 import com.ugts.rating.service.impl.RatingServiceImpl;
+import com.ugts.transaction.repository.TransactionRepository;
 import com.ugts.user.entity.User;
 import com.ugts.user.repository.UserRepository;
 import com.ugts.wallet.repository.WalletRepository;
@@ -49,6 +50,9 @@ public class RatingServiceTest {
 
     @Mock
     WalletRepository walletRepository;
+    @Mock
+    TransactionRepository transactionRepository;
+
 
     @BeforeEach
     void setUp() {
@@ -65,7 +69,8 @@ public class RatingServiceTest {
                 ratingMapper,
                 orderRepository,
                 notificationService,
-                walletRepository);
+                walletRepository,
+                transactionRepository);
 
         User ratingUser = new User();
         User ratedUser = new User();

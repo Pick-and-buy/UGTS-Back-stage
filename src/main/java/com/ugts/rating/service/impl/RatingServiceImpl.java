@@ -1,5 +1,6 @@
 package com.ugts.rating.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +114,7 @@ public class RatingServiceImpl implements IRatingService {
                                 .amount(order.getOrderDetails().getLastPriceForSeller())
                                 .currency("VND")
                                 .reason("Receive order's money")
-                                .createDate(LocalDateTime.now())
+                                .createDate(LocalDate.now())
                                 .transactionStatus(TransactionStatus.SUCCESS)
                                 .user(order.getPost().getUser())
                                 .wallet(sellerWallet)
