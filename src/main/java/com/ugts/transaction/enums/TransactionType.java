@@ -6,5 +6,6 @@ public enum TransactionType {
     REFUND,
     CREDIT_PAYMENT,
     DEBIT_PAYMENT,
-    PAY_ORDER;
+    PAY_ORDER,
+    RECEIVE_ORDER_MONEY;
 }
