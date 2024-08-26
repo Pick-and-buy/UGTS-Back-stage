@@ -34,31 +34,32 @@ public class VerifyInformationServiceImpl implements IVerifyInformation {
             throw new AppException(ErrorCode.VERIFY_FAIL);
         }
         VerifyInformation userVerify = verifyInformationRepository.findByUser(user);
-        if (userVerify != null && passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
+        if (userVerify != null
+                && passwordEncoder.matches(verifyInformationRequest.getCardId(), userVerify.getCardId())) {
             throw new AppException(ErrorCode.USER_HAS_ALREADY_VERIFIED);
         }
-        if(userVerify == null){
-          try {
-              changeUserInfo(user, verifyInformationRequest);
-              VerifyInformation verifyInformation = VerifyInformation.builder()
-                      .user(user)
-                      .cardId(passwordEncoder.encode(verifyInformationRequest.getCardId()))
-                      .name(verifyInformationRequest.getName())
-                      .dob(verifyInformationRequest.getDob())
-                      .nationality(verifyInformationRequest.getNationality())
-                      .home(verifyInformationRequest.getHome())
-                      .address(verifyInformationRequest.getAddress())
-                      .doe(verifyInformationRequest.getDoe())
-                      .features(verifyInformationRequest.getFeatures())
-                      .issueDate(verifyInformationRequest.getIssueDate())
-                      .issueLoc(verifyInformationRequest.getIssueLoc())
-                      .isMatch(verifyInformationRequest.getIsMatch())
-                      .build();
-              verifyInformationRepository.save(verifyInformation);
-          } catch (Exception e) {
-              throw new AppException(ErrorCode.VERIFY_FAIL);
-          }
-      }
+        if (userVerify == null) {
+            try {
+                changeUserInfo(user, verifyInformationRequest);
+                VerifyInformation verifyInformation = VerifyInformation.builder()
+                        .user(user)
+                        .cardId(passwordEncoder.encode(verifyInformationRequest.getCardId()))
+                        .name(verifyInformationRequest.getName())
+                        .dob(verifyInformationRequest.getDob())
+                        .nationality(verifyInformationRequest.getNationality())
+                        .home(verifyInformationRequest.getHome())
+                        .address(verifyInformationRequest.getAddress())
+                        .doe(verifyInformationRequest.getDoe())
+                        .features(verifyInformationRequest.getFeatures())
+                        .issueDate(verifyInformationRequest.getIssueDate())
+                        .issueLoc(verifyInformationRequest.getIssueLoc())
+                        .isMatch(verifyInformationRequest.getIsMatch())
+                        .build();
+                verifyInformationRepository.save(verifyInformation);
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.VERIFY_FAIL);
+            }
+        }
     }
 
     private void changeUserInfo(User user, VerifyInformationRequest verifyInformationRequest) {

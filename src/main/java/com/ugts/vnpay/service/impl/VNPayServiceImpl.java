@@ -167,7 +167,7 @@ public class VNPayServiceImpl implements VNPayService {
                 .cardType(request.getParameter("vnp_CardType"))
                 .amount(Double.parseDouble(request.getParameter("vnp_Amount")))
                 .currency("VND")
-                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")))
+                .createDate(LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDate())
                 .reason(request.getParameter("vnp_OrderInfo"))
                 .wallet(currentWallet)
                 .build();
