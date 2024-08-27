@@ -388,6 +388,7 @@ public class PostServiceImpl implements IPostService {
             product.setOriginalReceiptProof(originalReceiptProofUrls);
         }
 
+        //TODO: make admin change verified level to level 2 instead of instance change
         if(productVideo != null && originalReceiptProof != null) {
             String videoUrl = googleCloudStorageService.uploadProductVideoToGCS(productVideo, product.getId());
             product.setProductVideo(videoUrl);

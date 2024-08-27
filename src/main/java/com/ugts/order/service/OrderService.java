@@ -25,5 +25,7 @@ public interface OrderService {
 
     void autoRateOrders();
 
+    OrderResponse updateOrderStatusAdmin(String orderId, OrderStatus orderStatus);
+
     void updateVideoOrder(String orderId, MultipartFile productVideo) throws IOException;
 }

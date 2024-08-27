@@ -86,4 +86,14 @@ public class OrderController {
                 .result(result)
                 .build();
     }
+
+    @PutMapping("/status-admin")
+    public ApiResponse<OrderResponse> updateOrderStatusForAdmin(
+            @RequestParam String orderId, @RequestParam OrderStatus orderStatus) {
+        var result = orderService.updateOrderStatusAdmin(orderId, orderStatus);
+        return ApiResponse.<OrderResponse>builder()
+                .message("Update order status success")
+                .result(result)
+                .build();
+    }
 }

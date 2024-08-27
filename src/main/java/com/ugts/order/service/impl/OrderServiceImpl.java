@@ -370,6 +370,27 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * @param orderId
+     * @param orderStatus
+     * @return
+     */
+    @Override
+    @Modifying
+    @PreAuthorize("hasRole('ADMIN')")
+    public OrderResponse updateOrderStatusAdmin(String orderId, OrderStatus orderStatus) {
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        try{
+            order.getOrderDetails().setStatus(orderStatus);
+            orderRepository.save(order);
+            return orderMapper.toOrderResponse(orderRepository.save(order));
+
+        } catch (Exception e) {
+            log.error("An error occurred while update order status : {}", e.getMessage());
+        }
+        return orderMapper.toOrderResponse(orderRepository.save(order));
+    }
+
+    /**
+     * @param orderId
      * @param productVideo
      * @return
      */
