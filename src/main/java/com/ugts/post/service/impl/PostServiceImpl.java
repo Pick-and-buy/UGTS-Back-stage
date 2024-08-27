@@ -116,7 +116,7 @@ public class PostServiceImpl implements IPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         var category = categoryRepository
-                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .findByCategoryNameAndBrandLineId(postRequest.getCategory().getCategoryName(), brandLine.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
         // create product process
         var product = Product.builder()
@@ -145,7 +145,7 @@ public class PostServiceImpl implements IPostService {
         productRepository.save(product);
 
         // TODO: auto fill with product data by name if some field is missing
-        autoCompleteProductData(postRequest, product);
+//        autoCompleteProductData(postRequest, product);
         return productRepository.save(product);
     }
 
@@ -157,11 +157,14 @@ public class PostServiceImpl implements IPostService {
                 postRequest.getBrand().getName(),
                 postRequest.getBrandLine().getLineName(),
                 postRequest.getCategory().getCategoryName());
+
         BrandLine brandLine = brandLineRepository
                 .findByLineName(postRequest.getBrandLine().getLineName())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
+        System.out.println(postRequest.getCategory().getCategoryName());
+        System.out.println(brandLine.getId());
         Category category = categoryRepository
-                .findByCategoryName(postRequest.getCategory().getCategoryName())
+                .findByCategoryNameAndBrandLineId(postRequest.getCategory().getCategoryName(), brandLine.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
         productDataOptional.ifPresent(productData -> {
@@ -364,7 +367,7 @@ public class PostServiceImpl implements IPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         var category = categoryRepository
-                .findByCategoryName(request.getCategory().getCategoryName())
+                .findByCategoryNameAndBrandLineId(request.getCategory().getCategoryName(), brandLine.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
         var product = productRepository
