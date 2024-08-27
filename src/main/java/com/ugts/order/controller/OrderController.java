@@ -69,6 +69,15 @@ public class OrderController {
                 .build();
     }
 
+    @GetMapping("/admin")
+    public ApiResponse<List<OrderResponse>> getAllOrdersForAdmin() {
+        var result = orderService.getAllOrdersForAdmin();
+        return ApiResponse.<List<OrderResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
     @GetMapping("/details")
     public ApiResponse<OrderResponse> getOrderByOrderId(String orderId) {
         var result = orderService.getOrderByOrderId(orderId);

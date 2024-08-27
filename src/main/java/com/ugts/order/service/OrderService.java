@@ -18,6 +18,8 @@ public interface OrderService {
     OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest orderRequest);
 
     List<OrderResponse> getAllOrders();
+    List<OrderResponse> getAllOrdersForAdmin();
+
 
     OrderResponse getOrderByOrderId(String orderId);
 

@@ -311,6 +311,14 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOrdersResponse(orders);
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<OrderResponse> getAllOrdersForAdmin() {
+        var orders = orderRepository.findAll();
+        return orderMapper.toOrdersResponse(orders);
+    }
+
     /**
      * Retrieves an order by its order ID.
      *
