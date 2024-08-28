@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_LINE_NOT_EXISTED));
 
         var category = categoryRepository
-                .findByCategoryName(categoryName)
+                .findByCategoryNameAndBrandLineId(categoryName, existingBrandLine.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));
 
         category.setBrandLine(existingBrandLine);

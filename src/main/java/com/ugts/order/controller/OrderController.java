@@ -69,6 +69,15 @@ public class OrderController {
                 .build();
     }
 
+    @GetMapping("/admin")
+    public ApiResponse<List<OrderResponse>> getAllOrdersForAdmin() {
+        var result = orderService.getAllOrdersForAdmin();
+        return ApiResponse.<List<OrderResponse>>builder()
+                .message("Success")
+                .result(result)
+                .build();
+    }
+
     @GetMapping("/details")
     public ApiResponse<OrderResponse> getOrderByOrderId(String orderId) {
         var result = orderService.getOrderByOrderId(orderId);
@@ -83,6 +92,16 @@ public class OrderController {
         var result = orderService.getOrderByOrderStatus(orderStatus);
         return ApiResponse.<List<OrderResponse>>builder()
                 .message("Success")
+                .result(result)
+                .build();
+    }
+
+    @PutMapping("/status-admin")
+    public ApiResponse<OrderResponse> updateOrderStatusForAdmin(
+            @RequestParam String orderId, @RequestParam OrderStatus orderStatus) {
+        var result = orderService.updateOrderStatusAdmin(orderId, orderStatus);
+        return ApiResponse.<OrderResponse>builder()
+                .message("Update order status success")
                 .result(result)
                 .build();
     }

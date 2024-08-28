@@ -1,5 +1,6 @@
 package com.ugts.transaction.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.ugts.order.entity.Order;
@@ -31,7 +32,7 @@ public class Transaction {
 
     String cardType;
 
-    Double amount;
+    double amount;
 
     String currency;
 
@@ -44,7 +45,7 @@ public class Transaction {
     @Column
     private String reason;
 
-    LocalDateTime createDate;
+    LocalDate createDate;
 
     @Enumerated(EnumType.STRING)
     TransactionStatus transactionStatus;

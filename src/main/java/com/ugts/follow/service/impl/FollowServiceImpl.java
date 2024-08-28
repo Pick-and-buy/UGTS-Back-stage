@@ -37,6 +37,9 @@ public class FollowServiceImpl implements IFollowService {
         User followUser = userRepository
                 .findById(followRequestDto.getTargetUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if(user.getId().equals(followUser.getId())) {
+            throw new AppException(ErrorCode.CANNOT_FOLLOW_YOURSELF);
+        }
         if (isFollowing(user, followUser)) {
             throw new AppException(ErrorCode.USER_ALREADY_FOLLOWED);
         }

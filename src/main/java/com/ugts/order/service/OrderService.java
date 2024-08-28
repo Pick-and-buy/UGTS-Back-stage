@@ -18,12 +18,16 @@ public interface OrderService {
     OrderResponse updateOrderDetails(String orderId, UpdateOrderRequest orderRequest);
 
     List<OrderResponse> getAllOrders();
+    List<OrderResponse> getAllOrdersForAdmin();
+
 
     OrderResponse getOrderByOrderId(String orderId);
 
     List<OrderResponse> getOrderByOrderStatus(OrderStatus orderStatus);
 
     void autoRateOrders();
+
+    OrderResponse updateOrderStatusAdmin(String orderId, OrderStatus orderStatus);
 
     void updateVideoOrder(String orderId, MultipartFile productVideo) throws IOException;
 }

@@ -1,6 +1,7 @@
 package com.ugts.order.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -285,7 +286,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(orderDetails.getLastPriceForBuyer())
                 .currency("VND")
                 .reason("Refund for buyer cancelled order")
-                .createDate(LocalDateTime.now())
+                .createDate(LocalDate.now())
                 .transactionStatus(TransactionStatus.SUCCESS)
                 .user(user)
                 .order(order)
@@ -306,6 +307,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @PreAuthorize("hasRole('USER')")
     public List<OrderResponse> getAllOrders() {
+        var orders = orderRepository.findAll();
+        return orderMapper.toOrdersResponse(orders);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<OrderResponse> getAllOrdersForAdmin() {
         var orders = orderRepository.findAll();
         return orderMapper.toOrdersResponse(orders);
     }
@@ -365,6 +374,27 @@ public class OrderServiceImpl implements OrderService {
         } catch (Exception e) {
             log.error("An error occurred while create auto rating : {}", e.getMessage());
         }
+    }
+
+    /**
+     * @param orderId
+     * @param orderStatus
+     * @return
+     */
+    @Override
+    @Modifying
+    @PreAuthorize("hasRole('ADMIN')")
+    public OrderResponse updateOrderStatusAdmin(String orderId, OrderStatus orderStatus) {
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        try{
+            order.getOrderDetails().setStatus(orderStatus);
+            orderRepository.save(order);
+            return orderMapper.toOrderResponse(orderRepository.save(order));
+
+        } catch (Exception e) {
+            log.error("An error occurred while update order status : {}", e.getMessage());
+        }
+        return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
     /**
