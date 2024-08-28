@@ -89,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @PreAuthorize("hasAnyRole('USER')")
     public OrderResponse createOrder(CreateOrderRequest orderRequest) {
+
         var contextHolder = SecurityContextHolder.getContext();
         String phoneNumber = contextHolder.getAuthentication().getName();
 
@@ -99,13 +100,14 @@ public class OrderServiceImpl implements OrderService {
         var post = postRepository
                 .findById(orderRequest.getPost().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_EXISTED));
-
+        if(!post.getIsAvailable()) {
+            throw new AppException(ErrorCode.POST_NOT_AVAILABLE);
+        }
         post.setIsAvailable(false);
 
         var address = addressRepository
                 .findById(orderRequest.getAddress().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_EXISTED));
-
         var orderDetails = OrderDetails.builder()
                 .price(post.getProduct().getPrice())
                 .quantity(1)
